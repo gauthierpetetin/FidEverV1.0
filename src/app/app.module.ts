@@ -16,11 +16,12 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 
 // AF2 Settings
 const firebaseConfig = {
-  apiKey: "AIzaSyALKfevapBOYK202f6k5mPPfMrT1MHDv5A",
-    authDomain: "bill-tracker-e5746.firebaseapp.com",
-    databaseURL: "https://bill-tracker-e5746.firebaseio.com",
-    storageBucket: "bill-tracker-e5746.appspot.com",
-    messagingSenderId: "508248799540"
+  apiKey: "AIzaSyAOqwLrsetyoikTrTMP_gCbQoGJRHEphAw",
+  authDomain: "fidever2-ea05c.firebaseapp.com",
+  databaseURL: "https://fidever2-ea05c.firebaseio.com",
+  projectId: "fidever2-ea05c",
+  storageBucket: "fidever2-ea05c.appspot.com",
+  messagingSenderId: "608439970011"
 };
 
 @NgModule({
@@ -42,7 +43,7 @@ const firebaseConfig = {
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     SplashScreen,
-    StatusBar, 
+    StatusBar,
     AuthProvider
   ]
 })
