@@ -4,6 +4,7 @@ import { NavController } from 'ionic-angular';
 
 import { AuthProvider } from '../../providers/auth/auth';
 
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
