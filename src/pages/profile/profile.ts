@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { App, IonicPage, NavController, NavParams, ViewController, AlertController, LoadingController, Loading} from 'ionic-angular';
 
-import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+//import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 
 import { LoginPage } from '../login/login';
 import { HomePage } from '../home/home';
@@ -46,7 +46,7 @@ export class ProfilePage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
-    private nativePageTransitions: NativePageTransitions,
+    //private nativePageTransitions: NativePageTransitions,
     public authProvider: AuthProvider,
     public ctx: ContextProvider,
     public ethapiProvider: EthapiProvider,

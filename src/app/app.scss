@@ -20,3 +20,7 @@ ion-content{
     background-size: cover;//contain VS cover
     background-position: center;
 }
+
+body, span, button, h1, h2, h3, h4, h5, h6, p, ion-item, ion-title, ion-card-content, ion-label {
+  font-family: 'Verdana' !important;
+}

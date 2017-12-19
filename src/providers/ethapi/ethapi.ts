@@ -4,7 +4,7 @@
  * MIT Licensed
  */
 import { Injectable } from '@angular/core'
-import * as Web3  from 'web3'
+import * as Web3 from 'web3'
 import * as Tx from 'ethereumjs-tx'
 
 declare const Buffer
@@ -18,12 +18,16 @@ export class EthapiProvider {
 
   hairCoin: any
 
-  // type PromiseResolve<T> = (value?: T | PromiseLike<T>) => void;
-  // type PromiseReject = (error?: any) => void;
-
   constructor() {
 
     this.web3 = new Web3()
+    // if (typeof this.web3 !== 'undefined') {
+    //   this.web3 = new Web3(this.web3.currentProvider);
+    // } else {
+    //   this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+    // }
+
+    //this.web3 = new Web3()
     // Contract temp fidever.io
     this.contractAddress = "0xbe5c6930b754df6dc6a7a7f17f12180335e7bc75"
 
@@ -129,7 +133,7 @@ export class EthapiProvider {
     this.dial()
 
     return new Promise((resolve, reject) => {
-      var self = this;
+      //var self = this;
       console.log("code to get")
 
       console.log("Unlock");
@@ -164,7 +168,7 @@ export class EthapiProvider {
       const gasPrice = web3.eth.getGasPrice();
       console.log("gasPrice =>" + gasPrice);
 
-      const gasPriceHex = web3.utils.toHex(gasPrice);
+      //const gasPriceHex = web3.utils.toHex(gasPrice);
       const gasLimitHex = web3.utils.toHex(300000);
 
       web3.eth.getTransactionCount(account_address).then( (nonce) => {

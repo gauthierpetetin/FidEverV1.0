@@ -3,8 +3,8 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { StatusBar } from '@ionic-native/status-bar';
+//import { SplashScreen } from '@ionic-native/splash-screen';
+//import { StatusBar } from '@ionic-native/status-bar';
 import { HttpModule } from '@angular/http';
 
 
@@ -85,8 +85,8 @@ import { MapPage } from '../pages/map/map';
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    SplashScreen,
-    StatusBar,
+    //SplashScreen,
+    //StatusBar,
     AlertProvider,
     AuthProvider,
     ContextProvider,

@@ -10,7 +10,7 @@ import { ImageLoaderConfig, ImageLoader } from 'ionic-image-loader';
 
 import { ContextProvider} from '../../providers/context/context';
 
-import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+//import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 
 @Component({
   selector: 'page-item-detail',
@@ -33,8 +33,8 @@ export class ItemDetailPage {
     public modalCtrl: ModalController,
     private imageLoaderConfig: ImageLoaderConfig,
     public imageLoader: ImageLoader,
-    public ctx: ContextProvider,
-    private nativePageTransitions: NativePageTransitions
+    public ctx: ContextProvider
+    //private nativePageTransitions: NativePageTransitions
   ) {
 
     console.log('Open Item-detail');
