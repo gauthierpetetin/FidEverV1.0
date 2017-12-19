@@ -1,0 +1,51 @@
+<!--
+  Generated template for the ReceiveCoinsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar [ngStyle]="{'background-color': coinColor}">
+    <ion-title>Receive Coins</ion-title>
+
+    <ion-buttons end>
+      <button ion-button (click)="goBack()">
+        Back
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+
+  <div [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.5)'}">
+    <p text-center style="padding: 5px 0; margin: 0 0; color: grey;">
+      Let the sender scan your ID to receive coins.
+    </p>
+  </div>
+
+</ion-header>
+
+
+<ion-content>
+
+  <div padding>
+
+  <ion-card *ngIf="ctx.c[info][address]" padding>
+
+    <ion-card-content style="margin: 0 0; padding: 0 0;">
+      <h1 text-center style="margin: 0 0; padding: 0 0;color: black">
+        Your ID
+      </h1>
+    </ion-card-content>
+
+    <ngx-qrcode style="margin: 0 0; padding: 0 0; color: grey" [qrc-value]="ctx.c[info][address]"></ngx-qrcode>
+
+    <ion-card-content style="margin: 0 0; padding: 0 0;">
+      <p text-center style="margin: 0 0; padding: 0 0; font-size:9px; color: black">{{ ctx.c[info][address] }}</p>
+    </ion-card-content>
+
+  </ion-card>
+
+</div>
+
+</ion-content>

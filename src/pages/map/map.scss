@@ -1,0 +1,25 @@
+page-map {
+
+  @import "../../theme/variables.scss";
+
+  .toolbar-background {
+    background-color: color($colors, fidOrange);
+  }
+
+  .toolbar-title {
+    color : white
+  }
+
+  .bar-button-default {
+    color : white
+  }
+
+  .alertDanger {
+    background-color: white;
+    color: red;
+    button{
+      color: red;
+    }
+  }
+
+}

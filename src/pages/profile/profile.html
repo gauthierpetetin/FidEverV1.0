@@ -1,0 +1,257 @@
+<!--
+  Generated template for the ProfilePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header style="{margin: 0px}">
+
+  <ion-navbar style="{margin: 0px}">
+    <ion-buttons start>
+      <button ion-button (click)="goBack()">
+        Back
+      </button>
+    </ion-buttons>
+    <ion-title>Your Account</ion-title>
+      <ion-buttons end>
+        <button ion-button *ngIf="!modifying" (click)="modify()">
+          Modify
+        </button>
+      </ion-buttons>
+      <ion-buttons end>
+        <button ion-button *ngIf="modifying" (click)="saveModification()">
+          Save
+        </button>
+      </ion-buttons>
+  </ion-navbar>
+
+  <div>
+    <p style="margin: 0 0; padding: 0.5px 0; background-color: white"></p>
+  </div>
+
+  <div [ngStyle]="{
+    'background-color':'white',
+    'position':'relative',
+    'padding':'10px 0',
+    'height':'70px'
+  }">
+    <img-loader
+      [ngStyle]="{
+      'position':'absolute',
+      'top':'50%',
+      'left':'50%',
+      'height':'60px',
+      'width':'60px',
+      'margin-top':'-30px',
+      'margin-left':'-30px'
+      }"
+      src="assets/images/other/profile_d.png" useImg>
+    </img-loader>
+  </div>
+
+  <div [ngStyle]="{
+    'background-color':'white',
+    'position':'relative',
+    'padding-top':'25px'
+  }">
+    <button ion-button outline (click)="changeImage()" [ngStyle]="{
+      'outline':'true',
+      'border-color':'#afabab',
+      'color':'#afabab',
+      'position':'absolute',
+      'top':'50%',
+      'left':'50%',
+      'height':'2em',
+      'width':'11em',
+      'margin-top':'-1.5em',
+      'margin-left':'-5.5em',
+      'font-size':'9px'
+      }">
+      Change picture
+    </button>
+  </div>
+
+  <div>
+    <p style="margin: 0 0; padding: 3px 5px; background-color: #afabab; color: white">
+      Account details
+    </p>
+  </div>
+
+</ion-header>
+
+
+<!-- <ion-content overflow-scroll="false" [ngStyle]="{ -->
+<ion-content style="{margin: 0px 0px; padding: 0px 0px}">
+
+  <!-- <form [formGroup]="infoForm" (submit)="loginUser()" novalidate>
+
+    <ion-item>
+      <ion-label stacked>Email :</ion-label>
+      <ion-input *ngIf="modifying" #email formControlName="email" type="email" placeholder="Your email address"
+        [class.invalid]="!infoForm.controls.email.valid &&
+          infoForm.controls.email.dirty">
+      </ion-input>
+    </ion-item>
+    <ion-item class="error-message" *ngIf="!infoForm.controls.email.valid  &&
+      infoForm.controls.email.dirty">
+      <p>Please enter a valid email.</p>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked>Phone :</ion-label>
+      <ion-input #email formControlName="email" type="email" placeholder="Your email address"
+        [class.invalid]="!infoForm.controls.email.valid &&
+          infoForm.controls.email.dirty"></ion-input>
+    </ion-item>
+    <ion-item class="error-message" *ngIf="!infoForm.controls.email.valid  &&
+      infoForm.controls.email.dirty">
+      <p>Please enter a valid phone number.</p>
+    </ion-item>
+
+    <button ion-button block type="submit">
+      Login
+    </button>
+
+  </form> -->
+
+  <!-- <form class="list" [formGroup]="infoForm">
+
+      <ion-label stacked>Email :</ion-label>
+      <ion-input *ngIf="modifying" #email formControlName="email" type="email" placeholder="Your email address"
+        [class.invalid]="!infoForm.controls.email.valid &&
+          infoForm.controls.email.dirty">
+      </ion-input>
+
+      <ion-input
+        *ngIf="modifying"
+        style="color: #fe9400;
+          font-size: 16px;
+          font-family:'Verdana' !important;
+          border-bottom: 1px solid #fe9400;"
+        type="email"
+        formControlName="email2"
+        placeholder="Your email address"
+        [class.invalid]="!infoForm.controls.email.valid &&
+          infoForm.controls.email.dirty">
+      ></ion-input>
+
+  </form> -->
+
+
+<form class="list" [formGroup]="infoForm">
+
+  <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
+    <ion-col col-3>
+      <p >
+        Email :
+      </p>
+    </ion-col>
+    <ion-col col-9>
+      <p *ngIf="!modifying" style="color: black;">
+        {{ctx.c[info]['email']}}
+      </p>
+      <ion-input
+        *ngIf="modifying"
+        style="color: #fe9400;
+          font-size: 16px;
+          font-family:'Verdana' !important;
+          border-bottom: 1px solid grey;"
+        type="email"
+        #email
+        placeholder="Your email"
+        formControlName="email"
+        [(ngModel)]="ctx.c[info]['email']"
+        [class.invalid]="!infoForm.controls.email.valid &&
+          infoForm.controls.email.dirty"
+      ></ion-input>
+      <div class="error-message" *ngIf="!infoForm.controls.email.valid  &&
+        infoForm.controls.email.dirty && modifying">
+        <p>Please enter a valid email.</p>
+      </div>
+    </ion-col>
+  </ion-row>
+
+  <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
+    <ion-col col-3>
+      <p >
+        Phone :
+      </p>
+    </ion-col>
+    <ion-col col-9>
+      <p *ngIf="!modifying" style="color: black">
+        {{ctx.c[info]['phone']}}
+      </p>
+      <ion-input
+        *ngIf="modifying"
+        style="color: #fe9400;
+          font-size: 16px;
+          font-family: 'Verdana' !important;
+          border-bottom: 1px solid grey;"
+        type="tel"
+        #phone
+        placeholder="Your phone"
+        formControlName="phone"
+        [(ngModel)]="ctx.c[info]['phone']"
+        [class.invalid]="!infoForm.controls.phone.valid &&
+          infoForm.controls.phone.dirty"
+      ></ion-input>
+      <div class="error-message" *ngIf="!infoForm.controls.phone.valid  &&
+        infoForm.controls.phone.dirty && modifying">
+        <p>Please enter a valid phone number.</p>
+      </div>
+    </ion-col>
+  </ion-row>
+
+  </form>
+
+  <div>
+    <p style="margin: 0 0; padding: 3px 5px; background-color: #afabab; color: white">
+      ID
+    </p>
+  </div>
+
+  <div style="margin: 0 0; padding: 0 0" [ngStyle]="{'background-color':'blue'}">
+
+    <ion-card *ngIf="ctx.c[info][address]" padding style="margin: 0 0; width: auto">
+
+      <ion-card-content style="margin: 0 0; padding: 0 0;" [ngStyle]="{'padding-top':'5px'}">
+        <h1 text-center style="margin: 0 0; padding: 0 0;color: black">
+          Your ID
+        </h1>
+      </ion-card-content>
+
+      <ngx-qrcode style="margin: 0 0; padding: 0 0;" [qrc-value]="ctx.c[info][address]"></ngx-qrcode>
+
+      <ion-card-content style="margin: 0 0; padding: 0 0;">
+        <p text-center style="margin: 0 0; padding: 0 0; font-size:9px; color: black">{{ ctx.c[info][address] }}</p>
+      </ion-card-content>
+
+    </ion-card>
+
+  </div>
+
+<div>
+  <p style="margin: 0 0; padding: 3px 5px; background-color: #afabab; color: white">
+    Disconnection
+  </p>
+</div>
+
+<ion-row style="margin: 0 0; padding: 0px 5px; background-color: white;" (click)="disconnect()">
+    <ion-col col-1 [ngStyle]="{'position':'relative'}">
+      <ion-icon name="power" [ngStyle]="{
+        'color':'#C00000',
+        'position':'absolute',
+        'top':'50%',
+        'font-size':'20px',
+        'height':'1em',
+        'margin-top':'-0.5em'
+      }"></ion-icon>
+    </ion-col>
+    <ion-col>
+      <p style="color: #C00000">
+        Disconnect
+      </p>
+    </ion-col>
+</ion-row>
+
+</ion-content>

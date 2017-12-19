@@ -1,11 +1,25 @@
 page-login {
+
+  // .platform-ios .ios-header {
+  //   height:calc(56px + 20px) !important;
+  //   min-height:calc(56px + 20px) !important;
+  //   padding-top:20px !important;
+  // }
+
+  .no-scroll .scroll-content{
+    overflow: hidden;
+  }
+
+  // ion-content{
+  //   background-image: url('../assets/images/background/background15.png') !important;
+  // }
+
   form {
     margin-bottom: 32px;
     button {
       margin-top: 20px;
     }
   }
-
 
   p {
     font-size: 0.8em;

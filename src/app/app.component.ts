@@ -3,8 +3,14 @@ import { Platform } from 'ionic-angular';
 
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { HomePage } from '../pages/home/home';
+
+
+/**************Modules**************************/
 import { AngularFireAuth } from 'angularfire2/auth';
+
+
+/**************Pages****************************/
+import { HomePage } from '../pages/home/home';
 
 
 @Component({
@@ -32,7 +38,7 @@ export class MyApp {
       statusBar.styleDefault();
       //statusBar.backgroundColorByHexString('#fe9400');
       //statusBar.hide();
-      
+
       splashScreen.hide();
     });
   }

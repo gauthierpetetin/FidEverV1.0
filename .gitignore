@@ -28,6 +28,8 @@ plugins/android.json
 plugins/ios.json
 www/
 $RECYCLE.BIN/
+src/app/app.config.ts
+src/assets/images/background/large_images
 
 .DS_Store
 Thumbs.db

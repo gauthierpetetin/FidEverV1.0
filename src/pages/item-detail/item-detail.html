@@ -1,0 +1,150 @@
+<ion-header>
+
+  <ion-navbar *ngIf=pageWillLeave [ngStyle]="{'background-color': transparent}">
+  </ion-navbar>
+  <ion-navbar *ngIf=!pageWillLeave [ngStyle]="{'background-color': coinColor}">
+    <ion-title>
+      {{coinName}}
+    </ion-title>
+  </ion-navbar>
+
+  <ion-row class="white-row">
+
+    <ion-col col-8 class="ion-col2">
+      <div class="small-span">
+        <h4 text-right *ngIf="coinName">
+          Your {{coinName}}s:
+        </h4>
+      </div>
+    </ion-col>
+
+    <ion-col col-2 class="ion-col2">
+      <div class="small-span">
+        <h4 text-center *ngIf="coinName" [ngStyle]="{'color': coinColor}">
+          {{ctx.c[ctx.amounts][coinContractAddress]}}
+        </h4>
+      </div>
+    </ion-col>
+
+    <ion-col col-2 class="ion-col2">
+      <img-loader
+        fallback="assets/images/coins/Coin.png"
+        [ngStyle]="{
+          'position':'absolute',
+          'top':'50%',
+          'left':'50%',
+          'height':'2em',
+          'width':'2em',
+          'margin-top':'-1em',
+          'margin-left':'-1em'
+        }"
+        src="{{coinIcon}}"
+        useImg
+       ></img-loader>
+    </ion-col>
+
+  </ion-row>
+
+</ion-header>
+
+
+<ion-content class="my-background">
+
+  <!-- TEEEEEEST-->
+
+  <!-- TEEEEST FIN -->
+
+
+</ion-content>
+
+
+<ion-footer style="text-align: center;">
+<!-- align to the bottom of the page -->
+<!-- <div style="position: absolute; bottom: 0px; width: 100%; z-index:10; background-color: white"> -->
+  <div class="greyBar">
+    <p style="margin: 0 0; padding: 3px 0; color: white">Exchange {{coinName}}s with friends</p>
+  </div>
+
+  <button style="margin: 0 0; padding: 0 0; background-color: white">
+  <ion-row style="margin: 0 0;padding: 0 0;">
+
+    <ion-col style="position:relative;" [ngStyle]="{'background-color': 'transparent'}">
+        <button ion-button style="
+          background-color: transparent !important;
+          text-align: center !important;
+
+          position:absolute;
+          top:50%;
+          height:3em;
+          margin-top:-1.5em;
+
+          left: 50%;
+          width: 5em;
+          margin-left: -2.5em;
+
+          box-shadow: none !important;
+          border-color: rgba(0,0,0,0) !important;
+          outline: none !important;"
+
+        (click)="receiveCoins()"
+        [ngStyle]="{'color': coinColor}">
+        Receive
+        </button>
+    </ion-col>
+
+    <ion-col style="position:relative; text-align:center" [ngStyle]="{'background-color': 'transparent'}">
+        <img-loader src="assets/images/other/arrow_left.png" useImg></img-loader>
+    </ion-col>
+
+    <ion-col style="position:relative;" [ngStyle]="{'background-color': 'transparent'}">
+        <img-loader
+          fallback="assets/images/coins/Coin.png"
+          [ngStyle]="{
+            'position':'absolute',
+            'top':'50%',
+            'left':'50%',
+            'height':'40px',
+            'width':'40px',
+            'margin-top':'-20px',
+            'margin-left':'-20px'
+          }"
+          src="{{coinIcon}}"
+          useImg
+         ></img-loader>
+    </ion-col>
+
+    <ion-col style="position:relative; text-align:center" [ngStyle]="{'background-color': 'transparent'}">
+        <img-loader src="assets/images/other/arrow_right.png" useImg></img-loader>
+    </ion-col>
+
+    <ion-col style="position:relative;" [ngStyle]="{'background-color': 'transparent'}">
+        <button ion-button style="
+          background-color: transparent !important;
+          text-align: center !important;
+
+          position:absolute;
+          top:50%;
+          height:3em;
+          margin-top:-1.5em;
+
+          left: 50%;
+          width: 5em;
+          margin-left: -2.5em;
+
+          box-shadow: none !important;
+          border-color: rgba(0,0,0,0) !important;
+          outline: none !important;"
+
+          (click)="sendCoins()"
+          [ngStyle]="{'color': coinColor}">
+          Send
+        </button>
+    </ion-col>
+
+  </ion-row>
+
+</button>
+
+<!-- </div> -->
+
+</ion-footer>

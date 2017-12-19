@@ -1,4 +1,13 @@
 page-signup {
+
+  .no-scroll .scroll-content{
+    overflow: hidden;
+  }
+
+  // ion-content{
+  //   background-image: url('../assets/images/background/background15.png') !important;
+  // }
+
   form {
     margin-bottom: 32px;
     button {
