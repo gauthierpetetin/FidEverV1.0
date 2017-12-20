@@ -25,7 +25,7 @@ export class FidapiProvider {
   }
 
   createWallet(myAddress : string) : Promise<any> {
-    console.log('Open createWallet');
+    console.log('Open createWallet : ', myAddress);
     return new Promise((resolve, reject) => {
       var postContent = JSON.stringify({
         'address' : myAddress

@@ -5,6 +5,7 @@
  */
 import { Injectable } from '@angular/core'
 import * as Web3 from 'web3'
+//import Web3 from 'web3';
 import * as Tx from 'ethereumjs-tx'
 
 declare const Buffer
@@ -12,48 +13,69 @@ declare const Buffer
 @Injectable()
 export class EthapiProvider {
 
-  web3: any
-  account: any
-  contractAddress: any
+  web3: any;
+  account: any;
+  node: string = "http://fidever.io:8545";
+  contractAddress: string = "0xbe5c6930b754df6dc6a7a7f17f12180335e7bc75";
 
-  hairCoin: any
+  //hairCoin: any
 
   constructor() {
+    console.log('Open ethapi constructor');
 
     this.web3 = new Web3()
-    // if (typeof this.web3 !== 'undefined') {
-    //   this.web3 = new Web3(this.web3.currentProvider);
-    // } else {
-    //   this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-    // }
+    console.log('Web3 : ',this.web3);
 
-    //this.web3 = new Web3()
-    // Contract temp fidever.io
-    this.contractAddress = "0xbe5c6930b754df6dc6a7a7f17f12180335e7bc75"
+
+    this.dial();
+    this.account = this.web3.eth.accounts.create('entropy');
+    console.log("New account created");
+    console.log(this.account);
+    console.log('Close createAccount');
+
+    console.log('Close ethapi constructor')
 
   }
 
 
-  dial() {
+  dial() { /****************METHOD TO BE SECURED****************/
     if(!this.web3.currentProvider) {
-      console.log("dial")
-      var node = "http://fidever.io:8545"
-      this.web3.setProvider(new this.web3.providers.HttpProvider(node))
+      console.log("dial off");
+      this.web3.setProvider(new this.web3.providers.HttpProvider(this.node))
     }
+    else {
+      console.log("dial on");
+    }
+    // if (typeof this.web3 !== 'undefined') {
+    //   console.log('Open dial current');
+    //   this.web3 = new Web3(this.web3.currentProvider);
+    // } else {
+    //   console.log('Open dial new');
+    //   //this.web3 = new Web3(new Web3.providers.HttpProvider(this.node));
+    //   this.web3 = new Web3(new Web3.HttpProvider(this.node));
+    // }
   }
 
   // Create Ethereum address
-  createAccount() {
+  createAccount() : any {
+    console.log('Open createAccount : ',this.web3);
+    this.dial();
+    console.log('Open createAccount2 : ',this.web3);
     // Create address
-    this.account = this.web3.eth.accounts.create()
-    console.log("new account created: " + this.account.address)
-    return this.account
+    //this.account = this.web3.eth.accounts.create();
+    //this.account = this.web3.personal.newAccount('the-passphrase');
+    this.account = this.web3.eth.accounts.create('entropy');
+    console.log("New account created");
+    console.log(this.account);
+    console.log('Close createAccount');
+    return this.account;
+
   }
 
   getBalances(address) {
     this.dial()
     return new Promise((resolve, reject) => {
-      var self = this;
+      //var self = this;
       console.log("Call Contract: " + this.contractAddress)
       // var web3 = this.web3;
 
@@ -69,7 +91,7 @@ export class EthapiProvider {
       myContract.methods.getHair().call().then(
         function(result){
         console.log("Result Hair=> " + result)
-        self.hairCoin = result
+        //self.hairCoin = result
         var test = [
           {
             code: 'hair',

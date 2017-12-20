@@ -33,15 +33,15 @@ import { IonicImageLoader } from 'ionic-image-loader';
 
 
 /**************Pages****************************/
-import { LoginPage } from '../pages/login/login';
-import { SignupPage } from '../pages/signup/signup';
-import { ResetPasswordPage } from '../pages/reset-password/reset-password';
 import { HomePage } from '../pages/home/home';
-import { ItemDetailPage } from '../pages/item-detail/item-detail';
-import { ReceiveCoinsPage } from '../pages/receive-coins/receive-coins';
-import { SendCoinsPage } from '../pages/send-coins/send-coins';
-import { ProfilePage } from '../pages/profile/profile';
-import { MapPage } from '../pages/map/map';
+import { LoginPageModule } from '../pages/login/login.module';
+import { SignupPageModule } from '../pages/signup/signup.module';
+import { ResetPasswordPageModule } from '../pages/reset-password/reset-password.module';
+import { ItemDetailPageModule } from '../pages/item-detail/item-detail.module';
+import { ReceiveCoinsPageModule } from '../pages/receive-coins/receive-coins.module';
+import { SendCoinsPageModule } from '../pages/send-coins/send-coins.module';
+import { ProfilePageModule } from '../pages/profile/profile.module';
+import { MapPageModule } from '../pages/map/map.module';
 
 
 /*********************FIDEVER PRO************************/
@@ -49,15 +49,15 @@ import { MapPage } from '../pages/map/map';
 @NgModule({
   declarations: [
     MyApp,
-    LoginPage,
-    SignupPage,
-    ResetPasswordPage,
-    HomePage,
-    ItemDetailPage,
-    ReceiveCoinsPage,
-    SendCoinsPage,
-    ProfilePage,
-    MapPage
+    HomePage
+    //LoginPage,
+    // SignupPage,
+    // ResetPasswordPage,
+    // ItemDetailPage,
+    // ReceiveCoinsPage,
+    // SendCoinsPage,
+    // ProfilePage,
+    // MapPage
   ],
   imports: [
     BrowserModule,
@@ -68,20 +68,28 @@ import { MapPage } from '../pages/map/map';
     HttpModule,
     IonicStorageModule.forRoot(),
     NgxQRCodeModule,
-    IonicImageLoader.forRoot()
+    IonicImageLoader.forRoot(),
+    LoginPageModule,
+    SignupPageModule,
+    ResetPasswordPageModule,
+    ItemDetailPageModule,
+    ReceiveCoinsPageModule,
+    SendCoinsPageModule,
+    ProfilePageModule,
+    MapPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    LoginPage,
-    SignupPage,
-    ResetPasswordPage,
-    HomePage,
-    ItemDetailPage,
-    ReceiveCoinsPage,
-    SendCoinsPage,
-    ProfilePage,
-    MapPage
+    HomePage
+    //LoginPage,
+    // SignupPage,
+    // ResetPasswordPage,
+    // ItemDetailPage,
+    // ReceiveCoinsPage,
+    // SendCoinsPage,
+    // ProfilePage,
+    // MapPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},

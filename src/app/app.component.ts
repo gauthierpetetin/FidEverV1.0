@@ -13,6 +13,11 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { HomePage } from '../pages/home/home';
 
 
+/**************Others***************************/
+//import { ImageLoaderConfig } from 'ionic-image-loader';
+
+
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -21,7 +26,8 @@ export class MyApp {
 
   constructor(
     platform: Platform,
-    afAuth: AngularFireAuth
+    afAuth: AngularFireAuth,
+    //private imageLoaderConfig: ImageLoaderConfig
     //private splashScreen: SplashScreen,
     //private statusBar: StatusBar
   ){
@@ -35,6 +41,10 @@ export class MyApp {
         authObserver.unsubscribe();
       }
     });
+
+
+    //imageLoaderConfig.enableSpinner(false);
+    //imageLoaderConfig.setConcurrency(10);
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.

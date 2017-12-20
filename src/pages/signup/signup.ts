@@ -67,25 +67,44 @@ export class SignupPage {
   signupUser(){
     console.log('Open signupUser');
     if (!this.signupForm.valid){
-      console.log(this.signupForm.value);
+      console.log('Signup form not valid : ',this.signupForm.value);
     } else {
-      this.ctx.c[this.info]['email']=this.signupForm.value.email;
+      this.ctx.setEmail(this.signupForm.value.email);
       this.ctx.save();
       this.authData.signupUser(this.signupForm.value.email, this.signupForm.value.password)
       .then(() => {
+        console.log('Signup success on Firestore authenticator');
         //Ethereum account creation
-        this.initEthereumAccount().then( nAddress => {
+        this.initEthereumAccount().then( (nAddress) => {
+          console.log('Wallet creation success : ', nAddress);
           this.fidapiProvider.createWallet(nAddress).then( () => {
+            console.log('Signup success on Firestore database');
             this.loading.dismiss().then( () => {
               this.nav.setRoot(HomePage);
             });
+          }, (fidAPIError) => {
+            console.log('Signup error on Firestore database : ', fidAPIError);
+          }
+          );
+        }, (ethAPIError) => {
+          console.log('Wallet creation error : ', ethAPIError);
+          var errorMessage: string = ethAPIError.message;
+            let alert = this.alertCtrl.create({
+              message: errorMessage,
+              buttons: [
+                {
+                  text: "Ok",
+                  role: 'cancel'
+                }
+              ]
+            });
+            alert.present();
           });
-        });
         //End of Ethereum account creation
-
-      }, (error) => {
+      }, (fidAPIError) => {
+        console.log('Signup error on Firestore authenticator : ',fidAPIError);
         this.loading.dismiss().then( () => {
-          var errorMessage: string = error.message;
+          var errorMessage: string = fidAPIError.message;
             let alert = this.alertCtrl.create({
               message: errorMessage,
               buttons: [
@@ -115,15 +134,18 @@ export class SignupPage {
       privateKey : string
     };
 
+    var self = this;
     return new Promise((resolve,reject) => {
       // create Ethereum address + private key couple
-      ethAccount = this.ethapiProvider.createAccount();
+      ethAccount = self.ethapiProvider.createAccount();
       console.log('Ethereum IDs created: '.concat(JSON.stringify(ethAccount)));
 
-      this.ctx.c[this.info][this.address] = ethAccount.address;
-      this.ctx.c[this.info][this.privateKey] = ethAccount.privateKey;
+      self.ctx.setAddress(ethAccount.address);
+      self.ctx.setPrivateKey(ethAccount.privateKey);
+      //this.ctx.c[this.info][this.address] = ethAccount.address;
+      //this.ctx.c[this.info][this.privateKey] = ethAccount.privateKey;
       // set the Ethereum IDs in the device
-      this.ctx.save().then( () => {
+      self.ctx.save().then( () => {
         console.log('Ethereum IDs stored in storage');
         console.log('Close initEthereumAccount');
         resolve(ethAccount.address);

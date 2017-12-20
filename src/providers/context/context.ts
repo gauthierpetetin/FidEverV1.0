@@ -29,6 +29,7 @@ export class ContextProvider {
   info : string = 'accountInfo';
     address : string = 'ethAddress';
     privateKey : string = 'ethPrivateKey';
+    email : string = 'email';
 
   ethAccount: {
       address: string,
@@ -55,6 +56,21 @@ export class ContextProvider {
     public alertProvider: AlertProvider
   ) {
     console.log('Hello ContextProvider Provider');
+  }
+
+  setAddress(address : string) {
+    this.c[this.info][this.address] = address;
+    return;
+  }
+
+  setPrivateKey(privateKey : string) {
+    this.c[this.info][this.privateKey] = privateKey;
+    return;
+  }
+
+  setEmail(email : string) {
+    this.c[this.info][this.email] = email;
+    return;
   }
 
   getCoinName(coinID : string): string {
