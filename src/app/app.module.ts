@@ -44,7 +44,7 @@ import { ProfilePageModule } from '../pages/profile/profile.module';
 import { MapPageModule } from '../pages/map/map.module';
 
 
-/*********************FIDEVER PRO************************/
+/*********************FIDEVER************************/
 
 @NgModule({
   declarations: [

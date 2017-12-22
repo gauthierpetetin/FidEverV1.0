@@ -58,19 +58,31 @@ export class ContextProvider {
     console.log('Hello ContextProvider Provider');
   }
 
+/***************SETTERS*********************/
+
   setAddress(address : string) {
     this.c[this.info][this.address] = address;
-    return;
   }
 
   setPrivateKey(privateKey : string) {
     this.c[this.info][this.privateKey] = privateKey;
-    return;
   }
 
   setEmail(email : string) {
     this.c[this.info][this.email] = email;
-    return;
+  }
+
+
+/****************GETTERS*********************/
+
+  getAddress(): string {
+    return this.c[this.info][this.address];
+  }
+  getPrivateKey(): string {
+    return this.c[this.info][this.privateKey];
+  }
+  getEmail(): string {
+    return this.c[this.info][this.email];;
   }
 
   getCoinName(coinID : string): string {

@@ -121,9 +121,9 @@ export class HomePage {
     let myModalCtrl = this.modalCtrl.create(ReceiveCoinsPage, {
       coinColor : this.ctx.fidOrange
     });
-    myModalCtrl.onDidDismiss(data => {
-      console.log('Dismiss receive-coins : ',data);
-    });
+    // myModalCtrl.onDidDismiss(data => {
+    //   console.log('Dismiss receive-coins : ',data);
+    // });
     myModalCtrl.present();
   }
 

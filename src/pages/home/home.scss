@@ -2,9 +2,10 @@ page-home {
 
   @import "../../theme/variables.scss";
 
-  ion-content{
-      background-image: url('../assets/images/background/background75.png') !important;
-  }
+  // ion-content{
+  //   background-color: transparent !important;
+  //   //background-image: url('../assets/images/background/background75.png') !important;
+  // }
 
 .greyBar {
   background-color: color($colors, fidGrey);

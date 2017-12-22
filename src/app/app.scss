@@ -16,9 +16,9 @@
 // automatically applied to the <body> element in the app.
 
 ion-content{
-    background-image: url('../assets/images/background15.png');
-    background-size: cover;//contain VS cover
-    background-position: center;
+    background-image: url('../assets/images/background/background15.png') !important;
+    background-size: cover !important;//contain VS cover
+    background-position: center !important;
 }
 
 body, span, button, h1, h2, h3, h4, h5, h6, p, ion-item, ion-title, ion-card-content, ion-label {
