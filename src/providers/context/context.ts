@@ -22,31 +22,36 @@ export class ContextProvider {
   storageKey : string = 'storageKey';
 
   contractAddresses : string = 'coinsAddresses';
-  names : string = 'coinNames';
-  colors : string = 'coinColors';
-  amounts : string = 'coinAmounts';
-  icons : string = 'coinIcons';
-  info : string = 'accountInfo';
-    address : string = 'ethAddress';
-    privateKey : string = 'ethPrivateKey';
-    email : string = 'email';
+  names: string = 'coinNames';
+  colors: string = 'coinColors';
+  amounts: string = 'coinAmounts';
+  icons: string = 'coinIcons';
+  companyNames: string = 'companyName';
+  landscapes: string = 'landscapePictures';
+  brandIcons: string = 'brandIcons';
+  info: string = 'accountInfo';
+    address: string = 'ethAddress';
+    privateKey: string = 'ethPrivateKey';
+    email: string = 'email';
 
   ethAccount: {
       address: string,
-      privateKey : string
+      privateKey: string
   };
 
-  myCoinCollectionPath : string;
+  myCoinCollectionPath: string;
 
-  coinGlobalSubscribtion : any;
-  coinDetailSubscribtions : any = {};
-  coinDetailObservers : any = {};
-  coinAmountSubscribtions : any = {};
-  coinAmountObservers : any = {};
+  coinGlobalSubscribtion: any;
+  coinDetailSubscribtions: any = {};
+  coinDetailObservers: any = {};
+  coinAmountSubscribtions: any = {};
+  coinAmountObservers: any = {};
 
-  globalCoinCollectionPath : string = 'tokens/';
-  defaultCoinImage : string = 'assets/images/coins/Coin.png';
-  fidOrange : string = '#fe9400';
+  globalCoinCollectionPath: string = 'tokens/';
+  defaultCoinImage: string = '';
+  defaultLandscapeImage: string = '';
+  defaultBrandIcon: string = '';
+  fidOrange: string = '#fe9400';
 
   constructor(
     public http: Http,
@@ -97,6 +102,15 @@ export class ContextProvider {
   getCoinIcon(coinID : string): string {
     return this.c[this.icons][coinID];
   }
+  getLandscape(coinID : string): string {
+    return this.c[this.landscapes][coinID];
+  }
+  getBrandIcon(coinID : string): string {
+    return this.c[this.brandIcons][coinID];
+  }
+  getCompanyName(coinID : string): string {
+    return this.c[this.companyNames][coinID];
+  }
 
   init() {
     console.log('Open init');
@@ -117,6 +131,9 @@ export class ContextProvider {
     if(!this.c[this.colors]){this.c[this.colors] = {}}
     if(!this.c[this.amounts]){this.c[this.amounts] = {}}
     if(!this.c[this.icons]){this.c[this.icons] = {}}
+    if(!this.c[this.landscapes]){this.c[this.landscapes] = {}}
+    if(!this.c[this.brandIcons]){this.c[this.brandIcons] = {}}
+    if(!this.c[this.companyNames]){this.c[this.companyNames] = {}}
     if(!this.c[this.info]){this.c[this.info] = {}}
     console.log('Close initContext');
   }
@@ -131,6 +148,9 @@ export class ContextProvider {
         self.recoverDataAtKey(self.storageKey, self.c, self.colors);
         self.recoverDataAtKey(self.storageKey, self.c, self.amounts);
         self.recoverDataAtKey(self.storageKey, self.c, self.icons);
+        self.recoverDataAtKey(self.storageKey, self.c, self.landscapes);
+        self.recoverDataAtKey(self.storageKey, self.c, self.brandIcons);
+        self.recoverDataAtKey(self.storageKey, self.c, self.companyNames);
         self.recoverDataAtKey(self.storageKey, self.c, self.info).then( (account) => {
           console.log('Account info recovery success : ',self.c[self.privateKey]);
           resolve(account[self.address]);
@@ -344,6 +364,9 @@ cleanCoin(self : any, cc : string) {
   self.c[self.colors][cc] = undefined;
   self.c[self.amounts][cc] = 0;
   self.c[self.icons][cc] = undefined;
+  self.c[self.landscapes][cc] = undefined;
+  self.c[self.brandIcons][cc] = undefined;
+  self.c[self.companyNames][cc] = undefined;
   self.coinDetailSubscribtions[cc] = undefined;
   self.coinDetailObservers[cc] = undefined;
   self.coinAmountSubscribtions[cc] = undefined;
@@ -375,12 +398,28 @@ initCoinList(self : any) {
     else{console.log('Already an amount : ',self.c[self.amounts][cc])}
 
     if(!self.c[self.icons][cc]) {
-      console.log('No image');
+      console.log('No icon');
       self.c[self.icons][cc] = self.defaultCoinImage;
     }
-    else {
-      console.log('Already an image');
+    else {console.log('Already an icon');}
+
+    if(!self.c[self.landscapes][cc]) {
+      console.log('No landscape');
+      self.c[self.landscapes][cc] = self.defaultLandscapeImage;
     }
+    else {console.log('Already a landscape');}
+
+    if(!self.c[self.brandIcons][cc]) {
+      console.log('No brandIcon');
+      self.c[self.brandIcons][cc] = self.defaultBrandIcon;
+    }
+    else {console.log('Already a brandIcon');}
+
+    if(!self.c[self.companyNames][cc]) {
+      console.log('No company name');
+      self.c[self.companyNames][cc] = '';
+    }
+    else { console.log('Already a company name : ',self.c[self.companyNames][cc]) }
 
   }
 
@@ -411,6 +450,7 @@ fillCoinList(self : any) {
         .subscribe((coinDetails) => {
           self.c[self.names][cc] = coinDetails['name'];
           self.c[self.colors][cc] = coinDetails['color'];
+          self.c[self.companyNames][cc] = coinDetails['company'];
           console.log('CoinDetails : ',self.c[self.names][cc]);
           self.save();
       });
@@ -447,21 +487,40 @@ fillCoinList(self : any) {
       console.log('CoinAmountObserver already exists :');
     }
 
-    //Download coin images
-    if(self.c[self.icons][cc] == self.defaultCoinImage) {
-      self.firestoreProvider.downloadImageAtPath('coinIcons/'.concat(cc,'.png')).then(
-        function(result : string){
-          self.c[self.icons][cc] = result;
-          console.log(cc.concat(' image added to coinIcons: ',''/*JSON.stringify(self.c[self.icons])*/));
-        },
-        function(error : any){
-          console.log(cc.concat(' image not added to coinIcons. Error: ',error.message));
-        }
-      );
-    }
-    else{
-      console.log('Already an image 2');
-    }
+
+    // Download coin icon
+    self.firestoreProvider.downloadImageAtPath('coinIcons/'.concat(cc,'.png')).then(
+      function(result : string){
+        self.c[self.icons][cc] = result;
+        console.log(cc.concat(' image added to coinIcons: ',''/*JSON.stringify(self.c[self.icons])*/));
+      },
+      function(error : any){
+        console.log(cc.concat(' image not added to coinIcons. Error: ',error.message));
+      }
+    );
+
+    // Download landscape image
+    self.firestoreProvider.downloadImageAtPath('landscapes/'.concat(cc,'.png')).then(
+      function(result : string){
+        self.c[self.landscapes][cc] = result;
+        console.log(cc.concat(' image added to landscapePictures : ',self.c[self.landscapes][cc] ));
+      },
+      function(error : any){
+        console.log(cc.concat(' image not added to landscapePictures. Error: ',error.message));
+      }
+    );
+
+    // Download brand icon
+    self.firestoreProvider.downloadImageAtPath('brandIcons/'.concat(cc,'.png')).then(
+      function(result : string){
+        self.c[self.brandIcons][cc] = result;
+        console.log(cc.concat(' image added to brandIcons : ',self.c[self.brandIcons][cc] ));
+      },
+      function(error : any){
+        console.log(cc.concat(' image not added to brandIcons. Error: ',error.message));
+      }
+    );
+
 
   }
 

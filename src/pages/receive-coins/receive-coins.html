@@ -30,7 +30,7 @@
 
   <div padding>
 
-  <ion-card *ngIf="ctx.c[info][address]" padding>
+  <ion-card *ngIf="address" padding>
 
     <ion-card-content style="margin: 0 0; padding: 0 0;">
       <h1 text-center style="margin: 0 0; padding: 0 0;color: black">
@@ -38,10 +38,10 @@
       </h1>
     </ion-card-content>
 
-    <ngx-qrcode style="margin: 0 0; padding: 0 0; color: grey" [qrc-value]="ctx.c[info][address]"></ngx-qrcode>
+    <ngx-qrcode style="margin: 0 0; padding: 0 0; color: grey" [qrc-value]="address"></ngx-qrcode>
 
     <ion-card-content style="margin: 0 0; padding: 0 0;">
-      <p text-center style="margin: 0 0; padding: 0 0; font-size:9px; color: black">{{ ctx.c[info][address] }}</p>
+      <p text-center style="margin: 0 0; padding: 0 0; font-size:9px; color: black">{{ address }}</p>
     </ion-card-content>
 
   </ion-card>

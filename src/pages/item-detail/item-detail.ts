@@ -24,6 +24,9 @@ export class ItemDetailPage {
   coinName : string;
   coinColor : string;
   coinIcon : string;
+  landscape: string;
+  brandIcon: string;
+  companyName: string;
 
   pageWillLeave : boolean = false;
 
@@ -41,14 +44,17 @@ export class ItemDetailPage {
 
     this.imageLoaderConfig.enableSpinner(true);
 
-    //this.imageLoader.preload('../assets/images/background/background30.png');
-
     // If we navigated to this page, we will have an item available as a nav param
     this.coinContractAddress = navParams.get('coinContractAddress');
 
     this.coinName = this.ctx.getCoinName(this.coinContractAddress);
     this.coinColor = this.ctx.getCoinColor(this.coinContractAddress);
     this.coinIcon = this.ctx.getCoinIcon(this.coinContractAddress);
+    this.landscape = this.ctx.getLandscape(this.coinContractAddress);
+    this.brandIcon = this.ctx.getBrandIcon(this.coinContractAddress);
+    this.companyName = this.ctx.getCompanyName(this.coinContractAddress);
+
+    console.log('landscape image : ', this.landscape);
 
   }
 

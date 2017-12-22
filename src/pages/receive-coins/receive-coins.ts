@@ -17,11 +17,9 @@ import { ContextProvider} from '../../providers/context/context';
 })
 export class ReceiveCoinsPage {
 
-  info: any;
-  address: any;
+  address: string = null;
 
-  coinColor: any;
-  scannedCode = null;
+  coinColor: string;
 
   constructor(
     public navCtrl: NavController,
@@ -31,12 +29,10 @@ export class ReceiveCoinsPage {
     public ctx: ContextProvider
   ){
     // If we navigated to this page, we will have an item available as a nav param
-    this.info = this.ctx.info;
-    this.address = this.ctx.address;
-
+    this.address = this.ctx.getAddress();
     this.coinColor = navParams.get('coinColor');
 
-    console.log(this.ctx.c[this.info][this.address]);
+    console.log(this.address);
   }
 
   ionViewDidLoad() {
