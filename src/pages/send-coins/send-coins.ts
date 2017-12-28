@@ -97,15 +97,15 @@ export class SendCoinsPage {
       //-------UNCOMMENT TO SEND TOKENS------------
       this.ethapiProvider.transfer(
         this.coinContractAddress,
-        this.ctx.c[this.info][this.address],//fromAddress
-        this.ctx.c[this.info][this.privateKey],//fromPrivateKey
+        this.ctx.getAddress(),//fromAddress
+        this.ctx.getPrivateKey(),//fromPrivateKey
         this.toAddress,//toAddress
         this.coinAmount
       ).then( (transactionH) => {
         console.log('Coin transfer submitted successfully to Blockchain : ',transactionH);
         this.fidapiProvider.transferCoins(
           this.coinContractAddress,
-          this.ctx.c[this.info][this.address],//fromAddress
+          this.ctx.getAddress(),//fromAddress
           this.toAddress,//toAddress
           this.coinAmount,
           transactionH
