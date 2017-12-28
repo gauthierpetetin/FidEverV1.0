@@ -48,8 +48,6 @@ export class SignupPage {
   ) {
 
     this.info = this.ctx.info;
-    this.address = this.ctx.address;
-    this.privateKey = this.ctx.privateKey;
 
     this.signupForm = formBuilder.group({
       email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
@@ -142,8 +140,7 @@ export class SignupPage {
 
       self.ctx.setAddress(ethAccount.address);
       self.ctx.setPrivateKey(ethAccount.privateKey);
-      //this.ctx.c[this.info][this.address] = ethAccount.address;
-      //this.ctx.c[this.info][this.privateKey] = ethAccount.privateKey;
+
       // set the Ethereum IDs in the device
       self.ctx.save().then( () => {
         console.log('Ethereum IDs stored in storage');

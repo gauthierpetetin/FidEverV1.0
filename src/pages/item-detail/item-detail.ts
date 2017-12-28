@@ -27,6 +27,11 @@ export class ItemDetailPage {
   landscape: string;
   brandIcon: string;
   companyName: string;
+  offers: any [];
+    offerID: string;
+    offerName: string;
+    offerPrice: string;
+  offerImages: any;
 
   pageWillLeave : boolean = false;
 
@@ -53,8 +58,15 @@ export class ItemDetailPage {
     this.landscape = this.ctx.getLandscape(this.coinContractAddress);
     this.brandIcon = this.ctx.getBrandIcon(this.coinContractAddress);
     this.companyName = this.ctx.getCompanyName(this.coinContractAddress);
+    this.offers = this.ctx.getOffers(this.coinContractAddress);
+      this.offerID = this.ctx.offerID;
+      this.offerName = this.ctx.offerName;
+      this.offerPrice = this.ctx.offerPrice;
+    this.offerImages = this.ctx.getOfferImages(this.coinContractAddress);
 
-    console.log('landscape image : ', this.landscape);
+
+    console.log('Item-detail offers : ', this.offers);
+    console.log('Item-detail offerImages : ', this.offerImages);
 
   }
 

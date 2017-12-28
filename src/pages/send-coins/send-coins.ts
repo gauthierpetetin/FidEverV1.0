@@ -57,8 +57,8 @@ export class SendCoinsPage {
     this.coinIcon = this.ctx.getCoinIcon(this.coinContractAddress);
 
     this.info = this.ctx.info;
-      this.address = this.ctx.address;
-      this.privateKey = this.ctx.privateKey;
+      this.address = this.ctx.getAddress();
+      this.privateKey = this.ctx.getPrivateKey();
 
     this.coinAmount = 0;
     this.transactionSubmitted = false;

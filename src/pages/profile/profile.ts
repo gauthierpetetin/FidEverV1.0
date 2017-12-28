@@ -57,7 +57,7 @@ export class ProfilePage {
   ) {
 
     this.info = this.ctx.info;
-    this.address = this.ctx.address;
+    this.address = this.ctx.getAddress();
 
     this.infoForm = formBuilder.group({
       email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],

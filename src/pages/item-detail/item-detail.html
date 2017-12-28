@@ -87,7 +87,7 @@
               width: 80px;
               left: 50%;
               margin-left: -40px;
-              border:2px solid #afabab;"
+              border: 1px solid #afabab;"
               src="{{ brandIcon }}" useImg>
             </img-loader>
           </ion-row>
@@ -132,12 +132,92 @@
 </ion-header>
 
 
-<ion-content class="my-background">
+<ion-content>
 
-  <!-- TEEEEEEST-->
+  <ion-list>
 
-  <!-- TEEEEST FIN -->
+    <ion-item-sliding *ngFor="let off of offers" style="padding: 0 0; background-color: rgba(255, 255, 255, 0.85);">
 
+      <button ion-item style="padding: 0 0; margin: 0 0; background-color: transparent" (click)="offerTapped($event, off)">
+        <ion-row style="margin: 0 0; padding: 0 0;">
+
+          <ion-col col-2 style="
+            margin: 0 0;
+            padding: 0 0;
+            align-self: stretch;
+            height: 50px">
+            <div>
+              <!-- [ngStyle]="{'border-color': coinColor}" -->
+              <img-loader
+                fallback="assets/images/default_images/defaultImage.png"
+                src={{offerImages[off[offerID]]}}
+                style="
+                  border-radius: 40px;
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  width: 40px;
+                  height: 40px;
+                  margin-top: -20px;
+                  margin-left: -20px;
+                  border:1px solid #ffffff;
+                " useImg>
+              </img-loader>
+            </div>
+          </ion-col>
+
+          <ion-col col-7 style="
+            padding: 0 0;
+            margin: 0 0;">
+            <div style="
+              padding: 0 0;
+              margin: 0 0;
+              height: 50px !important;
+              display: table-cell;
+              vertical-align: middle;
+              text-align: left;
+              ">
+              <p style="
+                max-height: 40px;
+                font-color: grey;
+                font-size: 10px;
+                margin: 0px 5px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: normal;
+                ">
+                {{off[offerName]}}
+              </p>
+            </div>
+          </ion-col>
+
+          <ion-col col-3 style="
+            margin: 0 0;
+            padding: 0 0;">
+
+            <div style="
+              padding: 0 0;
+              margin: 0 0;
+              height: 50px !important;
+              display: table-cell;
+              vertical-align: middle;
+              text-align: left;
+            ">
+
+              <h4 class="text" text-center [ngStyle]="{'color': coinColor}" style="
+                max-height: 40px;
+                margin: 5px 5px;
+              ">
+                Price : {{off[offerPrice]}}
+              </h4>
+            </div>
+          </ion-col>
+
+        </ion-row>
+      </button>
+
+    </ion-item-sliding>
+  </ion-list>
 
 </ion-content>
 
