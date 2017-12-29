@@ -73,7 +73,9 @@ export class SignupPage {
       .then(() => {
         console.log('Signup success on Firestore authenticator');
         this.createEthWallet().then( () => {
+          console.log("go to HomePage");
           this.nav.setRoot(HomePage);
+          this.ctx.init();
         }, (walletError) => {
           console.log('createNewEthWallet error : ', walletError);
           var errorMessage: string = walletError.message;

@@ -221,7 +221,7 @@ export class ContextProvider {
                   receiver[field] = JSON.parse(result)[field];
                   console.log('Your data at field : ', field,' from storage is: ',receiver);
                   resolve(receiver[field]);
-                }else{console.log('Storage error : no field in result : ',result); reject()}
+                }else{console.log('Storage error : no field in result : ',result); resolve('null')}
               }
               else{console.log('Storage error : no receiver'); reject();}
             }
