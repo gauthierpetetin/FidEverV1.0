@@ -115,4 +115,8 @@ export class ItemDetailPage {
     console.log('IonViewWillLeave Item-detail');
   }
 
+  offerTapped() {
+    console.log('Offer tapped');
+  }
+
 }
