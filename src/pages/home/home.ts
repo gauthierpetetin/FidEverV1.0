@@ -62,24 +62,16 @@ export class HomePage {
 
       this.imageLoaderConfig.enableSpinner(true);
 
-      //this.imageLoader.preload('../assets/images/background/background75.png');
-
       // Variables for html
       this.info = this.ctx.info;
       this.contractAddresses = this.ctx.contractAddresses;
 
-      this.ctx.init();
-
-      /*****
-        TEST RAPH
-
-      console.log("Start transfer token")
-      let contractAddress = "0xbe5c6930b754df6dc6a7a7f17f12180335e7bc75"
-      let fromAddress = "0x35c41D5f7c31831be6C7bE20373C14647201Deb8"
-      let fromPrivateKey = "0xae10b8fb12a30aa26c904b940205670b36f8ac62f00f830b88c9e3a44928fef4"
-      let toAddress = "0xA328420c9235A080eB361dC12AF73974C16702f1"
-      this.ethapiProvider.transfer(contractAddress, fromAddress, fromPrivateKey, toAddress, 5)
-*/
+      // this.ctx.init().then( () => {
+      //   console.log('Context init success');
+      // }, (err) => {
+      //   console.log('Context init error : ', err);
+      //   this.logOut();
+      // });;
 
       console.log('Close Homepage constructor');
   }
@@ -88,6 +80,7 @@ export class HomePage {
     console.log('Open logOut');
     this.authProvider.logoutUser().then(() => {
       this.navCtrl.setRoot(LoginPage);
+      this.ctx.clear();
     });
     console.log('Close logOut');
   }

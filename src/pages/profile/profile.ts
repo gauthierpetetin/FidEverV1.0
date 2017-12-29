@@ -59,6 +59,8 @@ export class ProfilePage {
     this.info = this.ctx.info;
     this.address = this.ctx.getAddress();
 
+    console.log('My profile address : ', this.address);
+
     this.infoForm = formBuilder.group({
       email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
       phone: ['', Validators.compose([PhoneValidator.isValid])]

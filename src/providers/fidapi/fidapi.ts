@@ -49,7 +49,7 @@ export class FidapiProvider {
         err => {
           console.log('FidAPI failed creating wallet',err);
           console.log('Close createWallet');
-          reject();
+          reject(err);
         });
     });
   }

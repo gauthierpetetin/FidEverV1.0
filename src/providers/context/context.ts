@@ -63,6 +63,8 @@ export class ContextProvider {
   defaultBrandIcon: string = '';
   fidOrange: string = '#fe9400';
 
+  nulleth: string = 'nulleth';
+
   constructor(
     public http: Http,
     private storage: Storage,
@@ -128,16 +130,34 @@ export class ContextProvider {
     return this.c[this.offerImages][coinID];
   }
 
-  init() {
+  init(): Promise<any> {
     console.log('Open init');
-    this.initContext();
-    this.recoverContext().then( (address) => {
-      console.log('Context recovery success : ',address);
-      this.recoverEthereumAccount(address);
-    }, (contextError) => {
-      console.log('Context recovery error : ',contextError);
-    });
-    console.log('Close init');
+    var self = this;
+    return new Promise(
+      function(resolve, reject) {
+        self.initContext();
+        self.recoverContext().then( (address) => {
+          console.log('Context recovery success : ',address);
+          if(address != self.nulleth) {
+            self.recoverEthereumAccount(address).then( () => {
+              resolve(true);
+            }, (recoverEthereumAccountError) => {
+              reject(recoverEthereumAccountError);
+            });
+          }
+          else {
+            resolve(false);
+          }
+
+
+          /****resolve()*****/
+        }, (recoverContextError) => {
+          console.log('Context recovery error : ',recoverContextError);
+          reject(recoverContextError);
+        });
+      }
+    );
+
   }
 
   initContext() {
@@ -172,11 +192,17 @@ export class ContextProvider {
         self.recoverDataAtKey(self.storageKey, self.c, self.offers);
         self.recoverDataAtKey(self.storageKey, self.c, self.offerImages);
         self.recoverDataAtKey(self.storageKey, self.c, self.info).then( (account) => {
-          //console.log('Account info recovery success : ',self.c[self.infoPrivateKey]);
-          resolve(account[self.infoAddress]);
+          console.log('Account recovered : ', account);
+          if(account[self.infoAddress] && account[self.infoPrivateKey]) {
+            resolve(account[self.infoAddress]);
+          }
+          else{
+            resolve(self.nulleth);
+          }
+
         }, (accountError) => {
           console.log('Account recovery error : ', accountError);
-          reject();
+          reject(accountError);
         });
       });
   }
@@ -200,11 +226,11 @@ export class ContextProvider {
               else{console.log('Storage error : no receiver'); reject();}
             }
             else{
-              console.log('Null storage at field');reject();
+              console.log('Null storage at field');resolve('null');
             }
           },
           function(error : any){
-            console.log('Storage error for key :'.concat(key, ' with message : ', error.message)); reject();
+            console.log('Storage error for key :'.concat(key, ' with message : ', error.message)); reject(error);
           }
         );
       }
@@ -284,22 +310,25 @@ export class ContextProvider {
 
 
 
-recoverEthereumAccount(address : string) {
+recoverEthereumAccount(address : string): Promise<any> {
   console.log('Open recoverEthereumAccount : ', address);
+  var self = this;
+  return new Promise( function(resolve, reject) {
+    if(address != null){
+      self.initCoinCollectionPath(address);
 
-  if(address != null){
-    this.initCoinCollectionPath(address);
+      self.getCoinList();
+      resolve();
+    }
+    else {
+      console.log('NO ETHEREUM ACCOUNT');
+      reject('null');
+      //--------------------------------------------
+      //-------RECLAMER LA CLE A L API--------------
+      //--------------------------------------------
+    }
+  });
 
-    this.getCoinList();
-  }
-  else {
-    console.log('NO ETHEREUM ACCOUNT');
-    //--------------------------------------------
-    //-------RECLAMER LA CLE A L API--------------
-    //--------------------------------------------
-  }
-
-  console.log('Close recoverEthereumAccount');
 }
 
 initCoinCollectionPath(ethAccountAddress : string) {

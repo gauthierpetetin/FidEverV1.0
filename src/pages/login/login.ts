@@ -10,6 +10,8 @@ import { AuthProvider } from '../../providers/auth/auth';
 import { EmailValidator } from '../../validators/email';
 
 import { ContextProvider} from '../../providers/context/context';
+import { EthapiProvider } from '../../providers/ethapi/ethapi';
+import { FidapiProvider } from '../../providers/fidapi/fidapi';
 
 //
 import { HomePage } from '../home/home';
@@ -31,6 +33,8 @@ export class LoginPage {
   constructor(
     public navCtrl: NavController,
     public authData: AuthProvider,
+    public ethapiProvider: EthapiProvider,
+    public fidapiProvider: FidapiProvider,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
@@ -58,8 +62,12 @@ export class LoginPage {
         this.ctx.save();
         this.authData.loginUser(this.loginForm.value.email, this.loginForm.value.password)
         .then( authData => {
-          console.log("go to HomePage");
-          this.navCtrl.setRoot(HomePage);
+          this.createEthWallet().then( () => {
+            console.log("go to HomePage");
+            this.navCtrl.setRoot(HomePage);
+            this.ctx.init();
+          });
+
         }, error => {
           this.loading.dismiss().then( () => {
             let alert = this.alertCtrl.create({
@@ -89,5 +97,67 @@ export class LoginPage {
   createAccount(){
     this.navCtrl.push(SignupPage);
   }
+
+
+
+
+  createEthWallet():Promise <any> {
+    return new Promise((resolve,reject) => {
+
+      //Ethereum account creation
+      this.initEthWalletLocally().then( (nAddress) => {
+        console.log('Wallet creation success : ', nAddress);
+        this.fidapiProvider.createWallet(nAddress).then( () => {
+          console.log('Signup success on Firestore database');
+          this.loading.dismiss().then( () => {
+            resolve();
+          });
+        }, (fidAPIError) => {
+          console.log('Signup error on Firestore database : ', fidAPIError);
+          reject(fidAPIError);
+        }
+        );
+      }, (ethAPIError) => {
+        console.log('Wallet creation error : ', ethAPIError);
+        reject(ethAPIError);
+        });
+      //End of Ethereum account creation
+
+    });
+
+  }
+
+
+
+  initEthWalletLocally():Promise <any> {
+  console.log('Open initEthereumAccount');
+    var ethAccount: {
+      address: string,
+      privateKey : string
+    };
+
+    var self = this;
+    return new Promise((resolve,reject) => {
+      // create Ethereum address + private key couple
+      ethAccount = self.ethapiProvider.createAccount();
+      console.log('Ethereum IDs created: '.concat(JSON.stringify(ethAccount)));
+
+      self.ctx.setAddress(ethAccount.address);
+      self.ctx.setPrivateKey(ethAccount.privateKey);
+
+      // set the Ethereum IDs in the device
+      self.ctx.save().then( () => {
+        console.log('Ethereum IDs stored in storage');
+        resolve(ethAccount.address);
+        }, (error) => {
+          console.log('Error saving EthAccount in storage');
+          reject(error);
+        }
+      );
+
+    });
+
+  }
+
 
 }

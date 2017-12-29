@@ -71,6 +71,7 @@ export class FirestoreProvider {
 
     this.coinCollection = this.afCoinCollection.snapshotChanges()
       .map(actions => {
+        console.log('MAP ACTIONS : ', actions);
         return actions.map(a => {
           const type = a.type;
           const data = a.payload.doc.data() as any;

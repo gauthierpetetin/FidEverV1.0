@@ -72,21 +72,11 @@ export class SignupPage {
       this.authData.signupUser(this.signupForm.value.email, this.signupForm.value.password)
       .then(() => {
         console.log('Signup success on Firestore authenticator');
-        //Ethereum account creation
-        this.initEthereumAccount().then( (nAddress) => {
-          console.log('Wallet creation success : ', nAddress);
-          this.fidapiProvider.createWallet(nAddress).then( () => {
-            console.log('Signup success on Firestore database');
-            this.loading.dismiss().then( () => {
-              this.nav.setRoot(HomePage);
-            });
-          }, (fidAPIError) => {
-            console.log('Signup error on Firestore database : ', fidAPIError);
-          }
-          );
-        }, (ethAPIError) => {
-          console.log('Wallet creation error : ', ethAPIError);
-          var errorMessage: string = ethAPIError.message;
+        this.createEthWallet().then( () => {
+          this.nav.setRoot(HomePage);
+        }, (walletError) => {
+          console.log('createNewEthWallet error : ', walletError);
+          var errorMessage: string = walletError.message;
             let alert = this.alertCtrl.create({
               message: errorMessage,
               buttons: [
@@ -96,13 +86,13 @@ export class SignupPage {
                 }
               ]
             });
-            alert.present();
-          });
-        //End of Ethereum account creation
-      }, (fidAPIError) => {
-        console.log('Signup error on Firestore authenticator : ',fidAPIError);
+          alert.present();
+        });
+
+      }, (authenticationError) => {
+        console.log('Signup error on Firestore authenticator : ',authenticationError);
         this.loading.dismiss().then( () => {
-          var errorMessage: string = fidAPIError.message;
+          var errorMessage: string = authenticationError.message;
             let alert = this.alertCtrl.create({
               message: errorMessage,
               buttons: [
@@ -124,8 +114,35 @@ export class SignupPage {
     console.log('Close signupUser');
   }
 
+  createEthWallet():Promise <any> {
+    return new Promise((resolve,reject) => {
 
-  initEthereumAccount():Promise <any> {
+      //Ethereum account creation
+      this.initEthWalletLocally().then( (nAddress) => {
+        console.log('Wallet creation success : ', nAddress);
+        this.fidapiProvider.createWallet(nAddress).then( () => {
+          console.log('Signup success on Firestore database');
+          this.loading.dismiss().then( () => {
+            resolve();
+          });
+        }, (fidAPIError) => {
+          console.log('Signup error on Firestore database : ', fidAPIError);
+          reject(fidAPIError);
+        }
+        );
+      }, (ethAPIError) => {
+        console.log('Wallet creation error : ', ethAPIError);
+        reject(ethAPIError);
+        });
+      //End of Ethereum account creation
+
+    });
+
+  }
+
+
+
+  initEthWalletLocally():Promise <any> {
   console.log('Open initEthereumAccount');
     var ethAccount: {
       address: string,
@@ -144,10 +161,10 @@ export class SignupPage {
       // set the Ethereum IDs in the device
       self.ctx.save().then( () => {
         console.log('Ethereum IDs stored in storage');
-        console.log('Close initEthereumAccount');
         resolve(ethAccount.address);
         }, (error) => {
           console.log('Error saving EthAccount in storage');
+          reject(error);
         }
       );
 

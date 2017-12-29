@@ -4,6 +4,8 @@ import { Platform } from 'ionic-angular';
 //import { SplashScreen } from '@ionic-native/splash-screen';
 //import { StatusBar } from '@ionic-native/status-bar';
 
+import { ContextProvider} from '../providers/context/context';
+
 
 /**************Modules**************************/
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -27,6 +29,7 @@ export class MyApp {
   constructor(
     platform: Platform,
     afAuth: AngularFireAuth,
+    ctx: ContextProvider
     //private imageLoaderConfig: ImageLoaderConfig
     //private splashScreen: SplashScreen,
     //private statusBar: StatusBar
@@ -34,8 +37,26 @@ export class MyApp {
 
     const authObserver = afAuth.authState.subscribe( user => {
       if (user) {
-        this.rootPage = HomePage;
-        authObserver.unsubscribe();
+        ctx.init().then( (ethAccountFound) => {
+          if(ethAccountFound) {
+            console.log('Context init success with Eth account');
+            this.rootPage = HomePage;
+            authObserver.unsubscribe();
+          }
+          else {
+            console.log('Context init success without Eth account');
+            ctx.clear();
+            this.rootPage = 'LoginPage';
+            authObserver.unsubscribe();
+          }
+
+        }, (err) => {
+          console.log('Context init error : ', err);
+          ctx.clear();
+          this.rootPage = 'LoginPage';
+          authObserver.unsubscribe();
+        });;
+
       } else {
         this.rootPage = 'LoginPage';
         authObserver.unsubscribe();
@@ -56,4 +77,5 @@ export class MyApp {
       //splashScreen.hide();
     });
   }
+
 }
