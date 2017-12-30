@@ -34,6 +34,7 @@ export class ContextProvider {
     offerName = 'name';
     offerPrice = 'price';
   offerImages = 'coinOfferImages';
+  rewards: string = 'coinRewards';
   info: string = 'accountInfo';
     infoAddress: string = 'ethAddress';
     infoPrivateKey: string = 'ethPrivateKey';
@@ -124,10 +125,17 @@ export class ContextProvider {
     return this.c[this.companyNames][coinID];
   }
   getOffers(coinID : string): any[] {
-    return this.c[this.offers][coinID];
+    if(this.c[this.offers][coinID].length!=undefined) {
+      return this.c[this.offers][coinID];
+    }else {return [];}
   }
   getOfferImages(coinID : string): any {
     return this.c[this.offerImages][coinID];
+  }
+  getRewards(coinID : string): any[] {
+    if(this.c[this.rewards][coinID].length!=undefined) {
+      return this.c[this.rewards][coinID];
+    }else {return [];}
   }
 
   init(): Promise<any> {
@@ -172,6 +180,7 @@ export class ContextProvider {
     if(!this.c[this.companyNames]){this.c[this.companyNames] = {}}
     if(!this.c[this.offers]){this.c[this.offers] = {}}
     if(!this.c[this.offerImages]){this.c[this.offerImages] = {}}
+    if(!this.c[this.rewards]){this.c[this.rewards] = {}}
     if(!this.c[this.info]){this.c[this.info] = {}}
     console.log('Close initContext');
   }
@@ -191,6 +200,7 @@ export class ContextProvider {
         self.recoverDataAtKey(self.storageKey, self.c, self.companyNames);
         self.recoverDataAtKey(self.storageKey, self.c, self.offers);
         self.recoverDataAtKey(self.storageKey, self.c, self.offerImages);
+        self.recoverDataAtKey(self.storageKey, self.c, self.rewards);
         self.recoverDataAtKey(self.storageKey, self.c, self.info).then( (account) => {
           console.log('Account recovered : ', account);
           if(account[self.infoAddress] && account[self.infoPrivateKey]) {
@@ -417,6 +427,7 @@ cleanCoin(self : any, cc : string) {
   self.c[self.companyNames][cc] = undefined;
   self.c[self.offers][cc] = undefined;
   self.c[self.offerImages][cc] = undefined;
+  self.c[self.rewards][cc] = undefined;
   self.coinDetailSubscribtions[cc] = undefined;
   self.coinDetailObservers[cc] = undefined;
   self.coinAmountSubscribtions[cc] = undefined;
@@ -426,64 +437,18 @@ cleanCoin(self : any, cc : string) {
 
 initCoinList(self : any) {
   console.log('Open initCoinList');
-
   for(let cc of self.c[self.contractAddresses]) {
-    if(!self.c[self.names][cc]) {
-      console.log('No name');
-      self.c[self.names][cc] = '';
-    }
-    else { console.log('Already a name : ',self.c[self.names][cc]) }
-
-    if(!self.c[self.colors][cc]) {
-      console.log('No color');
-      self.c[self.colors][cc] = self.fidOrange;
-    }
-    else{console.log('Already a color : ',self.c[self.colors][cc])}
-
-    if(!self.c[self.amounts][cc]) {
-      console.log('No amount');
-      self.c[self.amounts][cc] = 0;
-    }
-    else{console.log('Already an amount : ',self.c[self.amounts][cc])}
-
-    if(!self.c[self.icons][cc]) {
-      console.log('No icon');
-      self.c[self.icons][cc] = self.defaultCoinImage;
-    }
-    else {console.log('Already an icon');}
-
-    if(!self.c[self.landscapes][cc]) {
-      console.log('No landscape');
-      self.c[self.landscapes][cc] = self.defaultLandscapeImage;
-    }
-    else {console.log('Already a landscape');}
-
-    if(!self.c[self.brandIcons][cc]) {
-      console.log('No brandIcon');
-      self.c[self.brandIcons][cc] = self.defaultBrandIcon;
-    }
-    else {console.log('Already a brandIcon');}
-
-    if(!self.c[self.companyNames][cc]) {
-      console.log('No company name');
-      self.c[self.companyNames][cc] = '';
-    }
-    else { console.log('Already a company name : ',self.c[self.companyNames][cc]) }
-
-    if(!self.c[self.offers][cc]) {
-      console.log('No offers');
-      self.c[self.offers][cc] = {};
-    }
-    else {console.log('Already offers');}
-
-    if(!self.c[self.offerImages][cc]) {
-      console.log('No offerImages');
-      self.c[self.offerImages][cc] = {};
-    }
-    else {console.log('Already offerImages');}
-
+    if(!self.c[self.names][cc]) {self.c[self.names][cc] = '';}
+    if(!self.c[self.colors][cc]) {self.c[self.colors][cc] = self.fidOrange;}
+    if(!self.c[self.amounts][cc]) {self.c[self.amounts][cc] = 0;}
+    if(!self.c[self.icons][cc]) {self.c[self.icons][cc] = self.defaultCoinImage;}
+    if(!self.c[self.landscapes][cc]) {self.c[self.landscapes][cc] = self.defaultLandscapeImage;}
+    if(!self.c[self.brandIcons][cc]) {self.c[self.brandIcons][cc] = self.defaultBrandIcon;}
+    if(!self.c[self.companyNames][cc]) {self.c[self.companyNames][cc] = '';}
+    if(!self.c[self.offers][cc]) {self.c[self.offers][cc] = {};}
+    if(!self.c[self.offerImages][cc]) {self.c[self.offerImages][cc] = {};}
+    if(!self.c[self.rewards][cc]) {self.c[self.rewards][cc] = {};}
   }
-
   console.log('Close initCoinList');
 }
 
@@ -520,6 +485,9 @@ downloadAllInfoForCoin(cc: string) {
 
   // Download offers list
   this.downloadOffers(cc);
+
+  // Download rewards list
+  this.downloadRewards(cc);
 
 }
 
@@ -631,7 +599,7 @@ downloadOffers(cc: string) {
       //Unsubscribtion security
       if(self.coinOffersSubscribtions[cc]){self.coinOffersSubscribtions[cc].unsubscribe();console.log('UNSUBSCRIBE OFFERS');}
 
-      self.coinOffersObservers[cc] = self.firestoreProvider.getCollection(offersCollectionPath);
+      self.coinOffersObservers[cc] = self.firestoreProvider.getCollection(offersCollectionPath, 'price');
       self.coinOffersSubscribtions[cc] = self.coinOffersObservers[cc]
         .subscribe((coinOffers) => {
           console.log('SUBSCRIBE OFFER : ', coinOffers);
@@ -663,6 +631,11 @@ downloadOfferImage(offerID: any, coinID: string) {
     }
   );
 }
+
+downloadRewards(cc: string) {
+  //------> Download Rewards
+}
+
 
 offersCollectionPathForCoin(coinID: string): string {
   return ''.concat('tokens/', coinID, '/offers');

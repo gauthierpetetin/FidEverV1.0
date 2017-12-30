@@ -17,24 +17,62 @@
 
   <ion-list-header [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.85)'}">
     <div class="item-content">
-     <ion-row style="padding-right: 10%">
+     <ion-row style="margin-left: 0; margin-right: 5%!important; padding-top: 0; padding-bottom: 0;">
 
-      <ion-col class="ion-col1">
+      <ion-col col-3 style="
+        margin: 0 0;
+        padding: 0 0;
+        display: table;
+        align-self: stretch;
+        height: 25px;">
       </ion-col>
 
-      <ion-col>
-        <div class="small-span">
-          <h3 class="text" text-center>
-            CoinName
-          </h3>
+      <ion-col col-6 style="
+        padding: 0 0;
+        margin: 0 0;
+        display: table;
+        text-align: center !important;">
+        <div style="
+          padding: 0 0;
+          margin: 0 0;
+          height: 25px !important;
+          display: table-cell;
+          vertical-align: middle;
+          text-align: left;
+          ">
+          <h2 style="
+            max-height: 20px;
+            color: grey;
+            font-size: 12px;
+            margin: 0px 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            ">
+            COINNAME
+          </h2>
         </div>
       </ion-col>
 
-      <ion-col class="ion-col3">
-        <div class="small-span">
-          <h3 class="text" text-center>
-            Amount
-          </h3>
+      <ion-col col-3 style="
+        margin: 0 0;
+        padding: 0 0;
+        display: table;">
+        <div style="
+          padding: 0 0;
+          margin: 0 0;
+          height: 25px !important;
+          display: table-cell;
+          vertical-align: middle;
+          text-align: left;
+        ">
+          <h2 class="text" text-center style="
+            color: grey;
+            font-size: 12px;
+            max-height: 20px;
+            margin: 5px 5px;">
+            AMOUNT
+          </h2>
         </div>
       </ion-col>
 
@@ -58,31 +96,73 @@
       <button ion-item (click)="itemTapped($event, cc)" [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.85)'}">
         <ion-row>
 
-          <ion-col class="ion-col1">
-            <!-- <img width="30" height="30" src={{coinIcons[coin.coinName]}}> -->
+          <ion-col col-3 style="
+            margin: 0 0;
+            padding: 0 0;
+            display: table;
+            align-self: stretch;
+            height: 50px;">
             <div>
               <img-loader
                 fallback="assets/images/default_images/defaultCoin.png"
-                class="centered-image"
-                width="40"
-                height="40"
-                src={{this.ctx.getCoinIcon(cc)}}>
+                src={{this.ctx.getCoinIcon(cc)}}
+                style="
+                  border-radius: 40px;
+                  position: absolute;
+                  top: 50%;
+                  width: 40px;
+                  height: 40px;
+                  margin-top: -20px;
+                " useImg>
               </img-loader>
             </div>
           </ion-col>
 
-          <ion-col>
-            <div class="small-span">
-              <h2 class="text" text-center style="color: grey;">
+          <ion-col col-6 style="
+            padding: 0 0;
+            margin: 0 0;
+            display: table;
+            text-align: center !important;">
+            <div style="
+              padding: 0 0;
+              margin: 0 0;
+              height: 50px !important;
+              display: table-cell;
+              vertical-align: middle;
+              text-align: left;
+              ">
+              <h2 style="
+                max-height: 40px;
+                color: grey;
+                font-size: 18px;
+                margin: 0px 5px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: normal;
+                ">
                 {{this.ctx.getCoinName(cc)}}
-                <!-- {{this.ctx.c[names][cc]}} -->
               </h2>
             </div>
           </ion-col>
 
-          <ion-col class="ion-col3">
-            <div class="small-span">
-              <h2 class="text" text-center style="color: grey;">
+
+          <ion-col col-3 style="
+            margin: 0 0;
+            padding: 0 0;
+            display: table;">
+            <div style="
+              padding: 0 0;
+              margin: 0 0;
+              height: 50px !important;
+              display: table-cell;
+              vertical-align: middle;
+              text-align: left;
+            ">
+              <h2 class="text" text-center style="
+                color: grey;
+                font-size: 18px;
+                max-height: 40px;
+                margin: 5px 5px;">
                 {{this.ctx.getCoinAmount(cc)}}
               </h2>
             </div>

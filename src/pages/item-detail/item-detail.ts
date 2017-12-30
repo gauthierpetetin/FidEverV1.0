@@ -34,6 +34,7 @@ export class ItemDetailPage {
     offerName: string;
     offerPrice: string;
   offerImages: any;
+  rewards: any [];
 
   pageWillLeave : boolean = false;
 
@@ -65,10 +66,11 @@ export class ItemDetailPage {
       this.offerName = this.ctx.offerName;
       this.offerPrice = this.ctx.offerPrice;
     this.offerImages = this.ctx.getOfferImages(this.coinContractAddress);
-
+    this.rewards = this.ctx.getRewards(this.coinContractAddress);
 
     console.log('Item-detail offers : ', this.offers);
     console.log('Item-detail offerImages : ', this.offerImages);
+    console.log('Item-detail rewards : ', this.rewards);
 
   }
 
@@ -87,25 +89,6 @@ export class ItemDetailPage {
       coinIcon: this.ctx.getCoinIcon(this.coinContractAddress)
     }).present();
   }
-
-  // goBack () {
-  //   let options: NativeTransitionOptions = {
-  //     direction: 'left',
-  //     duration: 400,
-  //     slowdownfactor: 4,
-  //     iosdelay: 50
-  //    };
-  //   this.nativePageTransitions.slide(options);
-  //
-  //   if (this.navCtrl.canGoBack()) {
-  //     console.log('pop item-detail');
-  //     this.navCtrl.pop();
-  //   }
-  //   else{
-  //     console.log('leave item-detail');
-  //     this.navCtrl.setRoot(HomePage);
-  //   }
-  // }
 
   ionViewDidLoad() {
     this.pageWillLeave = false;
@@ -132,6 +115,7 @@ export class ItemDetailPage {
     let alert = this.alertCtrl.create({
       title: 'Get reward',
       subTitle: 'Do you confirm you want to spend '.concat(selectedOffer[this.offerPrice], ' ', this.coinName, ' to get ', selectedOffer[this.offerName], '.'),
+      cssClass: 'customAlerts',
       buttons: [
       {
         text: 'Cancel',

@@ -60,7 +60,6 @@ export class SendCoinsPage {
       this.address = this.ctx.getAddress();
       this.privateKey = this.ctx.getPrivateKey();
 
-    this.coinAmount = 0;
     this.transactionSubmitted = false;
 
   }
@@ -149,7 +148,7 @@ export class SendCoinsPage {
       }
       else{
         let alert = this.alertCtrl.create({
-          title: 'Negtive coin amount',
+          title: 'Invalid coin amount',
           subTitle: 'Please select a positive amount of coins first.',
           buttons: ['OK']
         });

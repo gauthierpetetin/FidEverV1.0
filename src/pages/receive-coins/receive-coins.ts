@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, LoadingController } from 'ionic-angular';
 
 import { EthapiProvider } from '../../providers/ethapi/ethapi';
 import { ContextProvider} from '../../providers/context/context';
@@ -26,7 +26,8 @@ export class ReceiveCoinsPage {
     public navParams: NavParams,
     public viewCtrl: ViewController,
     public ethapiProvider: EthapiProvider,
-    public ctx: ContextProvider
+    public ctx: ContextProvider,
+    public loadingCtrl: LoadingController
   ){
     // If we navigated to this page, we will have an item available as a nav param
     this.address = this.ctx.getAddress();
