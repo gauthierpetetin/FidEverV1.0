@@ -83,60 +83,6 @@
 <!-- <ion-content overflow-scroll="false" [ngStyle]="{ -->
 <ion-content style="{margin: 0px 0px; padding: 0px 0px}">
 
-  <!-- <form [formGroup]="infoForm" (submit)="loginUser()" novalidate>
-
-    <ion-item>
-      <ion-label stacked>Email :</ion-label>
-      <ion-input *ngIf="modifying" #email formControlName="email" type="email" placeholder="Your email address"
-        [class.invalid]="!infoForm.controls.email.valid &&
-          infoForm.controls.email.dirty">
-      </ion-input>
-    </ion-item>
-    <ion-item class="error-message" *ngIf="!infoForm.controls.email.valid  &&
-      infoForm.controls.email.dirty">
-      <p>Please enter a valid email.</p>
-    </ion-item>
-
-    <ion-item>
-      <ion-label stacked>Phone :</ion-label>
-      <ion-input #email formControlName="email" type="email" placeholder="Your email address"
-        [class.invalid]="!infoForm.controls.email.valid &&
-          infoForm.controls.email.dirty"></ion-input>
-    </ion-item>
-    <ion-item class="error-message" *ngIf="!infoForm.controls.email.valid  &&
-      infoForm.controls.email.dirty">
-      <p>Please enter a valid phone number.</p>
-    </ion-item>
-
-    <button ion-button block type="submit">
-      Login
-    </button>
-
-  </form> -->
-
-  <!-- <form class="list" [formGroup]="infoForm">
-
-      <ion-label stacked>Email :</ion-label>
-      <ion-input *ngIf="modifying" #email formControlName="email" type="email" placeholder="Your email address"
-        [class.invalid]="!infoForm.controls.email.valid &&
-          infoForm.controls.email.dirty">
-      </ion-input>
-
-      <ion-input
-        *ngIf="modifying"
-        style="color: #fe9400;
-          font-size: 16px;
-          font-family:'Verdana' !important;
-          border-bottom: 1px solid #fe9400;"
-        type="email"
-        formControlName="email2"
-        placeholder="Your email address"
-        [class.invalid]="!infoForm.controls.email.valid &&
-          infoForm.controls.email.dirty">
-      ></ion-input>
-
-  </form> -->
-
 
 <form class="list" [formGroup]="infoForm">
 
@@ -210,7 +156,45 @@
     </p>
   </div>
 
-  <div style="margin: 0 0; padding: 0 0" [ngStyle]="{'background-color':'blue'}">
+  <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
+    <ion-col col-5>
+      <p >
+        Your current ID :
+      </p>
+    </ion-col>
+    <ion-col col-5>
+      <p style="color: black; font-size: 10px">
+        {{address}}
+      </p>
+    </ion-col>
+    <ion-col col-2>
+      <button ion-button full icon-center (click)="showID()" [ngStyle]="{
+        'background-color':'transparent',
+        'position':'relative',
+        'color': coinColor,
+        'box-shadow':'none',
+        'border-color':'rgba(0,0,0,0)',
+        'outline':'none'
+      }">
+        <!-- <ion-icon name="qr-scanner"></ion-icon> -->
+        <img-loader
+          [ngStyle]="{
+            'position':'absolute',
+            'top':'50%',
+            'left':'50%',
+            'height':'1.5em',
+            'width':'1.5em',
+            'margin-top':'-0.75em',
+            'margin-left':'-0.75em'
+          }"
+          src="assets/images/other/qr_code.png"
+          useImg>
+        </img-loader>
+      </button>
+    </ion-col>
+  </ion-row>
+
+  <!-- <div style="margin: 0 0; padding: 0 0" [ngStyle]="{'background-color':'blue'}">
 
     <ion-card *ngIf="ctx.c[info][address]" padding style="margin: 0 0; width: auto">
 
@@ -228,7 +212,7 @@
 
     </ion-card>
 
-  </div>
+  </div> -->
 
 <div>
   <p style="margin: 0 0; padding: 3px 5px; background-color: #afabab; color: white">

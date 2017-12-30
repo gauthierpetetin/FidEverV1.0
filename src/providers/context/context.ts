@@ -135,6 +135,8 @@ export class ContextProvider {
     var self = this;
     return new Promise(
       function(resolve, reject) {
+
+
         self.initContext();
         self.recoverContext().then( (address) => {
           console.log('Context recovery success : ',address);
@@ -149,8 +151,6 @@ export class ContextProvider {
             resolve(false);
           }
 
-
-          /****resolve()*****/
         }, (recoverContextError) => {
           console.log('Context recovery error : ',recoverContextError);
           reject(recoverContextError);
@@ -354,7 +354,7 @@ getCoinList() {
       .getCollection(this.myCoinCollectionPath)
       .subscribe( dbCoins => {
 
-        console.log('DBCoins : ', dbCoins);
+        console.log('OBSERVABLE COINLIST : ', dbCoins);
 
       if(dbCoins != null){
         var myContracts = [];
@@ -534,6 +534,7 @@ downloadCoinDetails(cc: string) {
     self.coinDetailObservers[cc] = self.firestoreProvider.getDocument(self.globalCoinCollectionPath.concat(cc));
     self.coinDetailSubscribtions[cc] = self.coinDetailObservers[cc]
       .subscribe((coinDetails) => {
+        console.log('SUBSCRIBE COIN : ', coinDetails);
         self.c[self.names][cc] = coinDetails['name'];
         self.c[self.colors][cc] = coinDetails['color'];
         self.c[self.companyNames][cc] = coinDetails['company'];
@@ -626,7 +627,6 @@ downloadOffers(cc: string) {
   if(offersCollectionPath){
     //Get coin offers
     var self = this;
-    if(!self.coinOffersObservers[cc]) {
       console.log('CreateCoinOffersObserver');
       //Unsubscribtion security
       if(self.coinOffersSubscribtions[cc]){self.coinOffersSubscribtions[cc].unsubscribe();console.log('UNSUBSCRIBE OFFERS');}
@@ -634,6 +634,7 @@ downloadOffers(cc: string) {
       self.coinOffersObservers[cc] = self.firestoreProvider.getCollection(offersCollectionPath);
       self.coinOffersSubscribtions[cc] = self.coinOffersObservers[cc]
         .subscribe((coinOffers) => {
+          console.log('SUBSCRIBE OFFER : ', coinOffers);
           var localOffersList: any [] = [];
           for(let off of coinOffers) {
             if(off) {
@@ -646,10 +647,7 @@ downloadOffers(cc: string) {
           console.log('CoinOffers for ', self.c[self.names][cc], ' : ', coinOffers);
           self.save();
       });
-    }
-    else{
-      console.log('CoinOffersObserver already exists : ', self.c[self.names][cc]);
-    }
+
   }
 }
 

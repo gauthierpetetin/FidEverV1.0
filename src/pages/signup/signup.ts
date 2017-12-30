@@ -10,11 +10,12 @@ import { AuthProvider } from '../../providers/auth/auth';
 import { HomePage } from '../home/home';
 import { EmailValidator } from '../../validators/email';
 
-import { EthapiProvider } from '../../providers/ethapi/ethapi';
+//import { EthapiProvider } from '../../providers/ethapi/ethapi';
 import { Storage } from '@ionic/storage';
 
 import { ContextProvider} from '../../providers/context/context';
-import { FidapiProvider } from '../../providers/fidapi/fidapi';
+import { WalletProvider} from '../../providers/wallet/wallet';
+//import { FidapiProvider } from '../../providers/fidapi/fidapi';
 
 @IonicPage()
 @Component({
@@ -30,20 +31,18 @@ export class SignupPage {
   address : string;
   privateKey : string;
 
-  //HTTPREQUEST
-  //requestAnswer: Observable<any>;
-
   constructor(
     public nav: NavController,
     public authData: AuthProvider,
     public formBuilder: FormBuilder,
     public loadingCtrl: LoadingController,
     public alertCtrl: AlertController,
-    public ethapiProvider: EthapiProvider,
+    //public fidapiProvider: FidapiProvider,
+    //public ethapiProvider: EthapiProvider,
     private storage: Storage,
     // public http: Http,
     public ctx: ContextProvider,
-    public fidapiProvider: FidapiProvider
+    public walletProvider: WalletProvider
 
   ) {
 
@@ -69,16 +68,16 @@ export class SignupPage {
     } else {
       this.ctx.setEmail(this.signupForm.value.email);
       this.ctx.save();
-      this.authData.signupUser(this.signupForm.value.email, this.signupForm.value.password)
-      .then(() => {
-        console.log('Signup success on Firestore authenticator');
-        this.createEthWallet().then( () => {
-          console.log("go to HomePage");
-          this.nav.setRoot(HomePage);
-          this.ctx.init();
-        }, (walletError) => {
-          console.log('createNewEthWallet error : ', walletError);
-          var errorMessage: string = walletError.message;
+      this.authData.signupUser(this.signupForm.value.email, this.signupForm.value.password).then(() => {
+        console.log('Firebase signup success');
+        this.walletProvider.createGlobalEthWallet().then( () => {
+          this.loading.dismiss().then( () => {
+            this.nav.setRoot(HomePage);
+            this.ctx.init();
+          });
+        }, (globalWalletError) => {
+          console.log('Global EthWallet creation error : ', globalWalletError);
+          var errorMessage: string = globalWalletError.message;
             let alert = this.alertCtrl.create({
               message: errorMessage,
               buttons: [
@@ -116,62 +115,6 @@ export class SignupPage {
     console.log('Close signupUser');
   }
 
-  createEthWallet():Promise <any> {
-    return new Promise((resolve,reject) => {
 
-      //Ethereum account creation
-      this.initEthWalletLocally().then( (nAddress) => {
-        console.log('Wallet creation success : ', nAddress);
-        this.fidapiProvider.createWallet(nAddress).then( () => {
-          console.log('Signup success on Firestore database');
-          this.loading.dismiss().then( () => {
-            resolve();
-          });
-        }, (fidAPIError) => {
-          console.log('Signup error on Firestore database : ', fidAPIError);
-          reject(fidAPIError);
-        }
-        );
-      }, (ethAPIError) => {
-        console.log('Wallet creation error : ', ethAPIError);
-        reject(ethAPIError);
-        });
-      //End of Ethereum account creation
-
-    });
-
-  }
-
-
-
-  initEthWalletLocally():Promise <any> {
-  console.log('Open initEthereumAccount');
-    var ethAccount: {
-      address: string,
-      privateKey : string
-    };
-
-    var self = this;
-    return new Promise((resolve,reject) => {
-      // create Ethereum address + private key couple
-      ethAccount = self.ethapiProvider.createAccount();
-      console.log('Ethereum IDs created: '.concat(JSON.stringify(ethAccount)));
-
-      self.ctx.setAddress(ethAccount.address);
-      self.ctx.setPrivateKey(ethAccount.privateKey);
-
-      // set the Ethereum IDs in the device
-      self.ctx.save().then( () => {
-        console.log('Ethereum IDs stored in storage');
-        resolve(ethAccount.address);
-        }, (error) => {
-          console.log('Error saving EthAccount in storage');
-          reject(error);
-        }
-      );
-
-    });
-
-  }
 
 }

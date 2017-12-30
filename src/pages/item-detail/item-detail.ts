@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ModalController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 
 import { ReceiveCoinsPage } from '../receive-coins/receive-coins';
@@ -9,6 +9,7 @@ import { HomePage } from '../home/home';
 import { ImageLoaderConfig, ImageLoader } from 'ionic-image-loader';
 
 import { ContextProvider} from '../../providers/context/context';
+
 
 //import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 
@@ -20,6 +21,7 @@ export class ItemDetailPage {
 
   coinContractAddress: any;
 
+  selectedTab: number = 0;
 
   coinName : string;
   coinColor : string;
@@ -41,8 +43,8 @@ export class ItemDetailPage {
     public modalCtrl: ModalController,
     private imageLoaderConfig: ImageLoaderConfig,
     public imageLoader: ImageLoader,
-    public ctx: ContextProvider
-    //private nativePageTransitions: NativePageTransitions
+    public ctx: ContextProvider,
+    public alertCtrl: AlertController
   ) {
 
     console.log('Open Item-detail');
@@ -115,8 +117,55 @@ export class ItemDetailPage {
     console.log('IonViewWillLeave Item-detail');
   }
 
-  offerTapped() {
-    console.log('Offer tapped');
+  offerTapped(event, selectedOffer) {
+    console.log('Offer tapped : ', selectedOffer);
+    var coinAmount = this.ctx.c[this.ctx.amounts][this.coinContractAddress]
+    if (coinAmount >= selectedOffer[this.offerPrice]) {
+      this.confirmPurchase(selectedOffer);
+    }
+    else {
+      this.forbidPurchase(selectedOffer[this.offerPrice] - coinAmount);
+    }
+  }
+
+  confirmPurchase(selectedOffer: any) {
+    let alert = this.alertCtrl.create({
+      title: 'Get reward',
+      subTitle: 'Do you confirm you want to spend '.concat(selectedOffer[this.offerPrice], ' ', this.coinName, ' to get ', selectedOffer[this.offerName], '.'),
+      buttons: [
+      {
+        text: 'Cancel',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      },
+      {
+        text: 'Confirm',
+        handler: () => {
+          console.log('Confirm clicked');
+        }
+      }
+    ]
+    });
+    alert.present();
+  }
+
+  forbidPurchase(missingAmount: number) {
+    let alert = this.alertCtrl.create({
+      title: 'Not enough funds',
+      subTitle: 'You still need to collect '.concat(missingAmount.toString(), ' ', this.coinName, ' to get this reward.'),
+      buttons: ['OK']
+    });
+    alert.present();
+  }
+
+  selectOffers() {
+    this.selectedTab = 0;
+  }
+
+  selectRewards() {
+    this.selectedTab = 1;
   }
 
 }

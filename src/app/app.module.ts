@@ -42,6 +42,7 @@ import { ReceiveCoinsPageModule } from '../pages/receive-coins/receive-coins.mod
 import { SendCoinsPageModule } from '../pages/send-coins/send-coins.module';
 import { ProfilePageModule } from '../pages/profile/profile.module';
 import { MapPageModule } from '../pages/map/map.module';
+import { WalletProvider } from '../providers/wallet/wallet';
 
 
 /*********************FIDEVER************************/
@@ -102,7 +103,8 @@ import { MapPageModule } from '../pages/map/map.module';
     FidapiProvider,
     EthapiProvider,
     BarcodeScanner,
-    GoogleMaps
+    GoogleMaps,
+    WalletProvider
   ]
 })
 export class AppModule {}

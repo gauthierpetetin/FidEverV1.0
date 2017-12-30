@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { App, IonicPage, NavController, NavParams, ViewController, AlertController, LoadingController, Loading} from 'ionic-angular';
+import { App, IonicPage, NavController, NavParams, ViewController, ModalController, AlertController, LoadingController, Loading} from 'ionic-angular';
 
 //import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 
 import { LoginPage } from '../login/login';
 import { HomePage } from '../home/home';
+import { ReceiveCoinsPage } from '../receive-coins/receive-coins';
 
 import { AuthProvider } from '../../providers/auth/auth';
 import { ContextProvider} from '../../providers/context/context';
@@ -46,6 +47,7 @@ export class ProfilePage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
+    public modalCtrl: ModalController,
     //private nativePageTransitions: NativePageTransitions,
     public authProvider: AuthProvider,
     public ctx: ContextProvider,
@@ -149,6 +151,13 @@ export class ProfilePage {
       buttons: ['Ok']
     });
     alert.present();
+  }
+
+  showID() {
+    let myModalCtrl = this.modalCtrl.create(ReceiveCoinsPage, {
+      coinColor : this.ctx.fidOrange
+    });
+    myModalCtrl.present();
   }
 
 }
