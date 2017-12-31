@@ -35,6 +35,7 @@ export class MyApp {
     //private statusBar: StatusBar
   ){
 
+
     const authObserver = afAuth.authState.subscribe( user => {
       if (user) {
         ctx.init().then( (ethAccountFound) => {

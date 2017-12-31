@@ -20,7 +20,8 @@ import { ContextProvider } from '../providers/context/context';
 import { EthapiProvider } from '../providers/ethapi/ethapi';
 import { FidapiProvider } from '../providers/fidapi/fidapi';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
-import { GoogleMaps } from '@ionic-native/google-maps';
+//import { GoogleMaps } from '@ionic-native/google-maps';
+import { Geolocation } from '@ionic-native/geolocation';
 
 
 /**************Modules**************************/
@@ -51,14 +52,6 @@ import { WalletProvider } from '../providers/wallet/wallet';
   declarations: [
     MyApp,
     HomePage
-    //LoginPage,
-    // SignupPage,
-    // ResetPasswordPage,
-    // ItemDetailPage,
-    // ReceiveCoinsPage,
-    // SendCoinsPage,
-    // ProfilePage,
-    // MapPage
   ],
   imports: [
     BrowserModule,
@@ -83,14 +76,6 @@ import { WalletProvider } from '../providers/wallet/wallet';
   entryComponents: [
     MyApp,
     HomePage
-    //LoginPage,
-    // SignupPage,
-    // ResetPasswordPage,
-    // ItemDetailPage,
-    // ReceiveCoinsPage,
-    // SendCoinsPage,
-    // ProfilePage,
-    // MapPage
   ],
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
@@ -103,7 +88,8 @@ import { WalletProvider } from '../providers/wallet/wallet';
     FidapiProvider,
     EthapiProvider,
     BarcodeScanner,
-    GoogleMaps,
+    //GoogleMaps,
+    Geolocation,
     WalletProvider
   ]
 })

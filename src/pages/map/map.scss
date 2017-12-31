@@ -2,6 +2,10 @@ page-map {
 
   @import "../../theme/variables.scss";
 
+  .scroll {
+    height: 100%
+  }
+
   .toolbar-background {
     background-color: color($colors, fidOrange);
   }

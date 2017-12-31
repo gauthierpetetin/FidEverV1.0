@@ -35,6 +35,7 @@ export class ContextProvider {
     offerPrice = 'price';
   offerImages = 'coinOfferImages';
   rewards: string = 'coinRewards';
+  locations: string = 'coinLocations';
   info: string = 'accountInfo';
     infoAddress: string = 'ethAddress';
     infoPrivateKey: string = 'ethPrivateKey';
@@ -103,6 +104,10 @@ export class ContextProvider {
     return this.c[this.info][this.infoEmail];;
   }
 
+  getCoinAddresses(): string {
+    return this.c[this.contractAddresses];
+  }
+
   getCoinName(coinID : string): string {
     return this.c[this.names][coinID];
   }
@@ -135,6 +140,14 @@ export class ContextProvider {
   getRewards(coinID : string): any[] {
     if(this.c[this.rewards][coinID].length!=undefined) {
       return this.c[this.rewards][coinID];
+    }else {return [];}
+  }
+  getLocations(): any {
+    return this.c[this.locations];
+  }
+  getCoinLocations(coinID : string): any[] {
+    if(this.c[this.locations][coinID].length!=undefined) {
+      return this.c[this.locations][coinID];
     }else {return [];}
   }
 
@@ -181,6 +194,7 @@ export class ContextProvider {
     if(!this.c[this.offers]){this.c[this.offers] = {}}
     if(!this.c[this.offerImages]){this.c[this.offerImages] = {}}
     if(!this.c[this.rewards]){this.c[this.rewards] = {}}
+    if(!this.c[this.locations]){this.c[this.locations] = {}}
     if(!this.c[this.info]){this.c[this.info] = {}}
     console.log('Close initContext');
   }
@@ -201,6 +215,7 @@ export class ContextProvider {
         self.recoverDataAtKey(self.storageKey, self.c, self.offers);
         self.recoverDataAtKey(self.storageKey, self.c, self.offerImages);
         self.recoverDataAtKey(self.storageKey, self.c, self.rewards);
+        self.recoverDataAtKey(self.storageKey, self.c, self.locations);
         self.recoverDataAtKey(self.storageKey, self.c, self.info).then( (account) => {
           console.log('Account recovered : ', account);
           if(account[self.infoAddress] && account[self.infoPrivateKey]) {
@@ -428,6 +443,7 @@ cleanCoin(self : any, cc : string) {
   self.c[self.offers][cc] = undefined;
   self.c[self.offerImages][cc] = undefined;
   self.c[self.rewards][cc] = undefined;
+  self.c[self.locations][cc] = undefined;
   self.coinDetailSubscribtions[cc] = undefined;
   self.coinDetailObservers[cc] = undefined;
   self.coinAmountSubscribtions[cc] = undefined;
@@ -448,6 +464,7 @@ initCoinList(self : any) {
     if(!self.c[self.offers][cc]) {self.c[self.offers][cc] = {};}
     if(!self.c[self.offerImages][cc]) {self.c[self.offerImages][cc] = {};}
     if(!self.c[self.rewards][cc]) {self.c[self.rewards][cc] = {};}
+    if(!self.c[self.locations][cc]) {self.c[self.locations][cc] = {};}
   }
   console.log('Close initCoinList');
 }
@@ -488,6 +505,9 @@ downloadAllInfoForCoin(cc: string) {
 
   // Download rewards list
   this.downloadRewards(cc);
+
+  // Download locations list
+  this.downloadLocations(cc);
 
 }
 
@@ -636,9 +656,40 @@ downloadRewards(cc: string) {
   //------> Download Rewards
 }
 
+downloadLocations(cc: string) {
+  var locationsCollectionPath: string = this.locationsCollectionPathForCoin(cc);
+  console.log('Open downloadLocationsList : ', locationsCollectionPath);
+
+  if(locationsCollectionPath){
+    //Get coin offers
+    var self = this;
+      console.log('CreateCoinLocationsObserver');
+
+      let locationsObserver = self.firestoreProvider.getCollection(locationsCollectionPath);
+      let locationsSubscribtions = locationsObserver.subscribe((coinLocations) => {
+          console.log('SUBSCRIBE LOCATIONS : ', coinLocations);
+          var localLocationsList: any [] = [];
+          for(let loc of coinLocations) {
+            if(loc) {
+              //console.log('LOC : ', loc);
+              localLocationsList.push(loc);
+            }
+          }
+          self.c[self.locations][cc] = localLocationsList;
+          console.log('CoinLocations for ', self.c[self.names][cc], ' : ', coinLocations);
+          self.save();
+          locationsSubscribtions.unsubscribe();
+      });
+
+  }
+}
 
 offersCollectionPathForCoin(coinID: string): string {
   return ''.concat('tokens/', coinID, '/offers');
+}
+
+locationsCollectionPathForCoin(coinID: string): string {
+  return ''.concat('tokens/', coinID, '/positions');
 }
 
 addCoin() {
