@@ -6,7 +6,7 @@ import { RewardPage } from './reward';
 /**************Modules**************************/
 import { IonicImageLoader } from 'ionic-image-loader';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
-
+import JsBarcode from 'jsbarcode';
 
 @NgModule({
   declarations: [

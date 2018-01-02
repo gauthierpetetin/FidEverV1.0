@@ -54,7 +54,7 @@
   </ion-row>
 
   <ion-row style="
-    margin: 0 30px;
+    margin: 0 0;
     padding: 0 0;">
 
     <ion-col col-12 style="
@@ -70,7 +70,6 @@
         text-align: center;
         ">
         <h2 style="
-          max-height: 20px;
           color: grey;
           font-size: 12px;
           margin: 0px 5px;
@@ -83,29 +82,37 @@
     </ion-col>
   </ion-row>
 
-  <div padding>
+  <ion-row padding style="height: 140px; margin: 30px 0; position: relative;">
 
-  <ion-card *ngIf="reward" padding>
+  <ion-card *ngIf="reward" style="
+    text-align: center;
+    display: table-cell;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 70%;
+    height: 140px;
+    margin-left: -35%;
+    margin-top: -70px">
 
-    <ngx-qrcode style="margin: 0 0; padding: 0 0; color: grey" [qrc-value]="reward"></ngx-qrcode>
-
-    <ion-card-content style="margin: 0 0; padding: 0 0;">
-      <p text-center style="margin: 0 0; padding: 0 0; font-size:9px; color: black">{{ reward }}</p>
-    </ion-card-content>
+    <svg #barcode id="barcode"></svg>
+    <!-- <ngx-qrcode style="margin: 0 0; padding: 0 0; color: grey" [qrc-value]="reward"></ngx-qrcode> -->
 
   </ion-card>
 
-  </div>
+  </ion-row>
 
-  <button ion-button full (click)="goBack()" [ngStyle]="{
-    'background-color': coinColor,
-    'position':'absolute',
-    'left':'50%',
-    'width':'15em',
-    'margin-left':'-7.5em'
-  }">
-    Ok
-  </button>
+  <ion-row [ngStyle]="{'position':'relative', 'margin':'0 0'}">
+    <button ion-button (click)="goBack()" [ngStyle]="{
+      'background-color': coinColor,
+      'position':'absolute',
+      'left':'50%',
+      'width':'15em',
+      'margin-left':'-7.5em'
+    }">
+      Ok
+    </button>
+  </ion-row>
 
 
 </ion-content>

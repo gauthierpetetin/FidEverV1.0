@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 
 import { ImageLoaderConfig, ImageLoader } from 'ionic-image-loader';
+
+import JsBarcode from 'jsbarcode';
 
 /**
  * Generated class for the RewardPage page.
@@ -22,6 +24,8 @@ export class RewardPage {
   coinColor: string;
   image: string;
 
+  @ViewChild('barcode') barcode: ElementRef;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -36,12 +40,14 @@ export class RewardPage {
     this.coinColor = navParams.get('coinColor');
     this.image = navParams.get('image');
 
+
     console.log('Open reward : ', this.name, ', ',this.image);
 
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad RewardPage');
+    JsBarcode(this.barcode.nativeElement, '1234567809');
   }
 
   goBack() {
