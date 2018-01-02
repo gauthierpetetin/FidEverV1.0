@@ -20,7 +20,7 @@ import { ContextProvider } from '../providers/context/context';
 import { EthapiProvider } from '../providers/ethapi/ethapi';
 import { FidapiProvider } from '../providers/fidapi/fidapi';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
-//import { GoogleMaps } from '@ionic-native/google-maps';
+import { WalletProvider } from '../providers/wallet/wallet';
 import { Geolocation } from '@ionic-native/geolocation';
 
 
@@ -43,7 +43,7 @@ import { ReceiveCoinsPageModule } from '../pages/receive-coins/receive-coins.mod
 import { SendCoinsPageModule } from '../pages/send-coins/send-coins.module';
 import { ProfilePageModule } from '../pages/profile/profile.module';
 import { MapPageModule } from '../pages/map/map.module';
-import { WalletProvider } from '../providers/wallet/wallet';
+import { RewardPageModule } from '../pages/reward/reward.module';
 
 
 /*********************FIDEVER************************/
@@ -70,7 +70,8 @@ import { WalletProvider } from '../providers/wallet/wallet';
     ReceiveCoinsPageModule,
     SendCoinsPageModule,
     ProfilePageModule,
-    MapPageModule
+    MapPageModule,
+    RewardPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

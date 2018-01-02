@@ -48,16 +48,19 @@ export class ContextProvider {
 
   myCoinCollectionPath: string;
 
-  coinGlobalSubscribtion: any;
+  coinGlobalSubscribtion: any; // Subscribed
 
-  coinDetailSubscribtions: any = {};
+  coinDetailSubscribtions: any = {}; // Unsubscribed
   coinDetailObservers: any = {};
 
-  coinAmountSubscribtions: any = {};
+  coinAmountSubscribtions: any = {}; // Subscribed
   coinAmountObservers: any = {};
 
-  coinOffersSubscribtions: any = {};
+  coinOffersSubscribtions: any = {}; // Unsubscribed
   coinOffersObservers: any = {};
+
+  //coinRewardsSubscribtions: any = {}; // Unsubscribed
+  //coinRewardsObservers: any = {};
 
   globalCoinCollectionPath: string = 'tokens/';
   defaultCoinImage: string = '';
@@ -528,6 +531,7 @@ downloadCoinDetails(cc: string) {
         self.c[self.companyNames][cc] = coinDetails['company'];
         console.log('CoinDetails for ', self.c[self.names][cc], ' : ', coinDetails);
         self.save();
+        self.coinDetailSubscribtions[cc].unsubscribe();
     });
   }
   else{

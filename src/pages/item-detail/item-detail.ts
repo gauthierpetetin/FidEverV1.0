@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { ReceiveCoinsPage } from '../receive-coins/receive-coins';
 import { SendCoinsPage } from '../send-coins/send-coins';
 import { HomePage } from '../home/home';
+import { RewardPage } from '../reward/reward';
 
 import { ImageLoaderConfig, ImageLoader } from 'ionic-image-loader';
 
@@ -68,6 +69,8 @@ export class ItemDetailPage {
     this.offerImages = this.ctx.getOfferImages(this.coinContractAddress);
     this.rewards = this.ctx.getRewards(this.coinContractAddress);
 
+    this.rewards.push(this.offers[0]);
+
     console.log('Item-detail offers : ', this.offers);
     console.log('Item-detail offerImages : ', this.offerImages);
     console.log('Item-detail rewards : ', this.rewards);
@@ -109,6 +112,17 @@ export class ItemDetailPage {
     else {
       this.forbidPurchase(selectedOffer[this.offerPrice] - coinAmount);
     }
+  }
+
+  rewardTapped(event, selectedReward) {
+    let rewardID = selectedReward[this.offerID];
+    console.log('reward tapped : ', rewardID, ', ', selectedReward[this.offerName]);
+    this.modalCtrl.create(RewardPage, {
+      reward: rewardID,
+      name: selectedReward[this.offerName],
+      coinColor: this.ctx.getCoinColor(this.coinContractAddress),
+      image: this.offerImages[rewardID]
+    }).present();
   }
 
   confirmPurchase(selectedOffer: any) {

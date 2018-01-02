@@ -1,22 +1,24 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { ReceiveCoinsPage } from './receive-coins';
+import { RewardPage } from './reward';
 
 
 /**************Modules**************************/
+import { IonicImageLoader } from 'ionic-image-loader';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 
 
 @NgModule({
   declarations: [
-    ReceiveCoinsPage,
+    RewardPage,
   ],
   imports: [
-    IonicPageModule.forChild(ReceiveCoinsPage),
+    IonicPageModule.forChild(RewardPage),
+    IonicImageLoader,
     NgxQRCodeModule
   ],
   exports: [
-    ReceiveCoinsPage
+    RewardPage
   ]
 })
-export class ReceiveCoinsPageModule {}
+export class RewardPageModule {}
