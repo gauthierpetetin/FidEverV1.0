@@ -3,7 +3,7 @@ import { App, IonicPage, NavController, NavParams, ViewController, ModalControll
 
 //import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 
-import { LoginPage } from '../login/login';
+import { WelcomePage } from '../welcome/welcome';
 import { HomePage } from '../home/home';
 import { ReceiveCoinsPage } from '../receive-coins/receive-coins';
 
@@ -113,7 +113,10 @@ export class ProfilePage {
     //let data = { 'disconnect': 'yes'};
     this.viewCtrl.dismiss();
     this.authProvider.logoutUser().then(() => {
-      this.appCtrl.getRootNav().setRoot(LoginPage);
+      console.log('Go to WelcomePage');
+      this.appCtrl.getRootNav().setRoot(WelcomePage);
+      // this.appCtrl.getRootNav().insert(0,WelcomePage);
+      // this.navCtrl.popToRoot();
     });
     console.log('Close logOut');
   }

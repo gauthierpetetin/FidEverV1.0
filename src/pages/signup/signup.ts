@@ -37,10 +37,7 @@ export class SignupPage {
     public formBuilder: FormBuilder,
     public loadingCtrl: LoadingController,
     public alertCtrl: AlertController,
-    //public fidapiProvider: FidapiProvider,
-    //public ethapiProvider: EthapiProvider,
     private storage: Storage,
-    // public http: Http,
     public ctx: ContextProvider,
     public walletProvider: WalletProvider
 
@@ -72,7 +69,9 @@ export class SignupPage {
         console.log('Firebase signup success');
         this.walletProvider.createGlobalEthWallet().then( () => {
           this.loading.dismiss().then( () => {
-            this.nav.setRoot(HomePage);
+            //this.nav.setRoot(HomePage);
+            this.nav.insert(0,HomePage);
+            this.nav.popToRoot();
             this.ctx.init();
           });
         }, (globalWalletError) => {

@@ -76,14 +76,16 @@ export class HomePage {
       console.log('Close Homepage constructor');
   }
 
-  logOut(): void {
-    console.log('Open logOut');
-    this.authProvider.logoutUser().then(() => {
-      this.navCtrl.setRoot(LoginPage);
-      this.ctx.clear();
-    });
-    console.log('Close logOut');
-  }
+  // logOut(): void {
+  //   console.log('Open logOut');
+  //   this.authProvider.logoutUser().then(() => {
+  //     this.navCtrl.setRoot(LoginPage);
+  //     //this.navCtrl.insert(0,LoginPage);
+  //     //this.navCtrl.popToRoot();
+  //     this.ctx.clear();
+  //   });
+  //   console.log('Close logOut');
+  // }
 
   itemTapped(event, contractAddress) {
     console.log('itemTapped : ',contractAddress);
@@ -122,17 +124,7 @@ export class HomePage {
 
   showProfile() {
     let myModalCtrl = this.modalCtrl.create(ProfilePage);
-    // myModalCtrl.onDidDismiss(data => {
-    //   console.log('Dismiss profile data : ',data);
-    //   if(data['disconnect']=='yes') {
-    //     this.authProvider.logoutUser().then(() => {
-    //       this.navCtrl.setRoot(LoginPage);
-    //     });
-    //   }
-    //   else {
-    //     console.log('No disconnection required');
-    //   }
-    // });
+
     myModalCtrl.present();
   }
 

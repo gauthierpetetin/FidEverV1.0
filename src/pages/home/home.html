@@ -179,6 +179,46 @@
     </ion-item-sliding>
   </ion-list>
 
+  <div *ngIf="ctx.c[contractAddresses].length==0">
+  <ion-row text-center style="height: 80px; margin-top: 30px; width: 100%; position: relative">
+    <img-loader
+      (click)="showMap()"
+      fallback="assets/images/other/map.png"
+      src="assets/images/other/map.png"
+      style="
+        border-radius: 80px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 80px;
+        height: 80px;
+        margin-top: -40px;
+        margin-left: -40px;
+        " useImg>
+    </img-loader>
+  </ion-row>
+  <ion-row style="height: 20px; width: 100%; position: relative; margin-top: 10px;">
+    <div style="
+      position: absolute;
+      left: 50%;
+      width: 80%;
+      margin-left: -40%;
+      height: 25px !important;
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+      ">
+      <h2 style="
+        margin-top: 0px;
+        color: #fe9400;
+        font-size: 14px;
+        ">
+        Find coins around you by clicking here.
+      </h2>
+    </div>
+  </ion-row>
+</div>
+
 </ion-content>
 
 

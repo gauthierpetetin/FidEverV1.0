@@ -1,8 +1,14 @@
 <ion-header>
 
-  <ion-navbar *ngIf=pageWillLeave [ngStyle]="{'background-color': transparent}">
+  <!-- <ion-navbar *ngIf=pageWillLeave [ngStyle]="{'background-color': transparent}">
   </ion-navbar>
   <ion-navbar *ngIf=!pageWillLeave [ngStyle]="{'background-color': coinColor}">
+    <ion-title>
+      {{coinName}}
+    </ion-title>
+  </ion-navbar> -->
+
+  <ion-navbar id="colorNavbar">
     <ion-title>
       {{coinName}}
     </ion-title>
@@ -110,8 +116,9 @@
 
 
   <ion-row style="height: 35px">
-    <ion-col col-6 style="background-color: white; text-align: center; padding: 0 0;">
+    <ion-col col-6 style="text-align: center; padding: 0 0;">
       <button (click)="selectOffers()" style="
+        background-color: white;
         height: 100%;
         width: 100%;
         color: grey;
@@ -125,8 +132,9 @@
       </button>
       <div *ngIf="selectedTab==0" [ngStyle]="{'background-color': coinColor}" style="width: 100%; height: 2px; botttom: 0;"></div>
     </ion-col>
-    <ion-col col-6 style="background-color: white; text-align: center; padding: 0 0;">
+    <ion-col col-6 style="text-align: center; padding: 0 0;">
       <button (click)="selectRewards()" style="
+        background-color: white;
         height: 100%;
         width: 100%;
         color: grey;

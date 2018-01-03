@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { ItemDetailPage } from './item-detail';
+import { WelcomePage } from './welcome';
 
 
 /**************Modules**************************/
@@ -9,14 +9,14 @@ import { IonicImageLoader } from 'ionic-image-loader';
 
 @NgModule({
   declarations: [
-    ItemDetailPage,
+    WelcomePage,
   ],
   imports: [
-    IonicPageModule.forChild(ItemDetailPage),
+    IonicPageModule.forChild(WelcomePage),
     IonicImageLoader
   ],
   exports: [
-    ItemDetailPage
+    WelcomePage
   ]
 })
-export class ItemDetailPageModule {}
+export class WelcomePageModule {}

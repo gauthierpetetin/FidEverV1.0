@@ -34,7 +34,7 @@ export class MapPage {
 
   @ViewChild('map') mapElement: ElementRef;
 
-
+  // Adresse de la Friche
   latitude: number = 48.877813901996824;
   longitude: number = 2.322369152780408;
 
@@ -65,9 +65,7 @@ export class MapPage {
   }
 
   loadMap(){
-
-
-    console.log()
+    console.log('Open loadMap');
 
     let latLng = new google.maps.LatLng(this.latitude, this.longitude);
 
@@ -85,6 +83,30 @@ export class MapPage {
     }
 
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
+
+
+    // Create a div to hold the control.
+      var controlDiv = document.createElement('div');
+
+    //### Add a button on Google Maps ...
+      var controlMarkerUI = document.createElement('img');
+      controlMarkerUI.style.cursor = 'pointer';
+      controlMarkerUI.style.height = '50px';
+      controlMarkerUI.style.width = '50px';
+      controlMarkerUI.style.marginRight = '20px';
+      controlMarkerUI.style.marginBottom = '15px';
+      controlMarkerUI.style.borderRadius = '50px';
+      controlMarkerUI.setAttribute('src', 'assets/images/other/center_map_orange.png')
+      var self = this;
+      controlMarkerUI.addEventListener('click', function() {
+        self.center(self);
+      }, false);
+      controlMarkerUI.title = 'Click to set the map to Home';
+      controlDiv.appendChild(controlMarkerUI);
+
+      this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlDiv);
+
 
     this.initCoinMarkers();
 
@@ -136,7 +158,6 @@ export class MapPage {
       var marker = new google.maps.Marker({
         position: feature.position,
         icon: infos[feature.type].icon,
-        //icon: image2,
         map: self.map
       });
       marker.addListener('click', function() {
@@ -149,12 +170,10 @@ export class MapPage {
 
 
 
-  center() {
-
+  center(self: any) {
     this.geolocation.getCurrentPosition().then((position) => {
-
-      /****************/
-
+      console.log('Center at latitude : ', position.coords.latitude, ' and longitude : ', position.coords.longitude);
+      this.map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
     }, (err) => {
       console.log(err);
     });
@@ -229,8 +248,8 @@ export class MapPage {
   // }
 
   goBack() {
-    //let data = { 'disconnect': 'no'};
     this.viewCtrl.dismiss();
+    // this.center();
   }
 
   getStyledMap() {

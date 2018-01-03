@@ -67,6 +67,7 @@ export class ContextProvider {
   defaultLandscapeImage: string = '';
   defaultBrandIcon: string = '';
   fidOrange: string = '#fe9400';
+  fidGrey: string = '#afabab';
 
   nulleth: string = 'nulleth';
 

@@ -31,10 +31,12 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { IonicStorageModule } from '@ionic/storage';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { IonicImageLoader } from 'ionic-image-loader';
+import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 
 
 /**************Pages****************************/
 import { HomePage } from '../pages/home/home';
+import { WelcomePageModule } from '../pages/welcome/welcome.module';
 import { LoginPageModule } from '../pages/login/login.module';
 import { SignupPageModule } from '../pages/signup/signup.module';
 import { ResetPasswordPageModule } from '../pages/reset-password/reset-password.module';
@@ -63,6 +65,7 @@ import { RewardPageModule } from '../pages/reward/reward.module';
     IonicStorageModule.forRoot(),
     NgxQRCodeModule,
     IonicImageLoader.forRoot(),
+    WelcomePageModule,
     LoginPageModule,
     SignupPageModule,
     ResetPasswordPageModule,
@@ -89,9 +92,9 @@ import { RewardPageModule } from '../pages/reward/reward.module';
     FidapiProvider,
     EthapiProvider,
     BarcodeScanner,
-    //GoogleMaps,
     Geolocation,
-    WalletProvider
+    WalletProvider,
+    UniqueDeviceID
   ]
 })
 export class AppModule {}

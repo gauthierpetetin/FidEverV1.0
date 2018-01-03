@@ -1,28 +1,28 @@
 import { Component } from '@angular/core';
-import {
-  IonicPage,
-  NavController,
-  LoadingController,
-  Loading,
-  AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, Loading, AlertController } from 'ionic-angular';
+
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthProvider } from '../../providers/auth/auth';
 import { EmailValidator } from '../../validators/email';
 
 import { ContextProvider} from '../../providers/context/context';
 import { WalletProvider} from '../../providers/wallet/wallet';
-//import { EthapiProvider } from '../../providers/ethapi/ethapi';
-//import { FidapiProvider } from '../../providers/fidapi/fidapi';
 
 //
 import { HomePage } from '../home/home';
 import { SignupPage } from '../signup/signup';
 import { ResetPasswordPage } from '../reset-password/reset-password';
 
+/**
+ * Generated class for the LoginPage page.
+ *
+ * See http://ionicframework.com/docs/components/#navigation for more info
+ * on Ionic pages and navigation.
+ */
 @IonicPage()
 @Component({
   selector: 'page-login',
-  templateUrl: 'login.html'
+  templateUrl: 'login.html',
 })
 export class LoginPage {
 
@@ -47,8 +47,6 @@ export class LoginPage {
 
       this.info = this.ctx.info;
 
-      this.ctx.clear();
-
       this.loginForm = formBuilder.group({
         email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
         password: ['', Validators.compose([Validators.minLength(6), Validators.required])]
@@ -65,7 +63,9 @@ export class LoginPage {
         this.authData.loginUser(this.loginForm.value.email, this.loginForm.value.password)
         .then( authData => {
           this.walletProvider.createGlobalEthWallet().then( () => {
-            this.navCtrl.setRoot(HomePage);
+            //this.navCtrl.setRoot(HomePage);
+            this.navCtrl.insert(0,HomePage);
+            this.navCtrl.popToRoot();
             this.ctx.init();
           });
 
@@ -98,6 +98,5 @@ export class LoginPage {
   createAccount(){
     this.navCtrl.push(SignupPage);
   }
-
 
 }

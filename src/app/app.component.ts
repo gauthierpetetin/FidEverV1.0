@@ -13,6 +13,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 
 /**************Pages****************************/
 import { HomePage } from '../pages/home/home';
+import { WelcomePage } from '../pages/welcome/welcome';
 
 
 /**************Others***************************/
@@ -41,26 +42,20 @@ export class MyApp {
         ctx.init().then( (ethAccountFound) => {
           if(ethAccountFound) {
             console.log('Context init success with Eth account');
-            this.rootPage = HomePage;
-            authObserver.unsubscribe();
+            this.goToHomePage(authObserver);
           }
           else {
             console.log('Context init success without Eth account');
-            ctx.clear();
-            this.rootPage = 'LoginPage';
-            authObserver.unsubscribe();
+            this.goToWelcomePage(ctx, authObserver);
           }
 
         }, (err) => {
           console.log('Context init error : ', err);
-          ctx.clear();
-          this.rootPage = 'LoginPage';
-          authObserver.unsubscribe();
+          this.goToWelcomePage(ctx, authObserver);
         });;
 
       } else {
-        this.rootPage = 'LoginPage';
-        authObserver.unsubscribe();
+        this.goToWelcomePage(ctx, authObserver);
       }
     });
 
@@ -77,6 +72,17 @@ export class MyApp {
 
       //splashScreen.hide();
     });
+  }
+
+  goToHomePage(obs: any) {
+    this.rootPage = HomePage;
+    obs.unsubscribe();
+  }
+
+  goToWelcomePage(ctx: any, obs: any) {
+    ctx.clear();
+    this.rootPage = WelcomePage;
+    obs.unsubscribe();
   }
 
 }

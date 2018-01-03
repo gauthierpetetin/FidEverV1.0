@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 
@@ -22,6 +22,8 @@ export class ItemDetailPage {
 
   coinContractAddress: any;
 
+  navbarID: string = "colorNavbar";
+
   selectedTab: number = 0;
 
   coinName : string;
@@ -36,8 +38,6 @@ export class ItemDetailPage {
     offerPrice: string;
   offerImages: any;
   rewards: any [];
-
-  pageWillLeave : boolean = false;
 
   constructor(
     public navCtrl: NavController,
@@ -94,12 +94,12 @@ export class ItemDetailPage {
   }
 
   ionViewDidLoad() {
-    this.pageWillLeave = false;
     console.log('ionViewDidLoad Item-detail');
+    document.getElementById(this.navbarID).style.backgroundColor = this.coinColor;
   }
 
   ionViewWillLeave() {
-    this.pageWillLeave = true;
+    document.getElementById(this.navbarID).style.backgroundColor = 'transparent';
     console.log('IonViewWillLeave Item-detail');
   }
 
