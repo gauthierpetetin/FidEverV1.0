@@ -10,6 +10,17 @@ export class AuthProvider {
     console.log('Open-Close authentification provider constructor');
   }
 
+  getUserID() {
+    console.log('getUserID');
+    var user = this.afAuth.auth.currentUser;
+    if (user) {
+      return user.uid;
+    }
+    else{
+      return 'error';
+    }
+  }
+
   loginUser(newEmail: string, newPassword: string): Promise<any> {
     console.log('loginUser');
     return this.afAuth.auth.signInWithEmailAndPassword(newEmail, newPassword);

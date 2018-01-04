@@ -9,7 +9,7 @@ import { ContextProvider} from '../providers/context/context';
 
 /**************Modules**************************/
 import { AngularFireAuth } from 'angularfire2/auth';
-
+//import { AuthProvider } from '../providers/auth/auth';
 
 /**************Pages****************************/
 import { HomePage } from '../pages/home/home';
@@ -30,6 +30,7 @@ export class MyApp {
   constructor(
     platform: Platform,
     afAuth: AngularFireAuth,
+    //authData: AuthProvider,
     ctx: ContextProvider
     //private imageLoaderConfig: ImageLoaderConfig
     //private splashScreen: SplashScreen,
@@ -39,6 +40,7 @@ export class MyApp {
 
     const authObserver = afAuth.authState.subscribe( user => {
       if (user) {
+        console.log('userID : ', user.uid);
         ctx.init().then( (ethAccountFound) => {
           if(ethAccountFound) {
             console.log('Context init success with Eth account');
