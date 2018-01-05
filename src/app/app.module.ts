@@ -5,6 +5,7 @@ import { MyApp } from './app.component';
 
 //import { SplashScreen } from '@ionic-native/splash-screen';
 //import { StatusBar } from '@ionic-native/status-bar';
+import { ScreenOrientation } from '@ionic-native/screen-orientation';
 import { HttpModule } from '@angular/http';
 
 
@@ -21,6 +22,7 @@ import { EthapiProvider } from '../providers/ethapi/ethapi';
 import { FidapiProvider } from '../providers/fidapi/fidapi';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { WalletProvider } from '../providers/wallet/wallet';
+import { TransactionProvider } from '../providers/transaction/transaction';
 import { Geolocation } from '@ionic-native/geolocation';
 
 
@@ -85,6 +87,7 @@ import { RewardPageModule } from '../pages/reward/reward.module';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     //SplashScreen,
     //StatusBar,
+    ScreenOrientation,
     AlertProvider,
     AuthProvider,
     ContextProvider,
@@ -94,7 +97,8 @@ import { RewardPageModule } from '../pages/reward/reward.module';
     BarcodeScanner,
     Geolocation,
     WalletProvider,
-    UniqueDeviceID
+    UniqueDeviceID,
+    TransactionProvider
   ]
 })
 export class AppModule {}

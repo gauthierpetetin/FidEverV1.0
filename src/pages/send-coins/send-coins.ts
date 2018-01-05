@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, ViewController, NavParams, LoadingController, Loading } from 'ionic-angular';
+import { IonicPage, NavController, ViewController, NavParams, LoadingController, Loading, AlertController } from 'ionic-angular';
 
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
-import { AlertController } from 'ionic-angular';
-
-import { EthapiProvider } from '../../providers/ethapi/ethapi';
 import { ContextProvider} from '../../providers/context/context';
-import { FidapiProvider} from '../../providers/fidapi/fidapi';
+//import { EthapiProvider } from '../../providers/ethapi/ethapi';
+//import { FidapiProvider} from '../../providers/fidapi/fidapi';
+import { TransactionProvider} from '../../providers/transaction/transaction';
 /**
  * Generated class for the SendCoinsPage page.
  *
@@ -39,16 +38,20 @@ export class SendCoinsPage {
   address : string;
   privateKey : string;
 
+  alertTitle: string;
+  alertText: string;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
     private barcodeScanner: BarcodeScanner,
     public alertCtrl: AlertController,
-    public ethapiProvider: EthapiProvider,
     public loadingCtrl: LoadingController,
     public ctx: ContextProvider,
-    public fidapiProvider: FidapiProvider
+    //public ethapiProvider: EthapiProvider,
+    //public fidapiProvider: FidapiProvider
+    public transactionProvider: TransactionProvider
   ) {
     this.coinContractAddress = navParams.get('coinContractAddress');
 
@@ -61,6 +64,8 @@ export class SendCoinsPage {
       this.privateKey = this.ctx.getPrivateKey();
 
     this.transactionSubmitted = false;
+    this.alertTitle = this.transactionProvider.alertTitle;
+    this.alertText = this.transactionProvider.alertText;
 
   }
 
@@ -81,90 +86,32 @@ export class SendCoinsPage {
 
   sendCoins() {
     console.log('Open sendCoins');
+    this.toAddress = this.scannedCode;
 
-    if(this.scannedCode != null) {
+    this.loading = this.loadingCtrl.create({
+      dismissOnPageChange: true,
+    });
+    this.loading.present();
 
-      if(this.coinAmount > 0) {
-
-      this.loading = this.loadingCtrl.create({
-        dismissOnPageChange: true,
-      });
-      this.loading.present();
-
-      this.toAddress = this.scannedCode;
-
-      //-------UNCOMMENT TO SEND TOKENS------------
-      this.ethapiProvider.transfer(
-        this.coinContractAddress,
-        this.ctx.getAddress(),//fromAddress
-        this.ctx.getPrivateKey(),//fromPrivateKey
-        this.toAddress,//toAddress
-        this.coinAmount
-      ).then( (transactionH) => {
-        console.log('Coin transfer submitted successfully to Blockchain : ',transactionH);
-        this.fidapiProvider.transferCoins(
-          this.coinContractAddress,
-          this.ctx.getAddress(),//fromAddress
-          this.toAddress,//toAddress
-          this.coinAmount,
-          transactionH
-        ).then( () => {
-          console.log('Coin transfer submitted successfully to Firestore : ',transactionH);
-          this.loading.dismiss();
-          this.transactionSubmitted = true;
-          this.scannedCode = null;
-        }, (fidapi_error) => {
-          this.loading.dismiss();
-          let alert = this.alertCtrl.create({
-            title: 'Error',
-            subTitle: 'FidApi error',
-            buttons: ['OK']
-          });
-          alert.present();
-          console.log('Error: Coin transfer on fidapi failed');
-        }
-        );
-      }, (ethapi_error) => {
-        if (ethapi_error == 'INVALID') {
-          let alert = this.alertCtrl.create({
-            title: 'Invalid recipient',
-            subTitle: 'Please select a valid recipient.',
-            buttons: ['OK']
-          });
-          alert.present();
-        }
-        else {
-          let alert = this.alertCtrl.create({
-            title: 'Error',
-            subTitle: 'EthApi error',
-            buttons: ['OK']
-          });
-          alert.present();
-        }
-        this.loading.dismiss();
-        console.log('Error: Coin transfer on Blockchain failed');
-      });
-
-      }
-      else{
-        let alert = this.alertCtrl.create({
-          title: 'Invalid coin amount',
-          subTitle: 'Please select a positive amount of coins first.',
-          buttons: ['OK']
-        });
-        alert.present();
-      }
-    }
-    else{
+    this.transactionProvider.sendCoins(
+      this.toAddress,
+      this.coinAmount,
+      this.ctx.getAddress(),
+      this.ctx.getPrivateKey(),
+      this.coinContractAddress
+    ).then( () => {
+      this.loading.dismiss();
+      this.transactionSubmitted = true;
+      this.toAddress = null;
+    }).catch( (error) => {
+      this.loading.dismiss();
       let alert = this.alertCtrl.create({
-        title: 'No recipient',
-        subTitle: 'Please choose a recipient first.',
+        title: error[this.alertTitle],
+        subTitle: error[this.alertText],
         buttons: ['OK']
       });
       alert.present();
-    }
-
-    console.log('Close sendCoins');
+    });
   }
 
 }

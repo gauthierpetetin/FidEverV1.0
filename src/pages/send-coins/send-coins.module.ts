@@ -13,7 +13,7 @@ import { IonicImageLoader } from 'ionic-image-loader';
   ],
   imports: [
     IonicPageModule.forChild(SendCoinsPage),
-    IonicImageLoader,
+    IonicImageLoader
   ],
   exports: [
     SendCoinsPage

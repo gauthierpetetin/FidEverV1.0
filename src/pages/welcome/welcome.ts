@@ -91,7 +91,7 @@ export class WelcomePage {
           this.loading.dismiss().then( () => {
             this.nav.insert(0,HomePage);
             this.nav.popToRoot();
-            this.ctx.init();
+            this.ctx.init(false);
           });
         }, (globalWalletError) => {
           console.log('Global EthWallet creation error : ', globalWalletError);
