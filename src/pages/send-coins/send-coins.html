@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar [ngStyle]="{'background-color': coinColor}">
-    <ion-title *ngIf="!transactionSubmitted">Send Coins</ion-title>
+    <ion-title *ngIf="!transactionSubmitted">Send FIDs</ion-title>
     <ion-title *ngIf="transactionSubmitted">Success</ion-title>
     <ion-buttons end>
       <button ion-button (click)="goBack()" *ngIf="!transactionSubmitted">

@@ -66,38 +66,12 @@ export class HomePage {
       this.info = this.ctx.info;
       this.contractAddresses = this.ctx.contractAddresses;
 
-      // this.ctx.init().then( () => {
-      //   console.log('Context init success');
-      // }, (err) => {
-      //   console.log('Context init error : ', err);
-      //   this.logOut();
-      // });;
-
       console.log('Close Homepage constructor');
   }
 
-  // logOut(): void {
-  //   console.log('Open logOut');
-  //   this.authProvider.logoutUser().then(() => {
-  //     this.navCtrl.setRoot(LoginPage);
-  //     //this.navCtrl.insert(0,LoginPage);
-  //     //this.navCtrl.popToRoot();
-  //     this.ctx.clear();
-  //   });
-  //   console.log('Close logOut');
-  // }
 
   itemTapped(event, contractAddress) {
     console.log('itemTapped : ',contractAddress);
-
-    // let options: NativeTransitionOptions = {
-    //   direction: 'right',
-    //   duration: 400,
-    //   slowdownfactor: -1,
-    //   iosdelay: 50
-    //  };
-    //
-    // this.nativePageTransitions.slide(options);
 
     this.navCtrl.push(ItemDetailPage, {
       coinContractAddress : contractAddress
@@ -135,37 +109,5 @@ export class HomePage {
     });
     myModalCtrl.present();
   }
-
-  // slidePage() {
-  //   console.log('Slide Page');
-  //   let options: NativeTransitionOptions = {
-  //     direction: 'left',
-  //     duration: 400,
-  //     slowdownfactor: -1,
-  //     iosdelay: 50
-  //    };
-  //
-  //   this.nativePageTransitions.slide(options);
-  //   //this.navCtrl.setRoot('ProfilePage');
-  //   this.navCtrl.push('ProfilePage');
-  // }
-
-  // flipPage() {
-  //   console.log('Flip Page');
-  //   let options: NativeTransitionOptions = {
-  //     direction: 'right',
-  //     duration: 600
-  //    };
-  //
-  //   this.nativePageTransitions.flip(options);
-  //   this.navCtrl.setRoot('ProfilePage');
-  //   //this.navCtrl.push('ProfilePage');
-  // }
-  //
-  // fadePage() {
-  //   console.log('Fade Page');
-  //   this.nativePageTransitions.fade(null);
-  //   this.navCtrl.setRoot('ProfilePage');
-  // }
 
 }

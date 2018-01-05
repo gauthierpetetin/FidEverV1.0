@@ -4,6 +4,7 @@ import { Platform } from 'ionic-angular';
 //import { SplashScreen } from '@ionic-native/splash-screen';
 //import { StatusBar } from '@ionic-native/status-bar';
 
+/**************Providers************************/
 import { ContextProvider} from '../providers/context/context';
 
 
