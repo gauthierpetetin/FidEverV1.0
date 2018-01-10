@@ -4,6 +4,7 @@ import { Platform } from 'ionic-angular';
 //import { SplashScreen } from '@ionic-native/splash-screen';
 //import { StatusBar } from '@ionic-native/status-bar';
 import { ScreenOrientation } from '@ionic-native/screen-orientation';
+import { TranslateService } from '@ngx-translate/core';
 
 /**************Providers************************/
 import { ContextProvider} from '../providers/context/context';
@@ -17,10 +18,8 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { HomePage } from '../pages/home/home';
 import { WelcomePage } from '../pages/welcome/welcome';
 
-
-/**************Others***************************/
-//import { ImageLoaderConfig } from 'ionic-image-loader';
-
+import { FirebaseAnalytics } from '@ionic-native/firebase-analytics';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 
 @Component({
@@ -32,40 +31,40 @@ export class MyApp {
   constructor(
     platform: Platform,
     afAuth: AngularFireAuth,
-    //authData: AuthProvider,
     ctx: ContextProvider,
-    //private imageLoaderConfig: ImageLoaderConfig
     //private splashScreen: SplashScreen,
     //private statusBar: StatusBar
-    private screenOrientation: ScreenOrientation
+    private translateService: TranslateService,
+    private screenOrientation: ScreenOrientation,
+    private firebaseAnalytics: FirebaseAnalytics,
+    private push: Push
   ){
+
 
     const authObserver = afAuth.authState.subscribe( user => {
       if (user) {
         console.log('userID : ', user.uid);
-        ctx.init(false).then( (ethAccountFound) => {
-          if(ethAccountFound) {
-            console.log('Context init success with Eth account');
-            this.goToHomePage(authObserver);
-          }
-          else {
-            console.log('Context init success without Eth account');
-            this.goToWelcomePage(ctx, authObserver);
-          }
 
+        ctx.init(user.uid, true, true, false).then( (ethAccountFound) => {
+          console.log('Context init success : ', ethAccountFound);
+          this.goToHomePage(authObserver);
         }, (err) => {
           console.log('Context init error : ', err);
+          ctx.clear();
           this.goToWelcomePage(ctx, authObserver);
-        });;
+        });
 
       } else {
+        console.log('AuthState subscription error');
+        ctx.clear();
         this.goToWelcomePage(ctx, authObserver);
       }
     });
 
 
-    //imageLoaderConfig.enableSpinner(false);
-    //imageLoaderConfig.setConcurrency(10);
+    this.translateService.addLangs(["en", "fr", "es"]);
+    this.translateService.setDefaultLang('en');
+    this.translateService.use('en');
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -79,11 +78,29 @@ export class MyApp {
         ctx.cordovaPlatform = true;
         // set to landscape
         this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+
+        this.firebaseAnalytics.logEvent('FidEver_opended', {page: "FidEver_components"})
+          .then((res: any) => console.log('FidEver_opended event logged on Firebase : ', res))
+          .catch((error: any) => console.error(error)
+        );
+
+        // to check if we have permission
+        this.push.hasPermission().then((res: any) => {
+          if (res.isEnabled) {
+            console.log('We have permission to send push notifications');
+          } else {
+            console.log('We do not have permission to send push notifications');
+          }
+        });
+
       }
       else{
         ctx.cordovaPlatform = false;
         console.log('Not a cordova platform');
       }
+
+
+
 
     });
   }

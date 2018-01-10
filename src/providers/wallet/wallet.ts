@@ -26,32 +26,41 @@ export class WalletProvider {
   }
 
 
-  createGlobalEthWallet():Promise <any> {
+  createGlobalEthWallet(uid: string, passPhrase: string):Promise <any> {
     console.log('Open createGlobalEthWallet');
+    var self = this;
     return new Promise((resolve,reject) => {
 
-      //Ethereum account creation
-      this.createLocalEthWallet().then( (nAddress) => {
-        console.log('Local wallet creation success : ', nAddress);
-        this.fidapiProvider.createWallet(nAddress).then( () => {
-          console.log('FidApi signup success');
-          resolve();
-        }, (fidApiSignupError) => {
-          console.log('Signup error on Firestore database : ', fidApiSignupError);
-          reject(fidApiSignupError);
-        }
-        );
-      }, (ethAPIError) => {
-        console.log('Wallet creation error : ', ethAPIError);
-        reject(ethAPIError);
-        });
-      //End of Ethereum account creation
+      self.ctx.init(uid, false, false, false).then( () => {
+        console.log('Init config success');
+
+        //Ethereum account creation
+        self.createLocalEthWallet(passPhrase).then( (nAddress) => {
+          console.log('Local wallet creation success : ', nAddress);
+          self.fidapiProvider.createWallet(uid, nAddress).then( () => {
+            console.log('FidApi signup success');
+            resolve();
+          }, (fidApiSignupError) => {
+            console.log('Signup error on Firestore database : ', fidApiSignupError);
+            reject(fidApiSignupError);
+          }
+          );
+        }, (ethAPIError) => {
+          console.log('Wallet creation error : ', ethAPIError);
+          reject(ethAPIError);
+          });
+        //End of Ethereum account creation
+
+      }).catch( (err) => {
+        console.log('createGlobalEthWallet init error: ', err.text);
+        reject(err);
+      });
 
     });
 
   }
 
-  createLocalEthWallet():Promise <any> {
+  createLocalEthWallet(passPhrase: string):Promise <any> {
     console.log('Open createLocalEthWallet');
     var ethAccount: {
       address: string,
@@ -61,7 +70,7 @@ export class WalletProvider {
     var self = this;
     return new Promise((resolve,reject) => {
       // create Ethereum address + private key couple
-      ethAccount = self.ethapiProvider.createAccount();
+      ethAccount = self.ethapiProvider.createAccount(passPhrase);
       console.log('Ethereum IDs created: '.concat(JSON.stringify(ethAccount)));
 
       self.ctx.setAddress(ethAccount.address);

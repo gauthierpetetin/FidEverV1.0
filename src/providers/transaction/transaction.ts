@@ -55,6 +55,7 @@ export class TransactionProvider {
         ).then( (transactionH) => {
           console.log('Coin transfer submitted successfully to Blockchain : ',transactionH);
           self.fidapiProvider.transferCoins(
+            self.ctx.getUid(),
             coinContractAddress,
             myAddress,//fromAddress
             toAddress,//toAddress

@@ -61,12 +61,17 @@ export class LoginPage {
         this.ctx.c[this.info]['email']=this.loginForm.value.email;
         this.ctx.save();
         this.authData.loginUser(this.loginForm.value.email, this.loginForm.value.password)
-        .then( authData => {
-          this.walletProvider.createGlobalEthWallet().then( () => {
+        .then( (user) => {
+          let uid: string = user.uid;
+          let passPhrase: string = uid.concat(this.loginForm.value.password);
+          console.log('Firebase login success : ', uid);
+          this.walletProvider.createGlobalEthWallet(user.uid, passPhrase).then( () => {
             //this.navCtrl.setRoot(HomePage);
             this.navCtrl.insert(0,HomePage);
             this.navCtrl.popToRoot();
-            this.ctx.init(false);
+            this.ctx.init(user.uid, true, true, false);
+          }, (err) => {
+            console.log('Login failed : ', err);
           });
 
         }, error => {

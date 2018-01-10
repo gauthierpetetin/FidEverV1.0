@@ -6,6 +6,8 @@ import { ReceiveCoinsPage } from './receive-coins';
 /**************Modules**************************/
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @NgModule({
   declarations: [
@@ -13,7 +15,8 @@ import { NgxQRCodeModule } from 'ngx-qrcode2';
   ],
   imports: [
     IonicPageModule.forChild(ReceiveCoinsPage),
-    NgxQRCodeModule
+    NgxQRCodeModule,
+    TranslateModule.forChild()
   ],
   exports: [
     ReceiveCoinsPage

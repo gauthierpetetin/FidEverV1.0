@@ -67,6 +67,12 @@ export class SendCoinsPage {
     this.alertTitle = this.transactionProvider.alertTitle;
     this.alertText = this.transactionProvider.alertText;
 
+
+    // ------ To be deleted -----------
+    // this.toAddress = "0xbe5c6930b754df6dc6a7a7f17f12180335e7bc75";
+    // this.coinAmount = 14;
+    // this.transactionSubmitted = true;
+
   }
 
   ionViewDidLoad() {

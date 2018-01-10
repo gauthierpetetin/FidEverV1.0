@@ -5,6 +5,7 @@
  */
 import { Injectable } from '@angular/core'
 import * as Web3 from 'web3'
+// import { Web3 } from 'web3'
 import * as Tx from 'ethereumjs-tx'
 
 import 'rxjs/add/observable/throw'
@@ -56,14 +57,20 @@ export class EthapiProvider {
   }
 
   // Create Ethereum address
-  createAccount() {
+  createAccount(passPhrase: string) {
     console.log("Open createAccount");
-    var Accounts = require('web3-eth-accounts');
-    var ethAccount = new Accounts(this.node).create();
-    //console.log("new account created: " + test.address)
-    //console.log("new account created: " + test.privateKey)
-    console.log("Close createAccount : ",ethAccount.address);
-    return ethAccount;
+    /**********************************************/
+    // var Accounts = require('web3-eth-accounts');
+    // var ethAccount = new Accounts(this.node).create([passPhrase]);
+    // return ethAccount;
+    /**********************************************/
+    var hdkey = require('ethereumjs-wallet/hdkey');
+    var ethAccount = hdkey.fromMasterSeed('seed sock milk update focus rotate barely fade car face mechanic mercy').getWallet();
+    var publicKey = ethAccount.getPublicKeyString();
+    var privateKey = ethAccount.getPrivateKeyString();
+    console.log("Close publicKey : ",publicKey);
+    console.log("Close privateKey : ",privateKey);
+    return "";
   }
 
   transfer (

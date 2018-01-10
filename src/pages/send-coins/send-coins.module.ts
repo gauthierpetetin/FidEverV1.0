@@ -5,6 +5,7 @@ import { SendCoinsPage } from './send-coins';
 
 /**************Modules**************************/
 import { IonicImageLoader } from 'ionic-image-loader';
+// import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { IonicImageLoader } from 'ionic-image-loader';
   ],
   imports: [
     IonicPageModule.forChild(SendCoinsPage),
-    IonicImageLoader
+    IonicImageLoader,
+    // TranslateModule.forChild()
   ],
   exports: [
     SendCoinsPage

@@ -3,9 +3,9 @@ import { Http } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/map';
 
-
+import { FidapiProvider } from '../../providers/fidapi/fidapi';
 import { EthapiProvider } from '../../providers/ethapi/ethapi';
-import { FirestoreProvider} from '../../providers/firestore/firestore';
+import { FirestoreProvider } from '../../providers/firestore/firestore';
 import { AlertProvider} from '../../providers/alert/alert';
 
 /*
@@ -22,6 +22,8 @@ enum IconSize {
 
 @Injectable()
 export class ContextProvider {
+
+  uid: string;
 
   c: any = {};
 
@@ -87,11 +89,12 @@ export class ContextProvider {
   fidOrange: string = '#fe9400';
   fidGrey: string = '#afabab';
 
-  nulleth: string = 'nulleth';
+  noEthAccount: string = 'noEthAccount';
 
   constructor(
     public http: Http,
     private storage: Storage,
+    public fidapiProvider: FidapiProvider,
     public ethapiProvider: EthapiProvider,
     public firestoreProvider: FirestoreProvider,
     public alertProvider: AlertProvider
@@ -101,6 +104,10 @@ export class ContextProvider {
   }
 
 /***************SETTERS*********************/
+
+  // setUid(uid : string) {
+  //   this.uid = uid;
+  // }
 
   setAddress(address : string) {
     this.c[this.info][this.infoAddress] = address;
@@ -116,6 +123,10 @@ export class ContextProvider {
 
 
 /****************GETTERS*********************/
+
+  getUid(): string {
+    return this.uid;
+  }
 
   getAddress(): string {
     return this.c[this.info][this.infoAddress];
@@ -174,8 +185,52 @@ export class ContextProvider {
     }else {return [];}
   }
 
-  init(XXL_images: boolean, coinParameter?: string): Promise<any> {
-    console.log('Open init');
+  init(
+    uid: string,
+    loadData: boolean,
+    loadAllCoins: boolean,
+    loadXXL_images: boolean,
+    coinParameter?: string
+  ): Promise<any> {
+
+    console.log('Account1 : ', this.ethapiProvider.createAccount('1'));
+    console.log('Account2 : ', this.ethapiProvider.createAccount('2'));
+    console.log('Account3 : ', this.ethapiProvider.createAccount('3'));
+    console.log('Account4 : ', this.ethapiProvider.createAccount('1'));
+
+    console.log('Open context init');
+    var self = this;
+    return new Promise(
+      function(resolve, reject) {
+        self.uid = uid;
+        self.firestoreProvider.init().then( (apiUrl) => {
+          console.log('API URL : ',apiUrl);
+          self.fidapiProvider.setApiUrl( apiUrl.concat('/') );
+          self.fidapiProvider.authenticate(uid).then(()=>{}).catch( (err) => {console.log('Authentication error : ', err);});
+
+          if(loadData){
+            self.loadData(uid, loadAllCoins, loadXXL_images, coinParameter).then((res)=>{
+              resolve(res);
+            }).catch((err)=>{
+              reject(err);
+            });
+          }
+          else {
+            resolve();
+          }
+
+        }).catch((err) => {reject(err);});
+    });
+  }
+
+  loadData(
+    uid: string,
+    loadAllCoins: boolean,
+    XXL_images: boolean,
+    coinParameter: string
+  ): Promise<any> {
+
+    console.log('Open context loadData');
     var self = this;
     return new Promise(
       function(resolve, reject) {
@@ -190,9 +245,17 @@ export class ContextProvider {
         self.initContext();
         self.recoverContext().then( (address) => {
           console.log('Context recovery success : ',address);
-          if(address != self.nulleth) {
 
-            if (coinParameter) { // Only for FidEver Pro
+            if (loadAllCoins) { // Only for FidEver
+              console.log('Open loadAllCoins : ', uid);
+              self.recoverEthereumAccount(uid).then( () => {
+                resolve(true);
+              }, (recoverEthereumAccountError) => {
+                reject(recoverEthereumAccountError);
+              });
+            }
+            else if (coinParameter) { // Only for FidEver Pro
+              console.log('Open loadSingleCoin');
               self.downloadCoinDetail(coinParameter).then( (coinDetails) => {
                 console.log('single coinDetail download : ', coinDetails);
                 self.downloadCoinIcon(coinParameter).then( (coinIcon) => {
@@ -201,19 +264,12 @@ export class ContextProvider {
                 }).catch( (error) => {console.log('single coinIcon download error : ', error); reject(error);});
               }).catch( (error) => {console.log('single coinDetail download error : ', error); reject(error);});
             }
-            else { // Only for FidEver
-              self.recoverEthereumAccount(address).then( () => {
-                resolve(true);
-              }, (recoverEthereumAccountError) => {
-                reject(recoverEthereumAccountError);
-              });
+            else {
+              reject('No parameter');
             }
-          }
-          else {
-            resolve(false);
-          }
 
-        }, (recoverContextError) => {
+
+        }, (recoverContextError) => { // Can only be equal to self.noEthAccount
           console.log('Context recovery error : ',recoverContextError);
           reject(recoverContextError);
         });
@@ -263,12 +319,12 @@ export class ContextProvider {
             resolve(account[self.infoAddress]);
           }
           else{
-            resolve(self.nulleth);
+            reject(self.noEthAccount);
           }
 
         }, (accountError) => {
           console.log('Account recovery error : ', accountError);
-          reject(accountError);
+          reject(self.noEthAccount);
         });
       });
   }
@@ -326,12 +382,7 @@ export class ContextProvider {
   clear(){
     console.log('Open clear');
 
-    /*************DELETE-START***************/
-    if(this.c[this.info]) {
-      var prov_address = this.c[this.info][this.infoAddress];
-      var prov_privateKey = this.c[this.info][this.infoPrivateKey];
-    }
-    /*************DELETE-END*****************/
+    this.uid = undefined;
 
     this.storage.remove(this.storageKey);
     this.c = {};
@@ -339,10 +390,6 @@ export class ContextProvider {
     this.coinAmountObservers = {};
     this.initContext();
 
-    /*************DELETE-START***************/
-    this.c[this.info][this.infoAddress] = prov_address;
-    this.c[this.info][this.infoPrivateKey] = prov_privateKey;
-    /*************DELETE-END*****************/
 
     this.save();
     console.log('Close clear');
@@ -376,12 +423,12 @@ export class ContextProvider {
 
 
 
-recoverEthereumAccount(address : string): Promise<any> {
-  console.log('Open recoverEthereumAccount : ', address);
+recoverEthereumAccount(myUid : string): Promise<any> {
+  console.log('Open recoverEthereumAccount : ', myUid);
   var self = this;
   return new Promise( function(resolve, reject) {
-    if(address != null){
-      self.initCoinCollectionPath(address);
+    if(myUid != null){
+      self.initCoinCollectionPath(myUid);
 
       self.getCoinList();
       resolve();
@@ -397,9 +444,9 @@ recoverEthereumAccount(address : string): Promise<any> {
 
 }
 
-initCoinCollectionPath(ethAccountAddress : string) {
-  if(ethAccountAddress){
-    this.myCoinCollectionPath = 'wallets/'.concat(ethAccountAddress,'/tokens');
+initCoinCollectionPath(myUid : string) {
+  if(myUid){
+    this.myCoinCollectionPath = 'wallets/'.concat(myUid,'/tokens');
     console.log('myCoinCollectionPath : '.concat(this.myCoinCollectionPath));
   }
   else{

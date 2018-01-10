@@ -85,13 +85,15 @@ export class WelcomePage {
       let signupEmail = uuid.concat('@fidever.com');
       this.ctx.setEmail(signupEmail);
       this.ctx.save();
-      this.authData.signupUser(signupEmail, password).then(() => {
-        console.log('Firebase signup success');
-        this.walletProvider.createGlobalEthWallet().then( () => {
+      this.authData.signupUser(signupEmail, password).then((user) => {
+        let uid: string = user.uid;
+        let passPhrase: string = uid.concat(password);
+        console.log('Firebase signup success : ', uid);
+        this.walletProvider.createGlobalEthWallet(user.uid, passPhrase).then( () => {
           this.loading.dismiss().then( () => {
             this.nav.insert(0,HomePage);
             this.nav.popToRoot();
-            this.ctx.init(false);
+            this.ctx.init(user.uid, true, true, false);
           });
         }, (globalWalletError) => {
           console.log('Global EthWallet creation error : ', globalWalletError);
@@ -105,6 +107,7 @@ export class WelcomePage {
                 }
               ]
             });
+          this.loading.dismiss();
           alert.present();
         });
 
@@ -121,6 +124,7 @@ export class WelcomePage {
                 }
               ]
             });
+          this.loading.dismiss();
           alert.present();
         });
       });

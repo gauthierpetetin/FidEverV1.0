@@ -6,7 +6,8 @@ import { MyApp } from './app.component';
 //import { SplashScreen } from '@ionic-native/splash-screen';
 //import { StatusBar } from '@ionic-native/status-bar';
 import { ScreenOrientation } from '@ionic-native/screen-orientation';
-import { HttpModule } from '@angular/http';
+import { HttpModule, Http } from '@angular/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 
 /**************Confif parameters****************/
@@ -34,6 +35,11 @@ import { IonicStorageModule } from '@ionic/storage';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { IonicImageLoader } from 'ionic-image-loader';
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateService } from '@ngx-translate/core';
+import { FirebaseAnalytics } from '@ionic-native/firebase-analytics';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 
 /**************Pages****************************/
@@ -52,6 +58,12 @@ import { RewardPageModule } from '../pages/reward/reward.module';
 
 /*********************FIDEVER************************/
 
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
+
 @NgModule({
   declarations: [
     MyApp,
@@ -67,6 +79,13 @@ import { RewardPageModule } from '../pages/reward/reward.module';
     IonicStorageModule.forRoot(),
     NgxQRCodeModule,
     IonicImageLoader.forRoot(),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [Http]
+      }
+    }),
     WelcomePageModule,
     LoginPageModule,
     SignupPageModule,
@@ -98,7 +117,10 @@ import { RewardPageModule } from '../pages/reward/reward.module';
     Geolocation,
     WalletProvider,
     UniqueDeviceID,
-    TransactionProvider
+    TransactionProvider,
+    TranslateService,
+    FirebaseAnalytics,
+    Push
   ]
 })
 export class AppModule {}

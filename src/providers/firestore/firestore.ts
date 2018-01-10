@@ -29,7 +29,11 @@ export class FirestoreProvider {
   afCoinDocument: AngularFirestoreDocument<any>;
   coinDocument: Observable<any[]>;
 
-  imagesRootPath: string;
+  configSubscribtion: any; // Subscribed
+  configObserver: any;
+
+  configRootPath: string = 'config/api';
+  imagesRootPath: string = 'images';
   storage: any;
   storageRef: any;
 
@@ -39,8 +43,6 @@ export class FirestoreProvider {
   ) {
     console.log('Open Firestore Provider constructor');
 
-    //STORAGE
-    this.imagesRootPath = 'images';
     // Get a reference to the storage service, which is used to create references in your storage bucket
     this.storage = firebase.storage();
     // Create a storage reference from our storage service
@@ -48,6 +50,27 @@ export class FirestoreProvider {
 
     console.log('Close Firestore Provider constructor');
 
+  }
+
+  init(): Promise<any> {
+    console.log('Open firestore init()');
+    var self = this;
+    return new Promise(
+      function(resolve, reject) {
+        //Unsubscribtion security
+        if(self.configSubscribtion){self.configSubscribtion.unsubscribe();console.log('UNSUBSCRIBE CONFIG');}
+        
+        self.configObserver = self.getDocument(self.configRootPath);
+        self.configSubscribtion = self.configObserver.subscribe((configData) => {
+          console.log('SUBSCRIBE CONFIG : ', configData);
+          if ( configData ) {
+            resolve(configData['url']);
+          }
+          else {
+            reject('Null url');
+          }
+        });
+      });
   }
 
 

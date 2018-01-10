@@ -155,99 +155,145 @@
 
 
 
-
-
-  <div padding style="background-color: rgba(255, 255, 255, 0.7); margin: 0 0; height: 100%"
+  <div padding style="
+    background-color: rgba(255, 255, 255, 0.7);
+    margin: 0 0;
+    height: 100%;
+    width: 100%"
     *ngIf="transactionSubmitted">
 
+    <ion-row style="
+      height: 50px;
+      width: 100%;
+      margin-top: 30px;
+      position: relative;" >
+    <h4 style="
+      text-align: center;
+      position: absolute;
+      left: 50%;
+      width: 80%;
+      margin-left: -40%;
+      font-size: 16px;
+      color: grey">
+      Congratulations !<br> You sent {{coinAmount}} {{coinName}}s to
+    </h4>
+    </ion-row>
+    <ion-row style="
+      height: 25px;
+      width: 100%;
+      position: relative;" >
+    <h4 style="
+      text-align: center;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      height: 20px;
+      width: 90%;
+      margin-top: -10px;
+      margin-left: -45%;
+      font-size: 11px;
+      color: grey">
+      {{toAddress}}
+    </h4>
+    </ion-row>
 
-    <p align="center" [ngStyle]="{
-      'color': '#767171',
-      'margin': '2em 0'
-    }">
-      Transfer of {{coinAmount}} {{coinName}}s to <br><br> {{toAddress}}
-    </p>
-
-    <ion-row style="background-color: transparent; margin: 3em 0">
-
-      <ion-col style="{margin: 5px 0px; padding: 0 0; position: relative}">
-          <h1 *ngIf="coinName" [ngStyle]="{
-            'color': coinColor,
-            'align' : 'right',
-            'vertical-align' : 'center',
-            'position' : 'absolute',
-            'top':'50%',
-            'height':'3em',
-            'margin-top':'-1.5em',
-            'line-height':'3em',
-            'right' : '5px'
-          }">
+    <ion-row style="margin-top: 5px; height: 100px;">
+      <!-- <ion-col col-2></ion-col> -->
+      <ion-col col-2 style="position: relative; height: 100px; padding: 0 0; margin: 0 0; display: table;">
+          <div style="
+            padding: 0 0;
+            margin: 0 0;
+            height: 100px;
+            display: table-cell;
+            text-align: right;
+            vertical-align: middle;
+            font-size: 30px;
+            color: grey">
+          <h1 [ngStyle]="{'color': coinColor}" style="
+            margin: 5px 0px;">
             {{coinAmount}}
           </h1>
+        </div>
       </ion-col>
 
-      <ion-col style="{margin: 5px 0px; padding: 0 0; position: relative}">
+      <ion-col col-3 style="position: relative; height: 100%;">
+         <img-loader
+           fallback="assets/images/default_images/defaultCoin.png"
+           style="
+           position: absolute;
+           height: 50px;
+           width: 50px;
+           left: 50%;
+           top: 50%;
+           margin-top: -25px;
+           margin-left: -25px;"
+           src="{{coinIcon}}" useImg>
+         </img-loader>
+      </ion-col>
+
+      <ion-col col-2 style="position: relative; height: 100%;">
         <img-loader
-          fallback="assets/images/default_images/defaultCoin.png"
-          [ngStyle]="{
-            'position':'absolute',
-            'top':'50%',
-            'left':'50%',
-            'height':'3em',
-            'width':'3em',
-            'margin-top':'-1.5em',
-            'margin-left':'-1.5em'
-          }"
-          src="{{coinIcon}}"
-          useImg
-         ></img-loader>
+          fallback="assets/images/other/arrow_right.png"
+          style="
+          position: absolute;
+          height: 40px;
+          width: 60px;
+          left: 50%;
+          top: 50%;
+          margin-top: -20px;
+          margin-left: -30px;"
+          src="assets/images/other/arrow_right.png" useImg>
+        </img-loader>
       </ion-col>
-
-      <ion-col style="{margin: 5px 0px; padding: 0 0; position: relative}">
-          <img [ngStyle]="{
-            'position':'absolute',
-            'top':'50%',
-            'height':'3em',
-            'margin-top':'-1.5em'
-          }"
-            src="assets/images/other/arrow_right.png">
-      </ion-col>
-      <ion-col style="{margin: 5px 0px; padding: 0 0; position: relative}">
+      <ion-col col-3 style="position: relative; height: 100%;">
         <img-loader
           fallback="assets/images/default_images/defaultProfile.png"
-          [ngStyle]="{
-            'position':'absolute',
-            'top':'50%',
-            'left':'50%',
-            'height':'3em',
-            'width':'3em',
-            'margin-top':'-1.5em',
-            'margin-left':'-1.5em'
-          }"
-          src="assets/images/default_images/defaultProfile.png"
-          useImg
-         ></img-loader>
+          style="
+          position: absolute;
+          height: 50px;
+          width: 50px;
+          left: 50%;
+          top: 50%;
+          margin-top: -25px;
+          margin-left: -25px;"
+          src="assets/images/default_images/defaultProfile.png" useImg>
+        </img-loader>
       </ion-col>
 
-      <ion-col style="{margin: 5px 0px; padding: 0 0;}">
-      </ion-col>
+      <ion-col col-2 style="height: 100%;"></ion-col>
 
     </ion-row>
-    <p align="center" [ngStyle]="{
-      'color': '#767171',
-      'margin': '2em 0'
-    }">
+
+    <ion-row style="
+      height: 50px;
+      width: 100%;
+      margin-top: 20px;
+      position: relative;" >
+    <p style="
+      text-align: center;
+      position: absolute;
+      left: 50%;
+      width: 80%;
+      margin-left: -40%;
+      color: grey;
+      font-size: 14px">
       Transaction submitted successfully.
     </p>
-    <button ion-button full icon-left (click)="goBack()" [ngStyle]="{
-      'background-color': coinColor,
-      'position':'absolute',
-      'left':'50%',
-      'width':'15em',
-      'margin-left':'-7.5em'
-    }">
-      Ok
-    </button>
+    </ion-row>
+
+    <ion-row style="height: 40px; position: relative; margin-top: 20px">
+      <button ion-button (click)="goBack()" [ngStyle]="{'background-color': coinColor}"
+        style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        height: 40px;
+        width: 70%;
+        margin-top: -20px;
+        margin-left: -35%;">
+        Ok
+      </button>
+    </ion-row>
 
   </div>
 

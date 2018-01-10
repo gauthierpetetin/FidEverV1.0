@@ -65,14 +65,15 @@ export class SignupPage {
     } else {
       this.ctx.setEmail(this.signupForm.value.email);
       this.ctx.save();
-      this.authData.signupUser(this.signupForm.value.email, this.signupForm.value.password).then(() => {
-        console.log('Firebase signup success');
-        this.walletProvider.createGlobalEthWallet().then( () => {
+      this.authData.signupUser(this.signupForm.value.email, this.signupForm.value.password).then((user) => {
+        let uid: string = user.uid;
+        let passPhrase: string = uid.concat(this.signupForm.value.password);
+        console.log('Firebase signup success : ', uid);
+        this.walletProvider.createGlobalEthWallet(uid, passPhrase).then( () => {
           this.loading.dismiss().then( () => {
-            //this.nav.setRoot(HomePage);
             this.nav.insert(0,HomePage);
             this.nav.popToRoot();
-            this.ctx.init(false);
+            this.ctx.init(uid, true, true, false);
           });
         }, (globalWalletError) => {
           console.log('Global EthWallet creation error : ', globalWalletError);
@@ -86,6 +87,7 @@ export class SignupPage {
                 }
               ]
             });
+          this.loading.dismiss();
           alert.present();
         });
 
@@ -102,6 +104,7 @@ export class SignupPage {
                 }
               ]
             });
+          this.loading.dismiss();
           alert.present();
         });
       });

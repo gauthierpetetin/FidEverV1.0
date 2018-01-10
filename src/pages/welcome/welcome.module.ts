@@ -5,6 +5,7 @@ import { WelcomePage } from './welcome';
 
 /**************Modules**************************/
 import { IonicImageLoader } from 'ionic-image-loader';
+// import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { IonicImageLoader } from 'ionic-image-loader';
   ],
   imports: [
     IonicPageModule.forChild(WelcomePage),
-    IonicImageLoader
+    IonicImageLoader,
+    // TranslateModule.forChild()
   ],
   exports: [
     WelcomePage
