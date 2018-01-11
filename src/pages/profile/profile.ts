@@ -114,9 +114,9 @@ export class ProfilePage {
     this.viewCtrl.dismiss();
     this.authProvider.logoutUser().then(() => {
       console.log('Go to WelcomePage');
-      this.appCtrl.getRootNav().setRoot(WelcomePage);
+      this.appCtrl.getActiveNavs()[0].insert(0,WelcomePage);
       // this.appCtrl.getRootNav().insert(0,WelcomePage);
-      // this.navCtrl.popToRoot();
+      this.navCtrl.popToRoot();
     });
     console.log('Close logOut');
   }

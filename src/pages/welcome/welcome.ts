@@ -85,18 +85,15 @@ export class WelcomePage {
       let signupEmail = uuid.concat('@fidever.com');
       this.ctx.setEmail(signupEmail);
       this.ctx.save();
-      this.authData.signupUser(signupEmail, password).then((user) => {
-        console.log('Firebase signup success : ', user.uid);
-        this.walletProvider.createGlobalEthWallet(user.uid, password).then( () => {
-          this.loading.dismiss().then( () => {
-            this.nav.insert(0,HomePage);
-            this.nav.popToRoot();
-            this.ctx.init(user.uid, true, true, false);
-          });
-        }, (globalWalletError) => {
-          console.log('Global EthWallet creation error : ', globalWalletError);
-          var errorMessage: string = globalWalletError.message;
-            let alert = this.alertCtrl.create({
+      var self = this;
+      this.fakeSignupUser(signupEmail, password).then( (user) => {
+        self.nav.insert(0,HomePage);
+        self.nav.popToRoot();
+        self.ctx.init(user.uid, true, true, false);
+      }).catch( () => {
+        self.loading.dismiss().then( (err) => {
+          var errorMessage: string = err.message;
+            let alert = self.alertCtrl.create({
               message: errorMessage,
               buttons: [
                 {
@@ -105,26 +102,9 @@ export class WelcomePage {
                 }
               ]
             });
-          this.loading.dismiss();
-          alert.present();
+            alert.present();
         });
 
-      }, (authenticationError) => {
-        console.log('Signup error on Firestore authenticator : ',authenticationError);
-        this.loading.dismiss().then( () => {
-          var errorMessage: string = authenticationError.message;
-            let alert = this.alertCtrl.create({
-              message: errorMessage,
-              buttons: [
-                {
-                  text: "Ok",
-                  role: 'cancel'
-                }
-              ]
-            });
-          this.loading.dismiss();
-          alert.present();
-        });
       });
 
       this.loading = this.loadingCtrl.create({
@@ -134,6 +114,54 @@ export class WelcomePage {
     }
 
     console.log('Close signupUser');
+  }
+
+  fakeSignupUser(signupEmail: string, password: string): Promise<any> {
+    console.log('Open fakeSignupUser');
+    var self = this;
+    return new Promise((resolve, reject) => {
+      self.authData.signupUser(signupEmail, password).then((user) => {
+        console.log('Firebase signup success : ', user.uid);
+        self.walletProvider.createGlobalEthWallet(user.uid, password).then( () => {
+          self.loading.dismiss().then( () => {
+            resolve(user);
+          });
+        }, (globalWalletError) => {
+          reject(globalWalletError);
+        });
+
+      }, (authenticationError) => {
+        self.fakeLoginUser(signupEmail, password).then( (user) => {
+          resolve(user);
+        }).catch( (err) => {
+          reject(err);
+        });
+
+      });
+
+    });
+
+  }
+
+  fakeLoginUser(loginEmail: string, password: string){
+    console.log('Open fakeLoginUser');
+    var self = this;
+    return new Promise((resolve, reject) => {
+      this.authData.loginUser(loginEmail, password).then((user) => {
+        console.log('Firebase login success : ', user.uid);
+        self.walletProvider.createGlobalEthWallet(user.uid, password).then( () => {
+          self.loading.dismiss().then( () => {
+            resolve(user);
+          });
+
+        }, (globalWalletError) => {
+          reject(globalWalletError);
+        });
+
+      }, (authenticationError) => {
+        reject(authenticationError);
+      });
+    });
   }
 
 }

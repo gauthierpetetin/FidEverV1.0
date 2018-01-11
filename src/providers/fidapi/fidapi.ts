@@ -13,8 +13,8 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class FidapiProvider {
 
-  // proxyURL: string = 'https://cors-anywhere.herokuapp.com/';
-  proxyURL: string = '';
+  proxyURL: string = 'https://cors-anywhere.herokuapp.com/';
+  // proxyURL: string = '';
   apiURL: string;
 
   idToken: string;

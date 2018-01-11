@@ -76,23 +76,22 @@ export class SignupPage {
             this.ctx.init(user.uid, true, true, false);
           });
         }, (globalWalletError) => {
-          console.log('Global EthWallet creation error : ', globalWalletError);
-          var errorMessage: string = globalWalletError.message;
-            let alert = this.alertCtrl.create({
-              message: errorMessage,
-              buttons: [
-                {
-                  text: "Ok",
-                  role: 'cancel'
-                }
-              ]
-            });
-          this.loading.dismiss();
-          alert.present();
+          this.loading.dismiss().then( () => {
+            var errorMessage: string = globalWalletError.message;
+              let alert = this.alertCtrl.create({
+                message: errorMessage,
+                buttons: [
+                  {
+                    text: "Ok",
+                    role: 'cancel'
+                  }
+                ]
+              });
+              alert.present();
+          });
         });
 
       }, (authenticationError) => {
-        console.log('Signup error on Firestore authenticator : ',authenticationError);
         this.loading.dismiss().then( () => {
           var errorMessage: string = authenticationError.message;
             let alert = this.alertCtrl.create({
@@ -104,8 +103,7 @@ export class SignupPage {
                 }
               ]
             });
-          this.loading.dismiss();
-          alert.present();
+            alert.present();
         });
       });
 

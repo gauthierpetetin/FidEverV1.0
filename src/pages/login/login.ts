@@ -66,26 +66,38 @@ export class LoginPage {
         .then( (user) => {
           console.log('Firebase login success : ', user.uid);
           this.walletProvider.createGlobalEthWallet(user.uid, password).then( () => {
-            //this.navCtrl.setRoot(HomePage);
             this.navCtrl.insert(0,HomePage);
             this.navCtrl.popToRoot();
             this.ctx.init(user.uid, true, true, false);
-          }, (err) => {
-            console.log('Login failed : ', err);
+          }, (globalWalletError) => {
+            this.loading.dismiss().then( () => {
+              var errorMessage: string = globalWalletError.message;
+                let alert = this.alertCtrl.create({
+                  message: errorMessage,
+                  buttons: [
+                    {
+                      text: "Ok",
+                      role: 'cancel'
+                    }
+                  ]
+                });
+                alert.present();
+            });
           });
 
-        }, error => {
+        }, authenticationError => {
           this.loading.dismiss().then( () => {
-            let alert = this.alertCtrl.create({
-              message: error.message,
-              buttons: [
-                {
-                  text: "Ok",
-                  role: 'cancel'
-                }
-              ]
-            });
-            alert.present();
+            var errorMessage: string = authenticationError.message;
+              let alert = this.alertCtrl.create({
+                message: errorMessage,
+                buttons: [
+                  {
+                    text: "Ok",
+                    role: 'cancel'
+                  }
+                ]
+              });
+              alert.present();
           });
         });
 
