@@ -77,7 +77,7 @@ export class WelcomePage {
 
   signupUserWithUUID(uuid: string){
     console.log('Open signupUserWithUUID : ', uuid);
-    let password : string = Md5.hashStr('uuid').toString();
+    let password : string = Md5.hashStr(uuid).toString();
     console.log('Password : ', password);
     if (!uuid){
       console.log('Signup uuid not valid : ',uuid);
@@ -86,10 +86,8 @@ export class WelcomePage {
       this.ctx.setEmail(signupEmail);
       this.ctx.save();
       this.authData.signupUser(signupEmail, password).then((user) => {
-        let uid: string = user.uid;
-        let passPhrase: string = uid.concat(password);
-        console.log('Firebase signup success : ', uid);
-        this.walletProvider.createGlobalEthWallet(user.uid, passPhrase).then( () => {
+        console.log('Firebase signup success : ', user.uid);
+        this.walletProvider.createGlobalEthWallet(user.uid, password).then( () => {
           this.loading.dismiss().then( () => {
             this.nav.insert(0,HomePage);
             this.nav.popToRoot();

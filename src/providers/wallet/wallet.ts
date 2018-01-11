@@ -7,6 +7,8 @@ import { ContextProvider} from '../../providers/context/context';
 import { FidapiProvider } from '../../providers/fidapi/fidapi';
 import { EthapiProvider } from '../../providers/ethapi/ethapi';
 
+import {Md5} from 'ts-md5/dist/md5';
+
 /*
   Generated class for the WalletProvider provider.
 
@@ -26,8 +28,11 @@ export class WalletProvider {
   }
 
 
-  createGlobalEthWallet(uid: string, passPhrase: string):Promise <any> {
+  createGlobalEthWallet(uid: string, password: string):Promise <any> {
     console.log('Open createGlobalEthWallet');
+
+    let passPhrase = Md5.hashStr(uid.concat(password)).toString()
+
     var self = this;
     return new Promise((resolve,reject) => {
 
@@ -64,7 +69,7 @@ export class WalletProvider {
     console.log('Open createLocalEthWallet');
     var ethAccount: {
       address: string,
-      privateKey : string
+      privateKey: string
     };
 
     var self = this;

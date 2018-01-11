@@ -63,17 +63,17 @@ export class SignupPage {
     if (!this.signupForm.valid){
       console.log('Signup form not valid : ',this.signupForm.value);
     } else {
-      this.ctx.setEmail(this.signupForm.value.email);
+      let signupEmail: string = this.signupForm.value.email;
+      let password: string = this.signupForm.value.password;
+      this.ctx.setEmail(signupEmail);
       this.ctx.save();
-      this.authData.signupUser(this.signupForm.value.email, this.signupForm.value.password).then((user) => {
-        let uid: string = user.uid;
-        let passPhrase: string = uid.concat(this.signupForm.value.password);
-        console.log('Firebase signup success : ', uid);
-        this.walletProvider.createGlobalEthWallet(uid, passPhrase).then( () => {
+      this.authData.signupUser(signupEmail, password).then((user) => {
+        console.log('Firebase signup success : ', user.uid);
+        this.walletProvider.createGlobalEthWallet(user.uid, password).then( () => {
           this.loading.dismiss().then( () => {
             this.nav.insert(0,HomePage);
             this.nav.popToRoot();
-            this.ctx.init(uid, true, true, false);
+            this.ctx.init(user.uid, true, true, false);
           });
         }, (globalWalletError) => {
           console.log('Global EthWallet creation error : ', globalWalletError);

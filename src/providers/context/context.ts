@@ -15,6 +15,8 @@ import { AlertProvider} from '../../providers/alert/alert';
   for more info on providers and Angular 2 DI.
 */
 
+
+
 enum IconSize {
     NORMAL,
     XXL,
@@ -193,10 +195,18 @@ export class ContextProvider {
     coinParameter?: string
   ): Promise<any> {
 
-    console.log('Account1 : ', this.ethapiProvider.createAccount('1'));
-    console.log('Account2 : ', this.ethapiProvider.createAccount('2'));
-    console.log('Account3 : ', this.ethapiProvider.createAccount('3'));
-    console.log('Account4 : ', this.ethapiProvider.createAccount('1'));
+    /********************/
+    // let passphrase1 : string = Md5.hashStr('jPRpTIM76VTkaaP1pbSjbXNaZXN2'.concat('spark78')).toString();
+    // let passphrase2 : string = Md5.hashStr('jPRpTIM76VTkaaP1pbSjbXNaZXN2'.concat('spark78qragrhthzrhrthreahthhzrththzthth')).toString();
+    // let passphrase3 : string = Md5.hashStr('jPRpTIM76VTkaaP1pbSjbXNaZXN2'.concat('1234567890SGTRGARGREGRGAREGRGRG')).toString();
+    // let passphrase4 : string = Md5.hashStr('jPRpTIM76VTkaaP1pbSjbXNaZXN2'.concat('spark78qragrhthzrhrthreahthhzrththzthth')).toString();
+    //
+    // console.log('Account1 : ', this.ethapiProvider.createAccount(passphrase1));
+    // console.log('Account2 : ', this.ethapiProvider.createAccount(passphrase2));
+    // console.log('Account3 : ', this.ethapiProvider.createAccount(passphrase3));
+    // console.log('Account4 : ', this.ethapiProvider.createAccount(passphrase4));
+    /********************/
+
 
     console.log('Open context init');
     var self = this;

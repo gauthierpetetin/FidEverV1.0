@@ -37,6 +37,7 @@
     "angular-barcode": "^2.0.1",
     "angularfire2": "^5.0.0-rc.3",
     "bignumber.js": "^5.0.0",
+    "bip39": "^2.5.0",
     "cordova-android": "6.3.0",
     "cordova-ios": "~4.4.0",
     "cordova-plugin-console": "^1.1.0",

@@ -16,6 +16,9 @@ declare const Buffer
 @Injectable()
 export class EthapiProvider {
 
+  address: string = 'address';
+  privateKey: string = 'privateKey';
+
   web3: any;
   account: any;
   node: string = "http://fidever.io:8545";
@@ -57,20 +60,22 @@ export class EthapiProvider {
   }
 
   // Create Ethereum address
-  createAccount(passPhrase: string) {
+  createAccount(passPhrase: string) { // Input has to be hex string
     console.log("Open createAccount");
-    /**********************************************/
-    // var Accounts = require('web3-eth-accounts');
-    // var ethAccount = new Accounts(this.node).create([passPhrase]);
-    // return ethAccount;
-    /**********************************************/
-    var hdkey = require('ethereumjs-wallet/hdkey');
-    var ethAccount = hdkey.fromMasterSeed('seed sock milk update focus rotate barely fade car face mechanic mercy').getWallet();
-    var publicKey = ethAccount.getPublicKeyString();
-    var privateKey = ethAccount.getPrivateKeyString();
-    console.log("Close publicKey : ",publicKey);
-    console.log("Close privateKey : ",privateKey);
-    return "";
+
+    var HDKey = require('ethereumjs-wallet/hdkey');
+    var bip39 = require('bip39')
+    console.log('Passphrase : ', passPhrase);
+    var mnemonic = bip39.entropyToMnemonic(passPhrase);
+    console.log('Mnemonic : ', mnemonic);
+    var seed = bip39.mnemonicToSeed(mnemonic);
+    console.log('Seed : ', seed);
+    var wallet = HDKey.fromMasterSeed(seed).getWallet();
+    console.log('Wallet : ', wallet);
+    var ethAccount: any = {};
+    ethAccount[this.address] = wallet.getAddressString();
+    ethAccount[this.privateKey] = wallet.getPrivateKeyString();
+    return ethAccount;
   }
 
   transfer (
