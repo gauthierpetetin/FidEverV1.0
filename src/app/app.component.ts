@@ -19,6 +19,8 @@ import { HomePage } from '../pages/home/home';
 import { WelcomePage } from '../pages/welcome/welcome';
 
 import { FirebaseAnalytics } from '@ionic-native/firebase-analytics';
+
+
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 
@@ -62,10 +64,6 @@ export class MyApp {
     });
 
 
-    this.translateService.addLangs(["en", "fr", "es"]);
-    this.translateService.setDefaultLang('en');
-    this.translateService.use('en');
-
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -92,6 +90,10 @@ export class MyApp {
             console.log('We do not have permission to send push notifications');
           }
         });
+
+        this.translateService.addLangs(["en", "fr", "es"]);
+        this.translateService.setDefaultLang('en');
+        this.translateService.use('en');
 
       }
       else{

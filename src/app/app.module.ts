@@ -7,7 +7,7 @@ import { MyApp } from './app.component';
 //import { StatusBar } from '@ionic-native/status-bar';
 import { ScreenOrientation } from '@ionic-native/screen-orientation';
 import { HttpModule, Http } from '@angular/http';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+//import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 
 /**************Confif parameters****************/
@@ -39,6 +39,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateService } from '@ngx-translate/core';
 import { FirebaseAnalytics } from '@ionic-native/firebase-analytics';
+
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 
@@ -59,7 +60,7 @@ import { RewardPageModule } from '../pages/reward/reward.module';
 /*********************FIDEVER************************/
 
 
-export function createTranslateLoader(http: HttpClient) {
+export function createTranslateLoader(http: Http) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
