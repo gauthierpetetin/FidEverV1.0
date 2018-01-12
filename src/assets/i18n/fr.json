@@ -133,5 +133,8 @@
   "MAP": {
     "TITLE": "Ou trouver des FID ?",
     "BACK": "Retour"
+  },
+  "ALERT": {
+    "RECEIVECONTENT": "Félicitations, tu viens de recevoir"
   }
 }

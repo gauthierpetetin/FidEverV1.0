@@ -43,7 +43,8 @@ export class HomePage {
     public ctx: ContextProvider,
     private imageLoaderConfig: ImageLoaderConfig,
     public imageLoader: ImageLoader,
-    private barcodeScanner: BarcodeScanner
+    private barcodeScanner: BarcodeScanner,
+    private translateService: TranslateService
     //private nativePageTransitions: NativePageTransitions
   ) {
 
@@ -56,6 +57,13 @@ export class HomePage {
       this.contractAddresses = this.ctx.contractAddresses;
 
       console.log('Close Homepage constructor');
+
+      this.translate();
+  }
+  translate() {
+    let test: string;
+    this.translateService.get('ALERT.RECEIVECONTENT').subscribe(rewardAlertTitle => { test = rewardAlertTitle.toString(); });
+    console.log('HOOOOOOME', test);
   }
 
 

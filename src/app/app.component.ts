@@ -23,6 +23,9 @@ import { FirebaseAnalytics } from '@ionic-native/firebase-analytics';
 
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
+import { Globalization } from '@ionic-native/globalization';
+// import { defaultLanguage, availableLanguages, sysOptions } from './i18n-demo.constants';
+
 
 @Component({
   templateUrl: 'app.html'
@@ -36,12 +39,14 @@ export class MyApp {
     public ctx: ContextProvider,
     //private splashScreen: SplashScreen,
     //private statusBar: StatusBar
-    private translateService: TranslateService,
+    translateService: TranslateService,
     private screenOrientation: ScreenOrientation,
     private firebaseAnalytics: FirebaseAnalytics,
-    private push: Push
+    private push: Push,
+    private globalization: Globalization
   ){
 
+    var self = this;
 
     const authObserver = afAuth.authState.subscribe( user => {
       if (user) {
@@ -66,7 +71,6 @@ export class MyApp {
     translateService.addLangs(["en", "fr", "es"]);
     translateService.setDefaultLang('en');
 
-    this.launchLanguage('fr');
 
     // let language = 'fr';
     // translateService.use(language);
@@ -109,14 +113,39 @@ export class MyApp {
 
 
 
+      // this language will be used as a fallback when a translation isn't found in the current language
+				//translate.setDefaultLang(defaultLanguage);
+
+				if ((<any>window).cordova) {
+					this.globalization.getPreferredLanguage().then(result => {
+						var language = result.value;
+            language = language.substring(0, 2).toLowerCase();
+            if(language == 'fr') {
+              console.log('FRAAAAANCAIS');
+              translateService.use('fr');
+              this.ctx.setLanguage('fr');
+            }
+
+						//translate.use(language);
+						// sysOptions.systemLanguage = language;
+					});
+				} else {
+          console.log('AAAAANGLAIS');
+					// let browserLanguage = translate.getBrowserLang() || defaultLanguage;
+					// var language = this.getSuitableLanguage(browserLanguage);
+					// //translate.use(language);
+					// sysOptions.systemLanguage = language;
+				}
+
+
 
     });
   }
 
-  launchLanguage(language: string) {
-    this.translateService.use(language);
-    this.ctx.setLanguage(language);
-  }
+  // getSuitableLanguage(language) {
+	// 	language = language.substring(0, 2).toLowerCase();
+	// 	return availableLanguages.some(x => x.code == language) ? language : defaultLanguage;
+	// }
 
 
   goToHomePage(obs: any) {

@@ -661,7 +661,7 @@ downloadCoinAmount(cc: string): Promise<any> {
           //Show alert
           var delta : number = parseInt(coin_a['balance']) - parseInt(self.c[self.amounts][cc]);
           if(delta > 0){
-            self.alertProvider.receiveAlert(delta, self.c[self.names][cc]);
+            self.alertProvider.receiveAlert(delta, self.c[self.names][cc], self.getLanguage());
           }
           else if (delta < 0){
             //self.alertProvider.sendAlert(-delta, self.c[self.names][cc]);

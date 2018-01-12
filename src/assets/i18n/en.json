@@ -137,5 +137,8 @@
   "MAP": {
     "TITLE": "FID Map",
     "BACK": "Back"
+  },
+  "ALERT": {
+    "RECEIVECONTENT": "Congratulations, you just received"
   }
 }

@@ -25,6 +25,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { WalletProvider } from '../providers/wallet/wallet';
 import { TransactionProvider } from '../providers/transaction/transaction';
 import { Geolocation } from '@ionic-native/geolocation';
+import { Globalization } from '@ionic-native/globalization';
 
 
 /**************Modules**************************/
@@ -121,7 +122,8 @@ export function createTranslateLoader(http: Http) {
     TransactionProvider,
     TranslateService,
     FirebaseAnalytics,
-    Push
+    Push,
+    Globalization
   ]
 })
 export class AppModule {}
