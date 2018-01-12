@@ -1,3 +1,137 @@
 {
-    "RECEIVE": "Recevoir des FIDs"
+  "WELCOME": {
+    "TITLE": "Collecte des jetons de fidélité dans tes commerces préférés et gagne des récompenses.",
+    "START": {
+      "ACCOUNT_NO": "Commencer sans compte",
+      "OR": "ou",
+      "ACCOUNT_YES": "S'identifier"
+    }
+  },
+  "LOGIN": {
+    "TITLE": "S'identifier",
+    "EMAIL": {
+      "TITLE": "Email",
+      "PLACEHOLDER": "Ton adresse email",
+      "VALID": "Adresse email non valide."
+    },
+    "PASSWORD": {
+      "TITLE": "Mot de passe",
+      "PLACEHOLDER": "Ton mot de passe",
+      "VALID": "Ton mot de passe doit contenir plus de 6 caractères."
+    },
+    "PASSWORD_FORGOT": "Mot de passe oublié",
+    "NEW_ACCOUNT": "Créer un nouveau compte"
+  },
+  "SIGNUP": {
+    "TITLE": "Nouveau compte",
+    "EMAIL": {
+      "TITLE": "Email",
+      "PLACEHOLDER": "Ton adresse email",
+      "VALID": "Adresse email non valide."
+    },
+    "PASSWORD": {
+      "TITLE": "Mot de passe",
+      "PLACEHOLDER": "Ton mot de passe",
+      "VALID": "Ton mot de passe doit contenir plus de 6 caractères."
+    },
+    "NEW_ACCOUNT": "Créer un nouveau compte"
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "Réinitialisation mot de passe",
+    "EMAIL": {
+      "TITLE": "Email",
+      "PLACEHOLDER": "Ton adresse email",
+      "VALID": "Adresse email non valide."
+    },
+    "RESET": "Réinitialiser mot de passe",
+    "MESSAGE": "Nous venons de t'envoyer un email pour réinitialiser ton mot de passe."
+  },
+  "PROFILE": {
+    "ACCOUNT": "Ton compte",
+    "BACK": "Retour",
+    "MODIFY": "Modifier",
+    "SAVE": "Sauvegarder",
+    "PICTURE": "Changer photo",
+    "DETAILS": "Détails du compte",
+    "EMAIL": "Email",
+    "EMAIL_VALID": "Adresse email non valide.",
+    "PHONE": "Tel",
+    "PHONE_VALID": "Numéro de tel non valide.",
+    "ID": "Ton ID actuel",
+    "DISCONNECTION": "Déconnexion",
+    "DISCONNECT": "Se déconnecter",
+    "DISCALERT": {
+      "TITLE": "Souhaites-tu vraiment te déconnecter ?",
+      "CONFIRM": "Oui",
+      "CANCEL": "Annuler"
+    },
+    "SAVEALERT": {
+      "TITLE": "Enregistré",
+      "CONTENT": "Les modifications ont bien été sauvegardées."
+    }
+  },
+  "HOME": {
+    "WALLET": "Collection de FIDs",
+    "TYPE": "TYPE",
+    "AMOUNT": "MONTANT",
+    "FIND": "Trouve des FIDs autour de toi !",
+    "COLLECT": "Collecte des FIDs chez un commercant."
+  },
+  "ITEM_DETAIL": {
+    "SUBTITLE_1": "",
+    "SUBTITLE_2": "collectés",
+    "OFFERS": "Les offres",
+    "REWARDS": "Tes récompenses",
+    "COST": "Coût",
+    "ACTION": {
+      "TITLE_1": "Echange des",
+      "TITLE_2": "avec tes amis.",
+      "SEND": "Envoyer",
+      "RECEIVE": "Recevoir"
+    },
+    "REWARDALERT": {
+      "TITLE": "Récompense",
+      "CONTENT_1": "Souhaites tu utiliser",
+      "CONTENT_2": "pour acquérir",
+      "CONFIRM": "Confirmer",
+      "CANCEL": "Annuler"
+    },
+    "FUNDSALERT": {
+      "TITLE": "Fonds insuffisants",
+      "CONTENT_1": "Il te manque encore",
+      "CONTENT_2": "pour obtenir cette récompense."
+    },
+    "USE": "Utiliser"
+  },
+  "REWARD": {
+    "TITLE": "Récompense",
+    "SUBTITLE_1": "Montre ce code barre au commercant",
+    "SUBTITLE_2": "pour recevoir ta récompense."
+  },
+  "RECEIVE": {
+    "RECEIVE": "Recevoir des FIDs",
+    "BACK": "Retour",
+    "INDICATION": "Scanne ton ID pour recevoir des FIDs.",
+    "ID": "Ton ID"
+  },
+  "SEND": {
+    "TITLE": "Envoyer des FIDs",
+    "SUCCESS": "Succès",
+    "BACK": "Retour",
+    "SCAN": "Scanne l'ID du destinataire :",
+    "SCANNED": "ID du destinataire récupéré.",
+    "TO": "A :",
+    "PLACEHOLDER": "ID du destinataire",
+    "AMOUNT_1": "Selectionne le nombre de",
+    "AMOUNT_2": "à envoyer :",
+    "SEND": "Envoi des",
+    "TRANSACTION": "Transaction envoyée.",
+    "CONGRATS_1": "Félicitations",
+    "CONGRATS_2": "Tu viens d'envoyer",
+    "CONGRATS_3": "à"
+  },
+  "MAP": {
+    "TITLE": "Ou trouver des FID ?",
+    "BACK": "Retour"
+  }
 }

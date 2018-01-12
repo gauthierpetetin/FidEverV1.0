@@ -7,11 +7,11 @@
 <ion-header>
 
   <ion-navbar [ngStyle]="{'background-color': coinColor}">
-    <ion-title>{{ 'RECEIVE' | translate }}</ion-title>
+    <ion-title>{{ 'RECEIVE.RECEIVE' | translate }}</ion-title>
 
     <ion-buttons end>
       <button ion-button (click)="goBack()">
-        Back
+        {{ 'RECEIVE.BACK' | translate }}
       </button>
     </ion-buttons>
 
@@ -19,7 +19,7 @@
 
   <div [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.5)'}">
     <p text-center style="padding: 5px 0; margin: 0 0; color: grey;">
-      Let the sender scan your ID to receive FIDs.
+      {{ 'RECEIVE.INDICATION' | translate }}
     </p>
   </div>
 
@@ -34,7 +34,7 @@
 
     <ion-card-content style="margin: 0 0; padding: 0 0;">
       <h1 text-center style="margin: 0 0; padding: 0 0;color: black">
-        Your ID
+        {{ 'RECEIVE.ID' | translate }}
       </h1>
     </ion-card-content>
 

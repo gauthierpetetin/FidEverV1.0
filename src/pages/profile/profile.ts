@@ -20,13 +20,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmailValidator } from '../../validators/email';
 import { PhoneValidator } from '../../validators/phone';
 
-/**
- *
-   fidOrange:  #fe9400,
-   fidBlue:    #002060,
-   fidGrey:    #afabab
+import { TranslateService } from '@ngx-translate/core';
 
- */
+
 @IonicPage()
 @Component({
   selector: 'page-profile',
@@ -42,6 +38,13 @@ export class ProfilePage {
 
   public infoForm: FormGroup;
 
+  discAlertTitle: string;
+  discAlertConfirm: string;
+  discAlertCancel: string;
+
+  saveAlertTitle: string;
+  saveAlertContent: string;
+
   constructor(
     public appCtrl: App,
     public navCtrl: NavController,
@@ -55,7 +58,8 @@ export class ProfilePage {
     public actionSheetCtrl: ActionSheetController,
     private alertCtrl: AlertController,
     public formBuilder: FormBuilder,
-    public loadingCtrl: LoadingController
+    public loadingCtrl: LoadingController,
+    private translateService: TranslateService
   ) {
 
     this.info = this.ctx.info;
@@ -69,9 +73,19 @@ export class ProfilePage {
       //password: ['', Validators.compose([Validators.minLength(6), Validators.required])]
     });
 
+    this.translate();
+
   }
 
+  translate() {
+    this.translateService.get('PROFILE.DISCALERT.TITLE').subscribe(alertTitle => { this.discAlertTitle = alertTitle.toString(); });
+    this.translateService.get('PROFILE.DISCALERT.CONFIRM').subscribe(alertConfirm => { this.discAlertConfirm = alertConfirm.toString(); });
+    this.translateService.get('PROFILE.DISCALERT.CANCEL').subscribe(alertCancel => { this.discAlertCancel = alertCancel.toString(); });
 
+    this.translateService.get('PROFILE.SAVEALERT.TITLE').subscribe(alertTitle => { this.saveAlertTitle = alertTitle.toString(); });
+    this.translateService.get('PROFILE.SAVEALERT.CONTENT').subscribe(alertContent => { this.saveAlertContent = alertContent.toString(); });
+
+  }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfilePage');
@@ -83,19 +97,18 @@ export class ProfilePage {
 
   disconnect() {
       let actionSheet = this.actionSheetCtrl.create({
-        title: 'Do you really want to disconnect?',
+        title: this.discAlertTitle,
         buttons: [
           {
-            text: 'Disconnect',
+            text: this.discAlertConfirm,
             role: 'destructive',
             handler: () => {
               console.log('text: Disconnect clicked');
-              //this.navCtrl.pop();
               this.logOut();
             }
           },
           {
-            text: 'Cancel',
+            text: this.discAlertCancel,
             role: 'cancel',
             handler: () => {
               console.log('Cancel clicked');
@@ -149,8 +162,8 @@ export class ProfilePage {
 
   presentAlert() {
     let alert = this.alertCtrl.create({
-      title: 'Saved',
-      subTitle: 'Modifications saved successfully.',
+      title: this.saveAlertTitle,
+      subTitle: this.saveAlertContent,
       buttons: ['Ok']
     });
     alert.present();

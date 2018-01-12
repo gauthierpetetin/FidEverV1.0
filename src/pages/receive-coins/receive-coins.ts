@@ -22,6 +22,8 @@ export class ReceiveCoinsPage {
 
   coinColor: string;
 
+  
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,

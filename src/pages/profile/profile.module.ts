@@ -6,7 +6,7 @@ import { ProfilePage } from './profile';
 /**************Modules**************************/
 import { IonicImageLoader } from 'ionic-image-loader';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
-// import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -17,7 +17,7 @@ import { NgxQRCodeModule } from 'ngx-qrcode2';
     IonicPageModule.forChild(ProfilePage),
     IonicImageLoader,
     NgxQRCodeModule,
-    // TranslateModule.forChild()
+    TranslateModule.forChild()
   ],
   exports: [
     ProfilePage

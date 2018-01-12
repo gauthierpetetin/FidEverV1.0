@@ -80,13 +80,14 @@ export class SendCoinsPage {
   }
 
   scanCode() {
-    this.barcodeScanner.scan().then(barcodeData => {
-      this.scannedCode = barcodeData.text;
-    });
+    if(this.ctx.cordovaPlatform) {
+      this.barcodeScanner.scan().then(barcodeData => {
+        this.scannedCode = barcodeData.text;
+      });
+    }
   }
 
   goBack() {
-    //this.navCtrl.pop();
     this.viewCtrl.dismiss();
   }
 

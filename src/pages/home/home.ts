@@ -15,6 +15,8 @@ import { ImageLoaderConfig, ImageLoader } from 'ionic-image-loader';
 
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
+import { TranslateService } from '@ngx-translate/core';
+
 //import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 
 // export interface Coin {
@@ -32,20 +34,7 @@ export class HomePage {
   //Useful for HTML
   info : string;
   contractAddresses : string;
-  //names : string;
-  //colors : string;
-  //amounts : string;
-  //icons : string;
 
-  // ethapi: any;
-  // web3: any;
-  // qrData: any;
-  // account: any;
-  // address: any;
-  // balance: any;
-  // contractAddress: any;
-  // checklists: any;
-  // hairCoin: any;
 
   constructor(
     public navCtrl: NavController,
@@ -79,12 +68,6 @@ export class HomePage {
 
   }
 
-  // scanCode() {
-  //   this.barcodeScanner.scan().then(barcodeData => {
-  //     //********INSERT COIN TRANSACTION HERE*******************
-  //     //this.scannedCode = barcodeData.text;
-  //   });
-  // }
 
   collectCoins() {
     let myModalCtrl = this.modalCtrl.create(ReceiveCoinsPage, {

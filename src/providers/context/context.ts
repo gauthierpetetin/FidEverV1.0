@@ -27,6 +27,8 @@ export class ContextProvider {
 
   uid: string;
 
+  language: string = 'en';
+
   c: any = {};
 
   cordovaPlatform: boolean = false;
@@ -107,8 +109,12 @@ export class ContextProvider {
 
 /***************SETTERS*********************/
 
-  // setUid(uid : string) {
-  //   this.uid = uid;
+  setLanguage(language : string) {
+    this.language = language;
+  }
+
+  // setHello() {
+  //   console.log('HEEEEEELLLLLLOOOOO');
   // }
 
   setAddress(address : string) {
@@ -125,6 +131,10 @@ export class ContextProvider {
 
 
 /****************GETTERS*********************/
+
+  getLanguage(): string {
+    return this.language;
+  }
 
   getUid(): string {
     return this.uid;

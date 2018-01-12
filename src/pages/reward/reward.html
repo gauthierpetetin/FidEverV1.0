@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar [ngStyle]="{'background-color': coinColor}">
-    <ion-title>Your reward</ion-title>
+    <ion-title>{{ 'REWARD.TITLE' | translate }}</ion-title>
 
     <ion-buttons end>
       <button ion-button (click)="goBack()">
@@ -19,7 +19,7 @@
 
   <div [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.5)'}">
     <p text-center style="padding: 5px 0; margin: 0 0; color: grey;">
-      Show this barcode to the shopkeeper<br>to get your reward
+      {{ 'REWARD.SUBTITLE_1' | translate }}<br>{{ 'REWARD.SUBTITLE_2' | translate }}
     </p>
   </div>
 

@@ -14,6 +14,8 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 
 import {Md5} from 'ts-md5/dist/md5';
 
+// import { TranslateService } from '@ngx-translate/core';
+
 /**
  * Generated class for the WelcomePage page.
  *
@@ -92,7 +94,7 @@ export class WelcomePage {
         self.ctx.init(user.uid, true, true, false);
       }).catch( () => {
         self.loading.dismiss().then( (err) => {
-          var errorMessage: string = err.message;
+          var errorMessage: string = "Error ".concat(err);
             let alert = self.alertCtrl.create({
               message: errorMessage,
               buttons: [

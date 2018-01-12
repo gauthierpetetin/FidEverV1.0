@@ -17,6 +17,8 @@ import { ContextProvider} from '../../providers/context/context';
 import { WalletProvider} from '../../providers/wallet/wallet';
 //import { FidapiProvider } from '../../providers/fidapi/fidapi';
 
+import { TranslateService } from '@ngx-translate/core';
+
 @IonicPage()
 @Component({
   selector: 'page-signup',
@@ -31,6 +33,9 @@ export class SignupPage {
   address : string;
   privateKey : string;
 
+  emailPlaceholder: string;
+  passwordPlaceholder: string;
+
   constructor(
     public nav: NavController,
     public authData: AuthProvider,
@@ -39,7 +44,8 @@ export class SignupPage {
     public alertCtrl: AlertController,
     private storage: Storage,
     public ctx: ContextProvider,
-    public walletProvider: WalletProvider
+    public walletProvider: WalletProvider,
+    private translateService: TranslateService
 
   ) {
 
@@ -49,8 +55,14 @@ export class SignupPage {
       email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
       password: ['', Validators.compose([Validators.minLength(6), Validators.required])]
     });
+
+    this.translate();
   }
 
+  translate() {
+    this.translateService.get('SIGNUP.EMAIL.PLACEHOLDER').subscribe(emailPlaceholder => { this.emailPlaceholder = emailPlaceholder.toString(); });
+    this.translateService.get('SIGNUP.PASSWORD.PLACEHOLDER').subscribe(passwordPlaceholder => { this.passwordPlaceholder = passwordPlaceholder.toString(); });
+  }
 
   /**
    * If the form is valid it will call the AuthData service to sign the user up password displaying a loading
@@ -77,7 +89,7 @@ export class SignupPage {
           });
         }, (globalWalletError) => {
           this.loading.dismiss().then( () => {
-            var errorMessage: string = globalWalletError.message;
+            var errorMessage: string = "Error ".concat(globalWalletError);
               let alert = this.alertCtrl.create({
                 message: errorMessage,
                 buttons: [
@@ -93,7 +105,7 @@ export class SignupPage {
 
       }, (authenticationError) => {
         this.loading.dismiss().then( () => {
-          var errorMessage: string = authenticationError.message;
+          var errorMessage: string = "Error ".concat(authenticationError);
             let alert = this.alertCtrl.create({
               message: errorMessage,
               buttons: [

@@ -33,7 +33,7 @@ export class MyApp {
   constructor(
     platform: Platform,
     afAuth: AngularFireAuth,
-    ctx: ContextProvider,
+    public ctx: ContextProvider,
     //private splashScreen: SplashScreen,
     //private statusBar: StatusBar
     private translateService: TranslateService,
@@ -63,6 +63,16 @@ export class MyApp {
       }
     });
 
+    translateService.addLangs(["en", "fr", "es"]);
+    translateService.setDefaultLang('en');
+
+    this.launchLanguage('fr');
+
+    // let language = 'fr';
+    // translateService.use(language);
+    // ctx.setLanguage(language);
+
+
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -91,10 +101,6 @@ export class MyApp {
           }
         });
 
-        this.translateService.addLangs(["en", "fr", "es"]);
-        this.translateService.setDefaultLang('en');
-        this.translateService.use('en');
-
       }
       else{
         ctx.cordovaPlatform = false;
@@ -106,6 +112,12 @@ export class MyApp {
 
     });
   }
+
+  launchLanguage(language: string) {
+    this.translateService.use(language);
+    this.ctx.setLanguage(language);
+  }
+
 
   goToHomePage(obs: any) {
     this.rootPage = HomePage;

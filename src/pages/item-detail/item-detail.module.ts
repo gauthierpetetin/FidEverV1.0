@@ -5,7 +5,7 @@ import { ItemDetailPage } from './item-detail';
 
 /**************Modules**************************/
 import { IonicImageLoader } from 'ionic-image-loader';
-// import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -15,7 +15,7 @@ import { IonicImageLoader } from 'ionic-image-loader';
   imports: [
     IonicPageModule.forChild(ItemDetailPage),
     IonicImageLoader,
-    // TranslateModule.forChild()
+    TranslateModule.forChild()
   ],
   exports: [
     ItemDetailPage

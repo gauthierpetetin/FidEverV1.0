@@ -13,6 +13,8 @@ import { HomePage } from '../home/home';
 import { SignupPage } from '../signup/signup';
 import { ResetPasswordPage } from '../reset-password/reset-password';
 
+import { TranslateService } from '@ngx-translate/core';
+
 /**
  * Generated class for the LoginPage page.
  *
@@ -29,7 +31,10 @@ export class LoginPage {
   public loginForm:FormGroup;
   public loading:Loading;
 
-  info : string;
+  info: string;
+
+  emailPlaceholder: string;
+  passwordPlaceholder: string;
 
   constructor(
     public navCtrl: NavController,
@@ -40,7 +45,8 @@ export class LoginPage {
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public ctx: ContextProvider,
-    public walletProvider: WalletProvider
+    public walletProvider: WalletProvider,
+    private translateService: TranslateService
   ) {
 
       console.log('Login Page constructor');
@@ -51,6 +57,14 @@ export class LoginPage {
         email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
         password: ['', Validators.compose([Validators.minLength(6), Validators.required])]
       });
+
+      this.translate();
+
+    }
+
+    translate() {
+      this.translateService.get('LOGIN.EMAIL.PLACEHOLDER').subscribe(emailPlaceholder => { this.emailPlaceholder = emailPlaceholder.toString(); });
+      this.translateService.get('LOGIN.PASSWORD.PLACEHOLDER').subscribe(passwordPlaceholder => { this.passwordPlaceholder = passwordPlaceholder.toString(); });
     }
 
     loginUser(){
@@ -71,7 +85,7 @@ export class LoginPage {
             this.ctx.init(user.uid, true, true, false);
           }, (globalWalletError) => {
             this.loading.dismiss().then( () => {
-              var errorMessage: string = globalWalletError.message;
+              var errorMessage: string = "Error ".concat(globalWalletError);
                 let alert = this.alertCtrl.create({
                   message: errorMessage,
                   buttons: [
@@ -87,7 +101,7 @@ export class LoginPage {
 
         }, authenticationError => {
           this.loading.dismiss().then( () => {
-            var errorMessage: string = authenticationError.message;
+            var errorMessage: string = "Error ".concat(authenticationError);
               let alert = this.alertCtrl.create({
                 message: errorMessage,
                 buttons: [

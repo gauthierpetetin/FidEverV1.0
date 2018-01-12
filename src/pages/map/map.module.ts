@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { MapPage } from './map';
 
-// import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -10,7 +10,7 @@ import { MapPage } from './map';
   ],
   imports: [
     IonicPageModule.forChild(MapPage),
-    // TranslateModule.forChild()
+    TranslateModule.forChild()
   ],
   exports: [
     MapPage

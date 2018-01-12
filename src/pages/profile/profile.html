@@ -9,18 +9,18 @@
   <ion-navbar style="{margin: 0px}">
     <ion-buttons start>
       <button ion-button (click)="goBack()">
-        Back
+        {{ 'PROFILE.BACK' | translate }}
       </button>
     </ion-buttons>
-    <ion-title>Your Account</ion-title>
+    <ion-title>{{ 'PROFILE.ACCOUNT' | translate }}</ion-title>
       <ion-buttons end>
         <button ion-button *ngIf="!modifying" (click)="modify()">
-          Modify
+          {{ 'PROFILE.MODIFY' | translate }}
         </button>
       </ion-buttons>
       <ion-buttons end>
         <button ion-button *ngIf="modifying" (click)="saveModification()">
-          Save
+          {{ 'PROFILE.SAVE' | translate }}
         </button>
       </ion-buttons>
   </ion-navbar>
@@ -67,13 +67,13 @@
       'margin-left':'-5.5em',
       'font-size':'9px'
       }">
-      Change picture
+      {{ 'PROFILE.PICTURE' | translate }}
     </button>
   </div>
 
   <div>
     <p style="margin: 0 0; padding: 3px 5px; background-color: #afabab; color: white">
-      Account details
+      {{ 'PROFILE.DETAILS' | translate }}
     </p>
   </div>
 
@@ -89,7 +89,7 @@
   <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
     <ion-col col-3>
       <p >
-        Email :
+        {{ 'PROFILE.EMAIL.TITLE' | translate }}
       </p>
     </ion-col>
     <ion-col col-9>
@@ -112,7 +112,7 @@
       ></ion-input>
       <div class="error-message" *ngIf="!infoForm.controls.email.valid  &&
         infoForm.controls.email.dirty && modifying">
-        <p>Please enter a valid email.</p>
+        <p>{{ 'PROFILE.EMAIL.VALID' | translate }}</p>
       </div>
     </ion-col>
   </ion-row>
@@ -120,7 +120,7 @@
   <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
     <ion-col col-3>
       <p >
-        Phone :
+        {{ 'PROFILE.PHONE.TITLE' | translate }}
       </p>
     </ion-col>
     <ion-col col-9>
@@ -143,7 +143,7 @@
       ></ion-input>
       <div class="error-message" *ngIf="!infoForm.controls.phone.valid  &&
         infoForm.controls.phone.dirty && modifying">
-        <p>Please enter a valid phone number.</p>
+        <p>{{ 'PROFILE.PHONE.VALID' | translate }}</p>
       </div>
     </ion-col>
   </ion-row>
@@ -159,7 +159,7 @@
   <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
     <ion-col col-5>
       <p >
-        Your current ID :
+        {{ 'PROFILE.ID' | translate }}
       </p>
     </ion-col>
     <ion-col col-5>
@@ -176,7 +176,6 @@
         'border-color':'rgba(0,0,0,0)',
         'outline':'none'
       }">
-        <!-- <ion-icon name="qr-scanner"></ion-icon> -->
         <img-loader
           [ngStyle]="{
             'position':'absolute',
@@ -194,29 +193,9 @@
     </ion-col>
   </ion-row>
 
-  <!-- <div style="margin: 0 0; padding: 0 0" [ngStyle]="{'background-color':'blue'}">
-
-    <ion-card *ngIf="ctx.c[info][address]" padding style="margin: 0 0; width: auto">
-
-      <ion-card-content style="margin: 0 0; padding: 0 0;" [ngStyle]="{'padding-top':'5px'}">
-        <h1 text-center style="margin: 0 0; padding: 0 0;color: black">
-          Your ID
-        </h1>
-      </ion-card-content>
-
-      <ngx-qrcode style="margin: 0 0; padding: 0 0;" [qrc-value]="address"></ngx-qrcode>
-
-      <ion-card-content style="margin: 0 0; padding: 0 0;">
-        <p text-center style="margin: 0 0; padding: 0 0; font-size:9px; color: black">{{ ctx.c[info][address] }}</p>
-      </ion-card-content>
-
-    </ion-card>
-
-  </div> -->
-
 <div>
   <p style="margin: 0 0; padding: 3px 5px; background-color: #afabab; color: white">
-    Disconnection
+    {{ 'PROFILE.DISCONNECTION' | translate }}
   </p>
 </div>
 
@@ -233,7 +212,7 @@
     </ion-col>
     <ion-col>
       <p style="color: #C00000">
-        Disconnect
+        {{ 'PROFILE.DISCONNECT' | translate }}
       </p>
     </ion-col>
 </ion-row>

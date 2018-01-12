@@ -1,52 +1,56 @@
 <ion-header>
 
-  <!-- <ion-navbar *ngIf=pageWillLeave [ngStyle]="{'background-color': transparent}">
-  </ion-navbar>
-  <ion-navbar *ngIf=!pageWillLeave [ngStyle]="{'background-color': coinColor}">
-    <ion-title>
-      {{coinName}}
-    </ion-title>
-  </ion-navbar> -->
-
   <ion-navbar id="colorNavbar">
     <ion-title>
       {{coinName}}
     </ion-title>
   </ion-navbar>
 
-  <ion-row class="white-row">
+  <ion-row style="height: 60px; background-color: white;">
 
-    <ion-col col-8 class="ion-col2">
-      <div class="small-span">
-        <h4 text-right *ngIf="coinName" style="color: grey;">
-          Your {{coinName}}s:
+    <ion-col col-8 style="display: table;">
+      <div style="
+        height: 50px !important;
+        display: table-cell;
+        vertical-align: middle;
+        text-align: right;">
+        <h4 *ngIf="coinName" style="color: grey;">
+          {{ 'ITEM_DETAIL.SUBTITLE_1' | translate }} {{coinName}} {{ 'ITEM_DETAIL.SUBTITLE_2' | translate }}:
         </h4>
       </div>
     </ion-col>
 
-    <ion-col col-2 class="ion-col2">
-      <div class="small-span">
-        <h4 text-center *ngIf="coinName" [ngStyle]="{'color': coinColor}">
+    <ion-col col-2 style="display: table;">
+      <div style="
+      height: 50px !important;
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;">
+        <h4 *ngIf="coinName" [ngStyle]="{'color': coinColor}">
           {{ctx.c[ctx.amounts][coinContractAddress]}}
         </h4>
       </div>
     </ion-col>
 
-    <ion-col col-2 class="ion-col2">
-      <img-loader
-        fallback="assets/images/default_images/defaultCoin.png"
-        [ngStyle]="{
-          'position':'absolute',
-          'top':'50%',
-          'left':'50%',
-          'height':'2em',
-          'width':'2em',
-          'margin-top':'-1em',
-          'margin-left':'-1em'
-        }"
-        src="{{coinIcon}}"
-        useImg
-       ></img-loader>
+    <ion-col col-2 style="display: table;">
+      <div style="
+      height: 50px !important;
+      display: table-cell;
+      vertical-align: middle;">
+        <img-loader
+          fallback="assets/images/default_images/defaultCoin.png"
+          style="
+            position: absolute;
+            top: 50%;
+            left: 25%;
+            height: 40px;
+            width: 40px;
+            margin-top: -20px;
+            margin-left: -20px;"
+          src="{{coinIcon}}"
+          useImg
+        ></img-loader>
+       </div>
     </ion-col>
 
   </ion-row>
@@ -124,10 +128,10 @@
         color: grey;
         font-size: 120%;">
         <div *ngIf="selectedTab==0" [ngStyle]="{'color': coinColor}">
-          Offers
+          {{ 'ITEM_DETAIL.OFFERS' | translate }}
         </div>
         <div *ngIf="selectedTab!=0" [ngStyle]="{'color': 'grey'}">
-          Offers
+          {{ 'ITEM_DETAIL.OFFERS' | translate }}
         </div>
       </button>
       <div *ngIf="selectedTab==0" [ngStyle]="{'background-color': coinColor}" style="width: 100%; height: 2px; botttom: 0;"></div>
@@ -140,10 +144,10 @@
         color: grey;
         font-size: 120%;">
         <div *ngIf="selectedTab==1" [ngStyle]="{'color': coinColor}">
-          My rewards
+          {{ 'ITEM_DETAIL.REWARDS' | translate }}
         </div>
         <div *ngIf="selectedTab!=1" [ngStyle]="{'color': 'grey'}">
-          My rewards
+          {{ 'ITEM_DETAIL.REWARDS' | translate }}
         </div>
       </button>
       <div *ngIf="selectedTab==1" [ngStyle]="{'background-color': coinColor}" style="width: 100%; height: 2px; bottom: 0;"></div>
@@ -218,28 +222,19 @@
             </div>
           </ion-col>
 
-          <ion-col col-3 style="
-            margin: 0 0;
-            padding: 0 0;">
+          <ion-col col-3 style="display: table;">
 
             <div style="
-              padding: 0 0;
-              margin: 0 0;
               height: 50px !important;
               display: table-cell;
               vertical-align: middle;
-              text-align: left;
+              text-align: right;
             ">
-
-              <h4 *ngIf="ctx.c[ctx.amounts][coinContractAddress]>=off[offerPrice]" class="text" text-center [ngStyle]="{'color': coinColor}" style="
-                max-height: 40px;
-                margin: 5px 5px;">
-                Price : {{off[offerPrice]}}
+              <h4 *ngIf="ctx.c[ctx.amounts][coinContractAddress]>=off[offerPrice]" [ngStyle]="{'color': coinColor}">
+                {{ 'ITEM_DETAIL.COST' | translate }} : {{off[offerPrice]}}
               </h4>
-              <h4 *ngIf="ctx.c[ctx.amounts][coinContractAddress]<off[offerPrice]" class="text" text-center [ngStyle]="{'color': 'grey'}" style="
-                max-height: 40px;
-                margin: 5px 5px;">
-                Price : {{off[offerPrice]}}
+              <h4 *ngIf="ctx.c[ctx.amounts][coinContractAddress]<off[offerPrice]" [ngStyle]="{'color': 'grey'}">
+                {{ 'ITEM_DETAIL.COST' | translate }} : {{off[offerPrice]}}
               </h4>
             </div>
           </ion-col>
@@ -311,23 +306,16 @@
             </div>
           </ion-col>
 
-          <ion-col col-3 style="
-            margin: 0 0;
-            padding: 0 0;">
+          <ion-col col-3 style="display: table;">
 
             <div style="
-              padding: 0 0;
-              margin: 0 0;
               height: 50px !important;
               display: table-cell;
               vertical-align: middle;
-              text-align: left;
+              text-align: right;
             ">
-
-              <h4 class="text" text-center [ngStyle]="{'color': coinColor}" style="
-                max-height: 40px;
-                margin: 5px 5px;">
-                Use now
+              <h4 [ngStyle]="{'color': coinColor}">
+                {{ 'ITEM_DETAIL.USE' | translate }}
               </h4>
             </div>
           </ion-col>
@@ -345,74 +333,99 @@
 <!-- align to the bottom of the page -->
 <!-- <div style="position: absolute; bottom: 0px; width: 100%; z-index:10; background-color: white"> -->
   <div class="greyBar">
-    <p style="margin: 0 0; padding: 3px 0; color: white">Exchange {{coinName}}s with friends</p>
+    <p style="margin: 0 0; padding: 3px 0; color: white">{{ 'ITEM_DETAIL.ACTION.TITLE_1' | translate }} {{coinName}}s {{ 'ITEM_DETAIL.ACTION.TITLE_2' | translate }}</p>
   </div>
 
-  <button style="margin: 0 0; padding: 0 0; background-color: white">
-  <ion-row style="margin: 0 0;padding: 0 0;">
+  <button style="width: 100%; margin: 0 0; padding: 0 0; background-color: white">
 
-    <ion-col style="position:relative;" [ngStyle]="{'background-color': 'transparent'}">
+  <ion-row style="height: 60px; margin: 0 0;padding: 0 0;">
+
+    <ion-col col-3 style="padding: 0 0;">
         <button ion-button style="
           background-color: transparent !important;
-          text-align: center !important;
+          text-align: right !important;
 
-          position:absolute;
-          top:50%;
-          height:3em;
-          margin-top:-1.5em;
-
-          left: 50%;
-          width: 5em;
-          margin-left: -2.5em;
+          margin: 0 0;
+          height: 100%;
+          width: 100%;
 
           box-shadow: none !important;
           border-color: rgba(0,0,0,0) !important;
           outline: none !important;"
 
-        (click)="receiveCoins()"
-        [ngStyle]="{'color': coinColor}">
-        Receive
+          (click)="receiveCoins()"
+          [ngStyle]="{'color': coinColor}">
+          {{ 'ITEM_DETAIL.ACTION.RECEIVE' | translate }}
         </button>
     </ion-col>
 
-    <ion-col style="position:relative; text-align:center" [ngStyle]="{'background-color': 'transparent'}">
-        <img-loader src="assets/images/other/arrow_left.png" useImg></img-loader>
+
+    <ion-col col-2 style="display: table;">
+      <div style="
+        height: 50px !important;
+        display: table-cell;
+        vertical-align: middle;">
+        <img-loader style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        height: 40px;
+        width: 40px;
+        margin-top: -20px;
+        margin-left: -20px;"
+        src="assets/images/other/arrow_left_nn.png" useImg></img-loader>
+      </div>
     </ion-col>
 
-    <ion-col style="position:relative;" [ngStyle]="{'background-color': 'transparent'}">
+    <ion-col col-2 style="
+    position: relative; display: table;">
+      <div style="
+      height: 50px !important;
+      display: table-cell;
+      vertical-align: middle;">
         <img-loader
-          fallback="assets/images/coins/Coin.png"
-          [ngStyle]="{
-            'position':'absolute',
-            'top':'50%',
-            'left':'50%',
-            'height':'40px',
-            'width':'40px',
-            'margin-top':'-20px',
-            'margin-left':'-20px'
-          }"
+          fallback="assets/images/default_images/defaultCoin.png"
+          style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            height: 40px;
+            width: 40px;
+            margin-top: -20px;
+            margin-left: -20px;"
           src="{{coinIcon}}"
           useImg
-         ></img-loader>
+        ></img-loader>
+       </div>
     </ion-col>
 
-    <ion-col style="position:relative; text-align:center" [ngStyle]="{'background-color': 'transparent'}">
-        <img-loader src="assets/images/other/arrow_right.png" useImg></img-loader>
+
+    <ion-col col-2 style="display: table;">
+      <div style="
+        height: 50px !important;
+        display: table-cell;
+        vertical-align: middle;
+        position: relative;">
+        <img-loader style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        height: 40px;
+        width: 40px;
+        margin-top: -20px;
+        margin-left: -20px;"
+        src="assets/images/other/arrow_right_nn.png" useImg></img-loader>
+      </div>
     </ion-col>
 
-    <ion-col style="position:relative;" [ngStyle]="{'background-color': 'transparent'}">
+    <ion-col col-3 style="padding: 0 0;">
         <button ion-button style="
           background-color: transparent !important;
-          text-align: center !important;
+          text-align: right !important;
 
-          position:absolute;
-          top:50%;
-          height:3em;
-          margin-top:-1.5em;
-
-          left: 50%;
-          width: 5em;
-          margin-left: -2.5em;
+          margin: 0 0;
+          height: 100%;
+          width: 100%;
 
           box-shadow: none !important;
           border-color: rgba(0,0,0,0) !important;
@@ -420,14 +433,14 @@
 
           (click)="sendCoins()"
           [ngStyle]="{'color': coinColor}">
-          Send
+          {{ 'ITEM_DETAIL.ACTION.SEND' | translate }}
         </button>
     </ion-col>
 
   </ion-row>
 
+
 </button>
 
-<!-- </div> -->
 
 </ion-footer>

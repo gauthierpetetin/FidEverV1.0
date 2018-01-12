@@ -1,3 +1,141 @@
 {
-    "RECEIVE": "Receive FIDs"
+  "WELCOME": {
+    "TITLE": "Collect loyalty coins in your favorite shops and be rewarded.",
+    "START": {
+      "ACCOUNT_NO": "Start without account",
+      "OR": "or",
+      "ACCOUNT_YES": "Signup or login"
+    }
+  },
+  "LOGIN": {
+    "TITLE": "Login",
+    "EMAIL": {
+      "TITLE": "Email",
+      "PLACEHOLDER": "Your email address",
+      "VALID": "Please enter a valid email."
+    },
+    "PASSWORD": {
+      "TITLE": "Password",
+      "PLACEHOLDER": "Your password",
+      "VALID": "Your password needs more than 6 characters."
+    },
+    "PASSWORD_FORGOT": "I forgot my password.",
+    "NEW_ACCOUNT": "Create a new account"
+  },
+  "SIGNUP": {
+    "TITLE": "New account",
+    "EMAIL": {
+      "TITLE": "Email",
+      "PLACEHOLDER": "Your email address",
+      "VALID": "Please enter a valid email."
+    },
+    "PASSWORD": {
+      "TITLE": "Password",
+      "PLACEHOLDER": "Your password",
+      "VALID": "Your password needs more than 6 characters."
+    },
+    "NEW_ACCOUNT": "Create a new account"
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "Reset Password",
+    "EMAIL": {
+      "TITLE": "Email",
+      "PLACEHOLDER": "Your email address",
+      "VALID": "Please enter a valid email."
+    },
+    "RESET": "Reset your password",
+    "MESSAGE": "We just sent you a reset link to your email."
+  },
+  "PROFILE": {
+    "ACCOUNT": "Your Account",
+    "BACK": "Back",
+    "MODIFY": "Modify",
+    "SAVE": "Save",
+    "PICTURE": "Change Picture",
+    "DETAILS": "Account details",
+    "EMAIL": {
+      "TITLE": "Email",
+      "VALID": "Please enter a valid email."
+    },
+    "PHONE": {
+      "TITLE": "Phone",
+      "VALID": "Please enter a valid phone number."
+      },
+    "ID": "Your current ID",
+    "DISCONNECTION": "Disconnection",
+    "DISCONNECT": "Disconnect",
+    "DISCALERT": {
+      "TITLE": "Do you really want to disconnect",
+      "CONFIRM": "Yes",
+      "CANCEL": "Cancel"
+    },
+    "SAVEALERT": {
+      "TITLE": "Saved",
+      "CONTENT": "Modifications saved successfully."
+    }
+  },
+  "HOME": {
+    "WALLET": "FID Wallet",
+    "TYPE": "TYPE",
+    "AMOUNT": "AMOUNT",
+    "FIND": "Find FIDs around you.",
+    "COLLECT": "Collect FIDs in a shop."
+  },
+  "ITEM_DETAIL": {
+    "SUBTITLE_1": "Collected",
+    "SUBTITLE_2": "",
+    "OFFERS": "The offers",
+    "REWARDS": "Your rewards",
+    "COST": "Cost",
+    "ACTION": {
+      "TITLE_1": "Exchange",
+      "TITLE_2": "with friends.",
+      "SEND": "Send",
+      "RECEIVE": "Receive"
+    },
+    "REWARDALERT": {
+      "TITLE": "Get reward",
+      "CONTENT_1": "Do you confirm you want to use",
+      "CONTENT_2": "to get",
+      "CONFIRM": "Confirm",
+      "CANCEL": "Cancel"
+    },
+    "FUNDSALERT": {
+      "TITLE": "Not enough funds",
+      "CONTENT_1": "You still need to collect",
+      "CONTENT_2": "to get this reward."
+    },
+    "USE": "Use now"
+  },
+  "REWARD": {
+    "TITLE": "Your reward",
+    "SUBTITLE_1": "Show this barcode to the shopkeeper",
+    "SUBTITLE_2": "to get your reward."
+  },
+  "RECEIVE": {
+    "RECEIVE": "Receive FIDs",
+    "BACK": "Back",
+    "INDICATION": "Scan your ID to receive FIDs.",
+    "ID": "Your ID"
+  },
+  "SEND": {
+    "TITLE": "Send FIDs",
+    "SUCCESS": "Success",
+    "BACK": "Back",
+    "SCAN": "Scan recipient's ID:",
+    "SCANNED": "ID scanned successfully.",
+    "TO": "To:",
+    "PLACEHOLDER": "Recipient ID",
+    "AMOUNT_1": "Select amount of",
+    "AMOUNT_2": "to send:",
+    "SEND": "Send",
+    "TRANSACTION": "Transaction submitted successfully.",
+    "CONGRATS_1": "Congratulations",
+    "CONGRATS_2": "You sent",
+    "CONGRATS_3": "to"
+  },
+  "MAP": {
+    "TITLE": "FID Map",
+    "BACK": "Back"
+  }
 }

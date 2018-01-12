@@ -7,7 +7,7 @@
     </ion-buttons>
     <ion-title>
       <!-- {{ 'HOME.home_title' | translate }} -->
-      FID wallet
+      {{ 'HOME.WALLET' | translate }}
     </ion-title>
     <ion-buttons end>
       <button ion-button icon-only padding (click)="showMap()">
@@ -50,7 +50,7 @@
             text-overflow: ellipsis;
             white-space: normal;
             ">
-            FIDNAME
+            {{ 'HOME.TYPE' | translate }}
           </h2>
         </div>
       </ion-col>
@@ -72,7 +72,7 @@
             font-size: 12px;
             max-height: 20px;
             margin: 5px 5px;">
-            AMOUNT
+            {{ 'HOME.AMOUNT' | translate }}
           </h2>
         </div>
       </ion-col>
@@ -214,7 +214,7 @@
         color: #fe9400;
         font-size: 14px;
         ">
-        Find FIDs around you by clicking here.
+        {{ 'HOME.FIND' | translate }}
       </h2>
     </div>
   </ion-row>
@@ -228,11 +228,83 @@
 <!-- align to the bottom of the page -->
 <!-- <div style="position: absolute; bottom: 0px; width: 100%; z-index:10; background-color: white"> -->
   <div class="greyBar">
-    <p style="margin: 0 0; padding: 3px 0; color: white">Collect FIDs in a shop</p>
+    <p style="margin: 0 0; padding: 3px 0; color: white">{{ 'HOME.COLLECT' | translate }}</p>
   </div>
 
-  <button (click)="collectCoins()" style="background-color: white">
-    <ion-row style="margin: 0 0;padding: 0 0; background-color : transparent">
+  <button (click)="collectCoins()" style="width: 100%; background-color: white">
+
+    <ion-row style="height: 60px; margin: 0 0;padding: 0 0;">
+
+      <ion-col col-3>
+      </ion-col>
+
+
+      <ion-col col-2 style="display: table;">
+        <div style="
+          height: 50px !important;
+          display: table-cell;
+          vertical-align: middle;">
+          <img-loader style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          height: 40px;
+          width: 40px;
+          margin-top: -20px;
+          margin-left: -20px;"
+          src="assets/images/other/arrow_right_nn.png" useImg></img-loader>
+        </div>
+      </ion-col>
+
+      <ion-col col-2 style="
+      position: relative; display: table;">
+        <div style="
+        height: 50px !important;
+        display: table-cell;
+        vertical-align: middle;">
+          <img-loader
+            fallback="assets/images/default_images/defaultCoin.png"
+            style="
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              height: 40px;
+              width: 40px;
+              margin-top: -20px;
+              margin-left: -20px;"
+            src="assets/images/default_images/defaultCoin.png"
+            useImg
+          ></img-loader>
+         </div>
+      </ion-col>
+
+
+      <ion-col col-2 style="display: table;">
+        <div style="
+          height: 50px !important;
+          display: table-cell;
+          vertical-align: middle;
+          position: relative;">
+          <img-loader style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          height: 40px;
+          width: 40px;
+          margin-top: -20px;
+          margin-left: -20px;"
+          src="assets/images/other/arrow_left_nn.png" useImg></img-loader>
+        </div>
+      </ion-col>
+
+      <ion-col col-3>
+      </ion-col>
+
+    </ion-row>
+
+
+
+    <!-- <ion-row style="margin: 0 0;padding: 0 0; background-color : transparent">
 
       <ion-col style="position: relative;" [ngStyle]="{'background-color': 'transparent'}">
       </ion-col>
@@ -264,8 +336,7 @@
           <ion-col style="position:relative;" [ngStyle]="{'background-color': 'transparent'}">
           </ion-col>
 
-        </ion-row>
+        </ion-row> -->
       </button>
-    <!-- </div> -->
 
 </ion-footer>

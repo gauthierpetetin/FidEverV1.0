@@ -48,6 +48,7 @@ export class FidapiProvider {
       });
       var postOptions = new RequestOptions({ headers: postHeaders });
       self.requestAnswer = self.http.post(
+        // self.apiURL.concat(self.authenticateURL),
         self.proxyURL.concat(self.apiURL, self.authenticateURL),
         postContent,
         postOptions

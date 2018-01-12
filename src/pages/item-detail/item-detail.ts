@@ -11,6 +11,8 @@ import { ImageLoaderConfig, ImageLoader } from 'ionic-image-loader';
 
 import { ContextProvider} from '../../providers/context/context';
 
+import { TranslateService } from '@ngx-translate/core';
+
 
 //import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 
@@ -39,6 +41,19 @@ export class ItemDetailPage {
   offerImages: any;
   rewards: any [];
 
+  //REWARDALERT
+  rewardAlertTitle: string;
+  rewardAlertContent1: string;
+  rewardAlertContent2: string;
+  rewardAlertConfirm: string;
+  rewardAlertCancel: string;
+
+  //FUNDSALERT
+  fundsAlertTitle: string;
+  fundsAlertContent1: string;
+  fundsAlertContent2: string;
+
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -46,7 +61,8 @@ export class ItemDetailPage {
     private imageLoaderConfig: ImageLoaderConfig,
     public imageLoader: ImageLoader,
     public ctx: ContextProvider,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    private translateService: TranslateService
   ) {
 
     console.log('Open Item-detail');
@@ -64,7 +80,7 @@ export class ItemDetailPage {
     this.companyName = this.ctx.getCompanyName(this.coinContractAddress);
     this.offers = this.ctx.getOffers(this.coinContractAddress);
       this.offerID = this.ctx.offerID;
-      this.offerName = this.ctx.offerName;
+      this.offerName = this.ctx.offerName.concat('_',this.ctx.language);
       this.offerPrice = this.ctx.offerPrice;
     this.offerImages = this.ctx.getOfferImages(this.coinContractAddress);
     this.rewards = this.ctx.getRewards(this.coinContractAddress);
@@ -74,6 +90,21 @@ export class ItemDetailPage {
     console.log('Item-detail offers : ', this.offers);
     console.log('Item-detail offerImages : ', this.offerImages);
     console.log('Item-detail rewards : ', this.rewards);
+
+    this.translate();
+
+  }
+
+  translate() {
+    this.translateService.get('ITEM_DETAIL.REWARDALERT.TITLE').subscribe(rewardAlertTitle => { this.rewardAlertTitle = rewardAlertTitle.toString(); });
+    this.translateService.get('ITEM_DETAIL.REWARDALERT.CONTENT_1').subscribe(rewardAlertContent1 => { this.rewardAlertContent1 = rewardAlertContent1.toString(); });
+    this.translateService.get('ITEM_DETAIL.REWARDALERT.CONTENT_2').subscribe(rewardAlertContent2 => { this.rewardAlertContent2 = rewardAlertContent2.toString(); });
+    this.translateService.get('ITEM_DETAIL.REWARDALERT.CONFIRM').subscribe(rewardAlertConfirm => { this.rewardAlertConfirm = rewardAlertConfirm.toString(); });
+    this.translateService.get('ITEM_DETAIL.REWARDALERT.CANCEL').subscribe(rewardAlertCancel => { this.rewardAlertCancel = rewardAlertCancel.toString(); });
+
+    this.translateService.get('ITEM_DETAIL.FUNDSALERT.TITLE').subscribe(fundsAlertTitle => { this.fundsAlertTitle = fundsAlertTitle.toString(); });
+    this.translateService.get('ITEM_DETAIL.FUNDSALERT.CONTENT_1').subscribe(fundsAlertContent1 => { this.fundsAlertContent1 = fundsAlertContent1.toString(); });
+    this.translateService.get('ITEM_DETAIL.FUNDSALERT.CONTENT_2').subscribe(fundsAlertContent2 => { this.fundsAlertContent2 = fundsAlertContent2.toString(); });
 
   }
 
@@ -127,19 +158,19 @@ export class ItemDetailPage {
 
   confirmPurchase(selectedOffer: any) {
     let alert = this.alertCtrl.create({
-      title: 'Get reward',
-      subTitle: 'Do you confirm you want to spend '.concat(selectedOffer[this.offerPrice], ' ', this.coinName, ' to get ', selectedOffer[this.offerName], '.'),
+      title: this.rewardAlertTitle,
+      subTitle: this.rewardAlertContent1.concat(' ', selectedOffer[this.offerPrice], ' ', this.coinName, ' ', this.rewardAlertContent2, ' ', selectedOffer[this.offerName], '.'),
       cssClass: 'customAlerts',
       buttons: [
       {
-        text: 'Cancel',
+        text: this.rewardAlertCancel,
         role: 'cancel',
         handler: () => {
           console.log('Cancel clicked');
         }
       },
       {
-        text: 'Confirm',
+        text: this.rewardAlertConfirm,
         handler: () => {
           console.log('Confirm clicked');
         }
@@ -151,8 +182,8 @@ export class ItemDetailPage {
 
   forbidPurchase(missingAmount: number) {
     let alert = this.alertCtrl.create({
-      title: 'Not enough funds',
-      subTitle: 'You still need to collect '.concat(missingAmount.toString(), ' ', this.coinName, ' to get this reward.'),
+      title: this.fundsAlertTitle,
+      subTitle: this.fundsAlertContent1.concat(' ', missingAmount.toString(), ' ', this.coinName, ' ', this.fundsAlertContent2),
       buttons: ['OK']
     });
     alert.present();

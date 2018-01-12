@@ -7,7 +7,7 @@ import { RewardPage } from './reward';
 import { IonicImageLoader } from 'ionic-image-loader';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import JsBarcode from 'jsbarcode';
-// import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -17,7 +17,7 @@ import JsBarcode from 'jsbarcode';
     IonicPageModule.forChild(RewardPage),
     IonicImageLoader,
     NgxQRCodeModule,
-    // TranslateModule.forChild()
+    TranslateModule.forChild()
   ],
   exports: [
     RewardPage
