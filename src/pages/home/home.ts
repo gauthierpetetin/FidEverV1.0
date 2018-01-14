@@ -58,13 +58,14 @@ export class HomePage {
 
       console.log('Close Homepage constructor');
 
-      this.translate();
+      // this.translate();
   }
-  translate() {
-    let test: string;
-    this.translateService.get('ALERT.RECEIVECONTENT').subscribe(rewardAlertTitle => { test = rewardAlertTitle.toString(); });
-    console.log('HOOOOOOME', test);
-  }
+
+  // translate() {
+  //   let test: string;
+  //   this.translateService.get('ALERT.RECEIVECONTENT').subscribe(rewardAlertTitle => { test = rewardAlertTitle.toString(); });
+  //   console.log('HOOOOOOME', test);
+  // }
 
 
   itemTapped(event, contractAddress) {

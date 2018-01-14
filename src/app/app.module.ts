@@ -42,7 +42,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { FirebaseAnalytics } from '@ionic-native/firebase-analytics';
 
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
-
+import { ImagePicker } from '@ionic-native/image-picker';
+import { Camera, CameraOptions } from '@ionic-native/camera';
 
 /**************Pages****************************/
 import { HomePage } from '../pages/home/home';
@@ -123,7 +124,9 @@ export function createTranslateLoader(http: Http) {
     TranslateService,
     FirebaseAnalytics,
     Push,
-    Globalization
+    Globalization,
+    ImagePicker,
+    Camera
   ]
 })
 export class AppModule {}

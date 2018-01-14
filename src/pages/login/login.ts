@@ -15,6 +15,8 @@ import { ResetPasswordPage } from '../reset-password/reset-password';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import {Md5} from 'ts-md5/dist/md5';
+
 /**
  * Generated class for the LoginPage page.
  *
@@ -73,16 +75,16 @@ export class LoginPage {
       }
       else {
         let loginEmail: string = this.loginForm.value.email;
-        let password: string = this.loginForm.value.password;
-        this.ctx.setEmail(loginEmail);
-        this.ctx.save();
-        this.authData.loginUser(loginEmail, password)
+        let hashPassword: string = Md5.hashStr(this.loginForm.value.password).toString();
+
+
+        this.authData.loginUser(loginEmail, hashPassword)
         .then( (user) => {
           console.log('Firebase login success : ', user.uid);
-          this.walletProvider.createGlobalEthWallet(user.uid, password).then( () => {
+          this.walletProvider.createGlobalEthWallet(user.uid, user.email, user.displayName, user.profilePicture, hashPassword).then( () => {
             this.navCtrl.insert(0,HomePage);
             this.navCtrl.popToRoot();
-            this.ctx.init(user.uid, true, true, false);
+            this.ctx.init(user.uid, user.email, user.displayName, user.photoURL, true, true, false);
           }, (globalWalletError) => {
             this.loading.dismiss().then( () => {
               var errorMessage: string = "Error ".concat(globalWalletError);

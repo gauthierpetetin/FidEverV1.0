@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 /**************Providers************************/
 import { ContextProvider} from '../providers/context/context';
+import { AuthProvider } from '../providers/auth/auth';
 
 
 /**************Modules**************************/
@@ -24,8 +25,8 @@ import { FirebaseAnalytics } from '@ionic-native/firebase-analytics';
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 import { Globalization } from '@ionic-native/globalization';
-// import { defaultLanguage, availableLanguages, sysOptions } from './i18n-demo.constants';
 
+import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 
 @Component({
   templateUrl: 'app.html'
@@ -36,6 +37,7 @@ export class MyApp {
   constructor(
     platform: Platform,
     afAuth: AngularFireAuth,
+    authData: AuthProvider,
     public ctx: ContextProvider,
     //private splashScreen: SplashScreen,
     //private statusBar: StatusBar
@@ -43,16 +45,24 @@ export class MyApp {
     private screenOrientation: ScreenOrientation,
     private firebaseAnalytics: FirebaseAnalytics,
     private push: Push,
-    private globalization: Globalization
+    private globalization: Globalization,
+    private uniqueDeviceID: UniqueDeviceID
   ){
 
     var self = this;
 
+    /**********Uncomment this line to set app to production********************/
+    //this.ctx.setAppToProduction();
+    /**********Uncomment this line to set app to production********************/
+
     const authObserver = afAuth.authState.subscribe( user => {
       if (user) {
         console.log('userID : ', user.uid);
+        console.log('userEmail : ', user.email);
+        console.log('userDisplayName : ', user.displayName);
+        console.log('photoURL : ', user.photoURL);
 
-        ctx.init(user.uid, true, true, false).then( (ethAccountFound) => {
+        ctx.init(user.uid, user.email, user.displayName, user.photoURL, true, true, false).then( (ethAccountFound) => {
           console.log('Context init success : ', ethAccountFound);
           this.goToHomePage(authObserver);
         }, (err) => {
@@ -79,6 +89,14 @@ export class MyApp {
 
 
     platform.ready().then(() => {
+
+      this.uniqueDeviceID.get().then((deviceId: any) => {
+        this.ctx.deviceId = deviceId;
+      }).catch((error: any) => {
+        console.log('No deviceId');
+        let artificialDeviceId = 'xxxxxxxxxx';
+        this.ctx.deviceId = artificialDeviceId;
+      });
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       //statusBar.styleDefault();
@@ -113,29 +131,23 @@ export class MyApp {
 
 
 
-      // this language will be used as a fallback when a translation isn't found in the current language
-				//translate.setDefaultLang(defaultLanguage);
-
-				if ((<any>window).cordova) {
+				if ((<any>window).cordova ) {
 					this.globalization.getPreferredLanguage().then(result => {
 						var language = result.value;
             language = language.substring(0, 2).toLowerCase();
             if(language == 'fr') {
-              console.log('FRAAAAANCAIS');
-              translateService.use('fr');
-              this.ctx.setLanguage('fr');
+              translateService.use(language);
+              this.ctx.setLanguage(language);
+              authData.setLanguage(language);
             }
-
-						//translate.use(language);
-						// sysOptions.systemLanguage = language;
 					});
-				} else {
-          console.log('AAAAANGLAIS');
-					// let browserLanguage = translate.getBrowserLang() || defaultLanguage;
-					// var language = this.getSuitableLanguage(browserLanguage);
-					// //translate.use(language);
-					// sysOptions.systemLanguage = language;
 				}
+
+        if( !this.ctx.getProductionApp() ) {
+          translateService.use('fr');
+          this.ctx.setLanguage('fr');
+          authData.setLanguage('fr');
+        }
 
 
 

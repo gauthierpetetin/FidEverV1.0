@@ -19,6 +19,8 @@ import { WalletProvider} from '../../providers/wallet/wallet';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import {Md5} from 'ts-md5/dist/md5';
+
 @IonicPage()
 @Component({
   selector: 'page-signup',
@@ -27,8 +29,6 @@ import { TranslateService } from '@ngx-translate/core';
 export class SignupPage {
   public signupForm: FormGroup;
   public loading: Loading;
-
-  info : string;
 
   address : string;
   privateKey : string;
@@ -48,8 +48,6 @@ export class SignupPage {
     private translateService: TranslateService
 
   ) {
-
-    this.info = this.ctx.info;
 
     this.signupForm = formBuilder.group({
       email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
@@ -76,16 +74,16 @@ export class SignupPage {
       console.log('Signup form not valid : ',this.signupForm.value);
     } else {
       let signupEmail: string = this.signupForm.value.email;
-      let password: string = this.signupForm.value.password;
-      this.ctx.setEmail(signupEmail);
-      this.ctx.save();
-      this.authData.signupUser(signupEmail, password).then((user) => {
+      let hashPassword: string = Md5.hashStr(this.signupForm.value.password).toString();
+      // this.ctx.setEmail(signupEmail);
+      // this.ctx.save();
+      this.authData.signupUser(signupEmail, hashPassword).then((user) => {
         console.log('Firebase signup success : ', user.uid);
-        this.walletProvider.createGlobalEthWallet(user.uid, password).then( () => {
+        this.walletProvider.createGlobalEthWallet(user.uid, user.email, user.displayName, user.profilePicture, hashPassword).then( () => {
           this.loading.dismiss().then( () => {
             this.nav.insert(0,HomePage);
             this.nav.popToRoot();
-            this.ctx.init(user.uid, true, true, false);
+            this.ctx.init(user.uid, user.email, user.displayName, user.photoURL, true, true, false);
           });
         }, (globalWalletError) => {
           this.loading.dismiss().then( () => {

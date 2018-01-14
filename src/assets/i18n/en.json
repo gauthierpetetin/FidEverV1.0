@@ -51,14 +51,27 @@
     "BACK": "Back",
     "MODIFY": "Modify",
     "SAVE": "Save",
+    "CANCEL": "Cancel",
     "PICTURE": "Change Picture",
     "DETAILS": "Account details",
+    "NAME": {
+      "TITLE": "Name",
+      "PLACEHOLDER": "Your name",
+      "VALID": ""
+    },
+    "SURNAME": {
+      "TITLE": "Name",
+      "PLACEHOLDER": "Your name",
+      "VALID": ""
+    },
     "EMAIL": {
       "TITLE": "Email",
+      "PLACEHOLDER": "Your email",
       "VALID": "Please enter a valid email."
     },
     "PHONE": {
       "TITLE": "Phone",
+      "PLACEHOLDER": "Your phone",
       "VALID": "Please enter a valid phone number."
       },
     "ID": "Your current ID",
@@ -70,9 +83,17 @@
       "CANCEL": "Cancel"
     },
     "SAVEALERT": {
-      "TITLE": "Saved",
-      "CONTENT": "Modifications saved successfully."
-    }
+      "TITLE1": "Saved",
+      "CONTENT1": "Modifications saved successfully.",
+      "TITLE2": "Error",
+      "CONTENT2": "Modifications have not been saved."
+    },
+    "EMAILALERT": {
+      "TITLE": "Error",
+      "CONTENT": "Please enter a valid email."
+    },
+    "NEWACCOUNT": "Create account",
+    "EXPLANATION": "Creating an account will help you recover your FID wallet in case of smartphone loss."
   },
   "HOME": {
     "WALLET": "FID Wallet",

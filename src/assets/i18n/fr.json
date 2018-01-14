@@ -51,12 +51,29 @@
     "BACK": "Retour",
     "MODIFY": "Modifier",
     "SAVE": "Sauvegarder",
+    "CANCEL": "Annuler",
     "PICTURE": "Changer photo",
     "DETAILS": "Détails du compte",
-    "EMAIL": "Email",
-    "EMAIL_VALID": "Adresse email non valide.",
-    "PHONE": "Tel",
-    "PHONE_VALID": "Numéro de tel non valide.",
+    "NAME": {
+      "TITLE": "Nom",
+      "PLACEHOLDER": "Ton nom",
+      "VALID": ""
+    },
+    "SURNAME": {
+      "TITLE": "Nom",
+      "PLACEHOLDER": "Ton nom",
+      "VALID": ""
+    },
+    "EMAIL": {
+      "TITLE": "Email",
+      "PLACEHOLDER": "Ton email",
+      "VALID": "Adresse email non valide."
+    },
+    "PHONE": {
+      "TITLE": "Tel",
+      "PLACEHOLDER": "Ton numéro de tel",
+      "VALID": "Numéro de tel non valide."
+      },
     "ID": "Ton ID actuel",
     "DISCONNECTION": "Déconnexion",
     "DISCONNECT": "Se déconnecter",
@@ -66,9 +83,17 @@
       "CANCEL": "Annuler"
     },
     "SAVEALERT": {
-      "TITLE": "Enregistré",
-      "CONTENT": "Les modifications ont bien été sauvegardées."
-    }
+      "TITLE1": "Enregistré",
+      "CONTENT1": "Les modifications ont bien été sauvegardées.",
+      "TITLE2": "Erreur",
+      "CONTENT2": "Les modifications n'ont pas pu être sauvegardées."
+    },
+    "EMAILALERT": {
+      "TITLE": "Erreur",
+      "CONTENT": "Adresse email non valide."
+    },
+    "NEWACCOUNT": "Créer un compte",
+    "EXPLANATION": "La création d'un compte te permettra de retrouver tes FID en cas de perte de ton smartphone."
   },
   "HOME": {
     "WALLET": "Collection de FIDs",
@@ -131,7 +156,7 @@
     "CONGRATS_3": "à"
   },
   "MAP": {
-    "TITLE": "Ou trouver des FID ?",
+    "TITLE": "Carte des FID",
     "BACK": "Retour"
   },
   "ALERT": {

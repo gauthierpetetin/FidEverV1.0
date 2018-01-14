@@ -1,6 +1,11 @@
 <!--
   Generated template for the ProfilePage page.
 
+  "EMAILALERT": {
+    "TITLE": "Erreur",
+    "CONTENT": "Adresse email non valide."
+  },
+
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
@@ -8,8 +13,11 @@
 
   <ion-navbar style="{margin: 0px}">
     <ion-buttons start>
-      <button ion-button (click)="goBack()">
+      <button ion-button *ngIf="!modifying" (click)="goBack()">
         {{ 'PROFILE.BACK' | translate }}
+      </button>
+      <button ion-button *ngIf="modifying" (click)="cancel()">
+        {{ 'PROFILE.CANCEL' | translate }}
       </button>
     </ion-buttons>
     <ion-title>{{ 'PROFILE.ACCOUNT' | translate }}</ion-title>
@@ -17,39 +25,53 @@
         <button ion-button *ngIf="!modifying" (click)="modify()">
           {{ 'PROFILE.MODIFY' | translate }}
         </button>
-      </ion-buttons>
-      <ion-buttons end>
         <button ion-button *ngIf="modifying" (click)="saveModification()">
           {{ 'PROFILE.SAVE' | translate }}
         </button>
       </ion-buttons>
   </ion-navbar>
 
-  <div>
+  <!-- <div>
     <p style="margin: 0 0; padding: 0.5px 0; background-color: white"></p>
-  </div>
+  </div> -->
 
-  <div [ngStyle]="{
+
+</ion-header>
+
+
+<ion-content *ngIf="accountCreated" style="{margin: 0px 0px; padding: 0px 0px}">
+
+  <ion-row [ngStyle]="{
     'background-color':'white',
     'position':'relative',
     'padding':'10px 0',
-    'height':'70px'
+    'height':'100px',
+    'width':'100%'
   }">
     <img-loader
       [ngStyle]="{
+      'border-radius':'80px',
       'position':'absolute',
       'top':'50%',
       'left':'50%',
-      'height':'60px',
-      'width':'60px',
-      'margin-top':'-30px',
-      'margin-left':'-30px'
+      'height':'80px',
+      'width':'80px',
+      'margin-top':'-40px',
+      'margin-left':'-40px',
+      'overflow':'hidden'
       }"
-      src="assets/images/default_images/defaultProfile.png" useImg>
+      fallback="assets/images/default_images/defaultProfile.png"
+      src="{{profilePicture}}"
+      useImg>
     </img-loader>
-  </div>
 
-  <div [ngStyle]="{
+  </ion-row>
+
+  <!-- 'border':'1px solid #afabab', -->
+
+  <!-- Image URI: file:///var/mobile/Containers/Data/Application/6EAC2F43-8A2E-4DDF-AE29-B55A814C0789/tmp/cdv_photo_001.jpg -->
+
+  <ion-row *ngIf="modifying" [ngStyle]="{
     'background-color':'white',
     'position':'relative',
     'padding-top':'25px'
@@ -69,7 +91,7 @@
       }">
       {{ 'PROFILE.PICTURE' | translate }}
     </button>
-  </div>
+  </ion-row>
 
   <div>
     <p style="margin: 0 0; padding: 3px 5px; background-color: #afabab; color: white">
@@ -77,14 +99,57 @@
     </p>
   </div>
 
-</ion-header>
+<form class="list" [formGroup]="infoForm" (submit)="saveModification()" novalidate>
 
+  <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
+    <ion-col col-3>
+      <p >
+        {{ 'PROFILE.NAME.TITLE' | translate }}
+      </p>
+    </ion-col>
+    <ion-col col-9>
+      <p *ngIf="!modifying" style="color: black">
+        {{name}}
+      </p>
+      <ion-input
+        *ngIf="modifying"
+        style="color: #fe9400;
+          font-size: 16px;
+          font-family: 'Verdana' !important;
+          border-bottom: 1px solid grey;"
+        type="name"
+        #name
+        placeholder="{{ 'PROFILE.NAME.PLACEHOLDER' | translate }}"
+        formControlName="name"
+        [(ngModel)]="newName"
+      ></ion-input>
+    </ion-col>
+  </ion-row>
 
-<!-- <ion-content overflow-scroll="false" [ngStyle]="{ -->
-<ion-content style="{margin: 0px 0px; padding: 0px 0px}">
-
-
-<form class="list" [formGroup]="infoForm">
+  <!-- <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
+    <ion-col col-3>
+      <p >
+        {{ 'PROFILE.SURNAME.TITLE' | translate }}
+      </p>
+    </ion-col>
+    <ion-col col-9>
+      <p *ngIf="!modifying" style="color: black">
+        {{surname}}
+      </p>
+      <ion-input
+        *ngIf="modifying"
+        style="color: #fe9400;
+          font-size: 16px;
+          font-family: 'Verdana' !important;
+          border-bottom: 1px solid grey;"
+        type="surname"
+        #surname
+        placeholder="{{ 'PROFILE.SURNAME.PLACEHOLDER' | translate }}"
+        formControlName="surname"
+        [(ngModel)]="newSurname"
+      ></ion-input>
+    </ion-col>
+  </ion-row> -->
 
   <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
     <ion-col col-3>
@@ -94,7 +159,7 @@
     </ion-col>
     <ion-col col-9>
       <p *ngIf="!modifying" style="color: black;">
-        {{ctx.c[info]['email']}}
+        {{email}}
       </p>
       <ion-input
         *ngIf="modifying"
@@ -104,9 +169,9 @@
           border-bottom: 1px solid grey;"
         type="email"
         #email
-        placeholder="Your email"
+        placeholder="{{ 'PROFILE.EMAIL.PLACEHOLDER' | translate }}"
         formControlName="email"
-        [(ngModel)]="ctx.c[info]['email']"
+        [(ngModel)]="newEmail"
         [class.invalid]="!infoForm.controls.email.valid &&
           infoForm.controls.email.dirty"
       ></ion-input>
@@ -117,7 +182,7 @@
     </ion-col>
   </ion-row>
 
-  <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
+  <!-- <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
     <ion-col col-3>
       <p >
         {{ 'PROFILE.PHONE.TITLE' | translate }}
@@ -135,7 +200,7 @@
           border-bottom: 1px solid grey;"
         type="tel"
         #phone
-        placeholder="Your phone"
+        placeholder="{{ 'PROFILE.PHONE.PLACEHOLDER' | translate }}"
         formControlName="phone"
         [(ngModel)]="ctx.c[info]['phone']"
         [class.invalid]="!infoForm.controls.phone.valid &&
@@ -146,7 +211,7 @@
         <p>{{ 'PROFILE.PHONE.VALID' | translate }}</p>
       </div>
     </ion-col>
-  </ion-row>
+  </ion-row> -->
 
   </form>
 
@@ -217,4 +282,81 @@
     </ion-col>
 </ion-row>
 
+</ion-content>
+
+
+<ion-content *ngIf="(!accountCreated) && (!newAccountMode)" style="{margin: 0px 0px; padding: 0px 0px}">
+
+  <ion-row style="margin-top: 60px;">
+
+    <ion-col col-1></ion-col>
+    <ion-col col-10 style="
+      padding: 0 0;
+      margin: 0 0;
+      display: table;">
+      <div style="
+        padding: 0 0;
+        margin: 0 0;
+        height: 25px !important;
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+        ">
+        <h2 style="
+          color: grey;
+          font-size: 12px;
+          margin: 0px 5px;
+          text-overflow: ellipsis;
+          white-space: normal;
+          ">
+          {{ 'PROFILE.EXPLANATION' | translate }}
+        </h2>
+      </div>
+    </ion-col>
+    <ion-col col-1></ion-col>
+  </ion-row>
+
+  <ion-row style="height: 40px; position: relative; margin-top: 20px">
+    <button ion-button (click)="createNewAccount()" [ngStyle]="{'background-color': ctx.fidOrange}"
+    style="
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 40px;
+      width: 90%;
+      margin-top: -20px;
+      margin-left: -45%;
+      ">
+      {{ 'PROFILE.NEWACCOUNT' | translate }}
+    </button>
+  </ion-row>
+
+</ion-content>
+
+<ion-content padding *ngIf="(!accountCreated) && newAccountMode" style="{margin: 0px 0px; padding: 0px 0px}">
+  <form style="margin-top: 60px;" [formGroup]="signupForm" (submit)="signupUser()" novalidate>
+
+    <ion-item>
+      <ion-label stacked>{{ 'SIGNUP.EMAIL.TITLE' | translate }}</ion-label>
+      <ion-input formControlName="email" type="email" placeholder={{emailPlaceholder}}
+        [class.invalid]="!signupForm.controls.email.valid && signupForm.controls.email.dirty"></ion-input>
+    </ion-item>
+    <ion-item class="error-message" *ngIf="!signupForm.controls.email.valid  && signupForm.controls.email.dirty">
+      <p>{{ 'SIGNUP.EMAIL.VALID' | translate }}</p>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked>{{ 'SIGNUP.PASSWORD.TITLE' | translate }}</ion-label>
+      <ion-input formControlName="password" type="password"  placeholder={{passwordPlaceholder}}
+        [class.invalid]="!signupForm.controls.password.valid && signupForm.controls.password.dirty"></ion-input>
+    </ion-item>
+    <ion-item class="error-message" *ngIf="!signupForm.controls.password.valid  && signupForm.controls.password.dirty">
+      <p>{{ 'SIGNUP.PASSWORD.VALID' | translate }}</p>
+    </ion-item>
+
+    <button ion-button block type="submit">
+      {{ 'SIGNUP.NEW_ACCOUNT' | translate }}
+    </button>
+
+  </form>
 </ion-content>

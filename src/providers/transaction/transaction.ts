@@ -111,18 +111,14 @@ export class TransactionProvider {
       }
       else{
         let err = {};
-        console.log(self.language);
         if(self.language == 'fr') {
-          console.log('Francais');
           err[self.alertTitle] = 'Pas de destinataire';
           err[self.alertText] = 'Merci de sélectionner un destinataire.';
         }
         else {
-          console.log('Anglais');
           err[self.alertTitle] = 'No recipient';
           err[self.alertText] = 'Please choose a recipient first.';
         }
-        console.log('ERR : ', err);
         reject(err);
       }
   });

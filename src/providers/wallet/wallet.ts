@@ -28,15 +28,15 @@ export class WalletProvider {
   }
 
 
-  createGlobalEthWallet(uid: string, password: string):Promise <any> {
+  createGlobalEthWallet(uid: string, email: string, displayName: string, photoURL: string, hashPassword: string):Promise <any> {
     console.log('Open createGlobalEthWallet');
 
-    let passPhrase = Md5.hashStr(uid.concat(password)).toString()
+    let passPhrase = Md5.hashStr(uid.concat(hashPassword)).toString();
 
     var self = this;
     return new Promise((resolve,reject) => {
 
-      self.ctx.init(uid, false, false, false).then( () => {
+      self.ctx.init(uid, email, displayName, photoURL, false, false, false).then( () => {
         console.log('Init config success');
 
         //Ethereum account creation
@@ -44,7 +44,13 @@ export class WalletProvider {
           console.log('Local wallet creation success : ', nAddress);
           self.fidapiProvider.createWallet(uid, nAddress).then( () => {
             console.log('FidApi signup success');
-            resolve();
+            self.ctx.setHashPassword(hashPassword);
+            self.ctx.save().then( () => {
+              resolve();
+            }).catch( (saveError) => {
+              console.log('Context save error');
+              reject(saveError);
+            });
           }, (fidApiSignupError) => {
             console.log('Signup error on Firestore database : ', fidApiSignupError);
             reject(fidApiSignupError);

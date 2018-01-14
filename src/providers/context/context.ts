@@ -26,12 +26,19 @@ enum IconSize {
 export class ContextProvider {
 
   uid: string;
+  deviceId: string;
+
+  email: string;
+  name: string;
+  profilePicture: string;
 
   language: string = 'en';
 
   c: any = {};
 
   cordovaPlatform: boolean = false;
+
+  productionApp: boolean = false;
 
   storageKey: string = 'storageKey';
 
@@ -54,6 +61,10 @@ export class ContextProvider {
     infoAddress: string = 'ethAddress';
     infoPrivateKey: string = 'ethPrivateKey';
     infoEmail: string = 'email';
+    infoHashPassword: string = 'hashPassword';
+    infoName: string = 'name';
+    infoSurname: string = 'surname';
+    infoProfilePicture: string = 'profilePicture';
 
 
   iconSize: IconSize = IconSize.NORMAL;
@@ -109,13 +120,13 @@ export class ContextProvider {
 
 /***************SETTERS*********************/
 
+  setAppToProduction() {
+    this.productionApp = true;
+  }
+
   setLanguage(language : string) {
     this.language = language;
   }
-
-  // setHello() {
-  //   console.log('HEEEEEELLLLLLOOOOO');
-  // }
 
   setAddress(address : string) {
     this.c[this.info][this.infoAddress] = address;
@@ -129,8 +140,24 @@ export class ContextProvider {
     this.c[this.info][this.infoEmail] = email;
   }
 
+  setHashPassword(hashPassword : string) {
+    console.log('setHashPassword : ', hashPassword);
+    this.c[this.info][this.infoHashPassword] = hashPassword;
+  }
+
+  setName(name : string) {
+    this.c[this.info][this.infoName] = name;
+  }
+
+  setProfilePicture(profilePicture: string) {
+    this.c[this.info][this.infoProfilePicture] = profilePicture;
+  }
 
 /****************GETTERS*********************/
+
+  getProductionApp(): boolean {
+    return this.productionApp;
+  }
 
   getLanguage(): string {
     return this.language;
@@ -140,6 +167,10 @@ export class ContextProvider {
     return this.uid;
   }
 
+  getDeviceId(): string {
+    return this.deviceId;
+  }
+
   getAddress(): string {
     return this.c[this.info][this.infoAddress];
   }
@@ -147,7 +178,17 @@ export class ContextProvider {
     return this.c[this.info][this.infoPrivateKey];
   }
   getEmail(): string {
-    return this.c[this.info][this.infoEmail];;
+    // return this.email;
+    return this.c[this.info][this.infoEmail];
+  }
+  getHashPassword(): string {
+    return this.c[this.info][this.infoHashPassword];
+  }
+  getName(): string {
+    return this.c[this.info][this.infoName];
+  }
+  getProfilePicture(): string {
+    return this.c[this.info][this.infoProfilePicture];
   }
 
   getCoinAddresses(): string {
@@ -197,8 +238,12 @@ export class ContextProvider {
     }else {return [];}
   }
 
+
   init(
     uid: string,
+    email: string,
+    myName: string,
+    profilePicture: string,
     loadData: boolean,
     loadAllCoins: boolean,
     loadXXL_images: boolean,
@@ -217,12 +262,23 @@ export class ContextProvider {
     // console.log('Account4 : ', this.ethapiProvider.createAccount(passphrase4));
     /********************/
 
+    if( !this.getProductionApp() ) {
+      this.fidapiProvider.setProxyUrl('https://cors-anywhere.herokuapp.com/');
+    }
+
 
     console.log('Open context init');
     var self = this;
     return new Promise(
       function(resolve, reject) {
         self.uid = uid;
+
+        //*****Data to be imported in context once initialized****
+        self.email = email;
+        self.name = myName;
+        self.profilePicture = profilePicture;
+        //********************************************************
+
         self.firestoreProvider.init().then( (apiUrl) => {
           console.log('API URL : ',apiUrl);
           self.fidapiProvider.setApiUrl( apiUrl.concat('/') );
@@ -230,6 +286,7 @@ export class ContextProvider {
 
           if(loadData){
             self.loadData(uid, loadAllCoins, loadXXL_images, coinParameter).then((res)=>{
+              self.importAuthenticationData();
               resolve(res);
             }).catch((err)=>{
               reject(err);
@@ -241,6 +298,18 @@ export class ContextProvider {
 
         }).catch((err) => {reject(err);});
     });
+  }
+
+  importAuthenticationData() {
+    if(this.email) {
+      this.setEmail(this.email);
+    }
+    if(this.name) {
+      this.setName(this.name);
+    }
+    if(this.profilePicture) {
+      this.setProfilePicture(this.profilePicture);
+    }
   }
 
   loadData(
