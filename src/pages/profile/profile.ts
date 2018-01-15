@@ -63,6 +63,7 @@ export class ProfilePage {
 
   newName: string;
   newEmail: string;
+  newProfilePicture: string;
 
   accountCreated: boolean;
   newAccountMode: boolean;
@@ -70,8 +71,13 @@ export class ProfilePage {
   emailPlaceholder: string;
   passwordPlaceholder: string;
 
-  emailAlertTitle: string;
-  emailAlertContent: string;
+  emailAlertTitle: string; // "Error"
+  emailAlertContent: string; // "Please enter a valid email."
+
+  signupAlertTitle1: string; // "Congratulations"
+  signupAlertContent1: string; // "Account created successfully."
+  signupAlertTitle2: string; // "Error"
+  signupAlertContent2: string; // "Account creation error."
 
   constructor(
     // public platform: Platform,
@@ -154,6 +160,11 @@ export class ProfilePage {
 
     this.translateService.get('PROFILE.EMAILALERT.TITLE').subscribe(emailAlertTitle => { this.emailAlertTitle = emailAlertTitle.toString(); });
     this.translateService.get('PROFILE.EMAILALERT.CONTENT').subscribe(emailAlertContent => { this.emailAlertContent = emailAlertContent.toString(); });
+
+    this.translateService.get('PROFILE.SIGNUPALERT.TITLE1').subscribe(signupAlertTitle => { this.signupAlertTitle1 = signupAlertTitle.toString(); });
+    this.translateService.get('PROFILE.SIGNUPALERT.CONTENT1').subscribe(signupAlertContent => { this.signupAlertContent1 = signupAlertContent.toString(); });
+    this.translateService.get('PROFILE.SIGNUPALERT.TITLE2').subscribe(signupAlertTitle => { this.signupAlertTitle2 = signupAlertTitle.toString(); });
+    this.translateService.get('PROFILE.SIGNUPALERT.CONTENT2').subscribe(signupAlertContent => { this.signupAlertContent2 = signupAlertContent.toString(); });
 
   }
 
@@ -252,7 +263,21 @@ export class ProfilePage {
       allowEdit: true
     }).then(imageData => {
       this.profilePictureData = imageData;
-      this.profilePicture = "data:image/jpeg;base64," + imageData;
+      this.newProfilePicture = "data:image/jpeg;base64," + imageData;
+
+      this.loading = this.loadingCtrl.create({
+        dismissOnPageChange: true,
+      });
+      this.loading.present();
+
+      this.saveProfilePicture(this.newProfilePicture, this.profilePictureData).then( (updatedProfilePicture) => {
+        this.ctx.setProfilePicture(updatedProfilePicture);
+        this.profilePicture = updatedProfilePicture;
+        this.loading.dismiss();
+      }).catch( () => {
+        this.loading.dismiss();
+      });
+
     }, error => {
       console.log("ERROR -> " + JSON.stringify(error));
     });
@@ -267,8 +292,8 @@ export class ProfilePage {
         buttons: ['Ok']
       });
       alert.present();
-      return;
     }
+    else{
 
     this.modifying = false;
 
@@ -279,26 +304,27 @@ export class ProfilePage {
 
     this.authenticate().then( () => {
       this.saveEmail(this.newEmail, this.email).then( () => {
-        this.saveProfilePicture(this.profilePicture, this.profilePictureData).then( (updatedProfilePicture) => {
-          this.saveProfile(this.newName, updatedProfilePicture).then( () => {
+        // this.saveProfilePicture(this.profilePicture, this.profilePictureData).then( (updatedProfilePicture) => {
+          this.saveProfile(this.newName, this.newProfilePicture).then( () => {
             this.ctx.save().then( () => {
-              this.presentSuccessAlert();
+              this.presentSaveSuccessAlert();
             }, () => {
-              this.presentErrorAlert();
+              this.presentSaveErrorAlert();
             });
           }).catch( () => {
-            this.presentErrorAlert();
+            this.presentSaveErrorAlert();
           });
-        }).catch( () => {
-          this.presentErrorAlert();
-        });
+        // }).catch( () => {
+        //   this.presentSaveErrorAlert();
+        // });
       }).catch( () => {
-        this.presentErrorAlert();
+        this.presentSaveErrorAlert();
       });
     }).catch( () => {
-      this.presentErrorAlert();
+      this.presentSaveErrorAlert();
     });
 
+  }
 
   }
 
@@ -326,7 +352,7 @@ export class ProfilePage {
           resolve();
         }).catch( (err) => {
           console.log('Save Email error : ', err);
-          reject();
+          reject(err);
         });
       }
       else {
@@ -398,7 +424,7 @@ export class ProfilePage {
     });
   }
 
-  presentSuccessAlert() {
+  presentSaveSuccessAlert() {
     this.getAccountInfo();
     this.loading.dismiss();
     let alert = this.alertCtrl.create({
@@ -409,12 +435,41 @@ export class ProfilePage {
     alert.present();
   }
 
-  presentErrorAlert() {
+  presentSaveErrorAlert() {
     this.getAccountInfo();
     this.loading.dismiss();
     let alert = this.alertCtrl.create({
       title: this.saveAlertTitle2,
       subTitle: this.saveAlertContent2,
+      buttons: ['Ok']
+    });
+    alert.present();
+  }
+
+  presentSignupSuccessAlert() {
+    this.getAccountInfo();
+    this.loading.dismiss();
+    let alert = this.alertCtrl.create({
+      title: this.signupAlertTitle1,
+      subTitle: this.signupAlertContent1,
+      buttons: ['Ok']
+    });
+    alert.present();
+  }
+
+  presentSignupErrorAlert(error: any) {
+    let message: string;
+    if( error ) {
+      message = this.signupAlertContent2.concat(' (', error.message, ')');
+    }
+    else {
+      message = this.signupAlertContent2;
+    }
+    this.getAccountInfo();
+    this.loading.dismiss();
+    let alert = this.alertCtrl.create({
+      title: this.signupAlertTitle2,
+      subTitle: message,
       buttons: ['Ok']
     });
     alert.present();
@@ -440,15 +495,19 @@ export class ProfilePage {
     this.setEmailAndPassword(signupEmail, hashPassword).then( () => {
       this.ctx.save();
       this.checkIfAccountCreated(this.ctx.getEmail(), this.ctx.getHashPassword());
-      this.presentSuccessAlert();
-    }).catch( () => {
+      this.presentSignupSuccessAlert();
+      this.newAccountMode = false;
+    }).catch( (err) => {
+      console.log('signupUser error : ', err);
       this.ctx.save();
       this.checkIfAccountCreated(this.ctx.getEmail(), this.ctx.getHashPassword());
-      this.presentErrorAlert();
+      this.presentSignupErrorAlert(err);
+      this.newAccountMode = true;
     });
 
 
   }
+
 
   setEmailAndPassword(signupEmail: string, hashPassword: string): Promise<any> {
     var self = this;
@@ -460,8 +519,9 @@ export class ProfilePage {
           }).catch( () => {
             reject();
           });
-        }).catch( () => {
-          reject();
+        }).catch( (emailError) => {
+          console.log('setEmailAndPassword email error : ', emailError);
+          reject(emailError);
         });
       }).catch( () => {
         reject();

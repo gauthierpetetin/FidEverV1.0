@@ -271,8 +271,8 @@ export class ContextProvider {
     var self = this;
     return new Promise(
       function(resolve, reject) {
-        self.uid = uid;
 
+        self.uid = uid;
         //*****Data to be imported in context once initialized****
         self.email = email;
         self.name = myName;

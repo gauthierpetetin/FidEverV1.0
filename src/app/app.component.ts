@@ -94,9 +94,12 @@ export class MyApp {
         this.ctx.deviceId = deviceId;
       }).catch((error: any) => {
         console.log('No deviceId');
-        let artificialDeviceId = 'xxxxxxxxxx';
-        this.ctx.deviceId = artificialDeviceId;
+        if(!this.ctx.getProductionApp()) {
+          let artificialDeviceId = 'xxxxxxxxxx';
+          this.ctx.deviceId = artificialDeviceId;
+        }
       });
+
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       //statusBar.styleDefault();
@@ -142,6 +145,7 @@ export class MyApp {
             }
 					});
 				}
+
 
         if( !this.ctx.getProductionApp() ) {
           translateService.use('fr');

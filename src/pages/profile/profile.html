@@ -39,7 +39,9 @@
 </ion-header>
 
 
-<ion-content *ngIf="accountCreated" style="{margin: 0px 0px; padding: 0px 0px}">
+<ion-content style="margin: 0px 0px; padding: 0px 0px">
+
+  <div *ngIf="accountCreated" style="margin: 0px 0px; padding: 0px 0px">
 
   <ion-row [ngStyle]="{
     'background-color':'white',
@@ -282,10 +284,11 @@
     </ion-col>
 </ion-row>
 
-</ion-content>
+</div>
 
 
-<ion-content *ngIf="(!accountCreated) && (!newAccountMode)" style="{margin: 0px 0px; padding: 0px 0px}">
+
+<div padding *ngIf="(!accountCreated) && (!newAccountMode)" style="margin: 0px 0px; padding: 0px 0px">
 
   <ion-row style="margin-top: 60px;">
 
@@ -331,10 +334,13 @@
     </button>
   </ion-row>
 
-</ion-content>
+</div>
 
-<ion-content padding *ngIf="(!accountCreated) && newAccountMode" style="{margin: 0px 0px; padding: 0px 0px}">
-  <form style="margin-top: 60px;" [formGroup]="signupForm" (submit)="signupUser()" novalidate>
+
+
+<div padding *ngIf="(!accountCreated) && newAccountMode">
+
+  <form style="margin-top: 30px;" [formGroup]="signupForm" (submit)="signupUser()" novalidate>
 
     <ion-item>
       <ion-label stacked>{{ 'SIGNUP.EMAIL.TITLE' | translate }}</ion-label>
@@ -359,4 +365,6 @@
     </button>
 
   </form>
+
+</div>
 </ion-content>

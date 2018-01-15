@@ -92,6 +92,12 @@
       "TITLE": "Erreur",
       "CONTENT": "Adresse email non valide."
     },
+    "SIGNUPALERT": {
+      "TITLE1": "Félicitations",
+      "CONTENT1": "Ton compte a bien été créé.",
+      "TITLE2": "Erreur",
+      "CONTENT2": "Ton compte n'a pas pu être créé."
+    },
     "NEWACCOUNT": "Créer un compte",
     "EXPLANATION": "La création d'un compte te permettra de retrouver tes FID en cas de perte de ton smartphone."
   },

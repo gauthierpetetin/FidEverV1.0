@@ -92,6 +92,12 @@
       "TITLE": "Error",
       "CONTENT": "Please enter a valid email."
     },
+    "SIGNUPALERT": {
+      "TITLE1": "Congratulations",
+      "CONTENT1": "Account created successfully.",
+      "TITLE2": "Error",
+      "CONTENT2": "Account creation error."
+    },
     "NEWACCOUNT": "Create account",
     "EXPLANATION": "Creating an account will help you recover your FID wallet in case of smartphone loss."
   },
