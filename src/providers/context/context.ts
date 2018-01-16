@@ -78,8 +78,6 @@ export class ContextProvider {
       privateKey: string
   };
 
-  myCoinCollectionPath: string;
-
   coinGlobalSubscribtion: any; // Subscribed
 
   coinDetailSubscribtions: any = {}; // Subscribed
@@ -263,7 +261,9 @@ export class ContextProvider {
     /********************/
 
     if( !this.getProductionApp() ) {
+      /***********************/
       this.fidapiProvider.setProxyUrl('https://cors-anywhere.herokuapp.com/');
+      /***********************/
     }
 
 
@@ -517,9 +517,12 @@ recoverEthereumAccount(myUid : string): Promise<any> {
   var self = this;
   return new Promise( function(resolve, reject) {
     if(myUid != null){
-      self.initCoinCollectionPath(myUid);
 
-      self.getCoinList();
+      self.getMyCoinList(myUid).then( () => {
+
+      }).catch( () => {
+
+      });
       resolve();
     }
     else {
@@ -533,72 +536,82 @@ recoverEthereumAccount(myUid : string): Promise<any> {
 
 }
 
-initCoinCollectionPath(myUid : string) {
+myCoinCollectionPath(myUid : string): string {
   if(myUid){
-    this.myCoinCollectionPath = 'wallets/'.concat(myUid,'/tokens');
-    console.log('myCoinCollectionPath : '.concat(this.myCoinCollectionPath));
+    let coinCollectionPath = 'wallets/'.concat(myUid,'/tokens');
+    console.log('myCoinCollectionPath : '.concat(coinCollectionPath));
+    return coinCollectionPath;
   }
   else{
     console.log('myCoinCollectionPath : None');
+    return null;
   }
 }
 
-getCoinList() {
-  console.log('Open getCoinList');
+getMyCoinList(myUid: string): Promise<any> {
+  console.log('Open getMyCoinList');
 
-  if(this.myCoinCollectionPath){
-    console.log('Launch firestoreProvider');
-    //Subscribtion security
-    if(this.coinGlobalSubscribtion){this.coinGlobalSubscribtion.unsubscribe();console.log('UNSUBSCRIBE GLOBAL');}
+  var self = this;
+  return new Promise((resolve, reject) => {
+    let coinCollectionPath: string = self.myCoinCollectionPath(myUid);
+    if( coinCollectionPath ){
+      //Subscribtion security
+      if(self.coinGlobalSubscribtion){self.coinGlobalSubscribtion.unsubscribe();console.log('UNSUBSCRIBE GLOBAL');}
 
-    var self = this;
-    this.coinGlobalSubscribtion = this.firestoreProvider
-      .getCollection(this.myCoinCollectionPath)
-      .subscribe( dbCoins => {
+      self.coinGlobalSubscribtion = self.firestoreProvider
+        .getCollection(coinCollectionPath)
+        .subscribe( dbCoins => {
 
-        console.log('OBSERVABLE COINLIST : ', dbCoins);
+          console.log('OBSERVABLE COINLIST : ', dbCoins);
 
-      if(dbCoins != null){
-        var myContracts = [];
+        if(dbCoins != null){
+          var myContracts = [];
 
-        for(let cc of dbCoins) {
-          myContracts.push(cc.contract);
-        }
-        //Add new coins
-        for(let cc of myContracts) {
-          if(self.c[self.contractAddresses].indexOf(cc)<0){
-            console.log('Add coin : ',cc);
-            self.c[self.contractAddresses].push(cc);
+          for(let cc of dbCoins) {
+            myContracts.push(cc.contract);
           }
-        }
-        //Delete old coins
-        for(let cc of self.c[self.contractAddresses]) {
-          if(myContracts.indexOf(cc)<0){
-            console.log('Remove coin : ',cc);
-            self.c[self.contractAddresses].splice(self.c[self.contractAddresses].indexOf(cc),1);
-            self.cleanCoin(self, cc);
+
+          //Add new coins
+          for(let cc of myContracts) {
+            if(self.c[self.contractAddresses].indexOf(cc)<0){
+              self.c[self.contractAddresses].push(cc);
+            }
           }
+
+          //Delete old coins
+          for(let cc of self.c[self.contractAddresses]) {
+            if(myContracts.indexOf(cc)<0){
+              self.c[self.contractAddresses].splice(self.c[self.contractAddresses].indexOf(cc),1);
+              self.cleanCoin(self, cc);
+            }
+          }
+          console.log('Coins obtained : '.concat(JSON.stringify(self.c[self.contractAddresses])) );
+
+          /*******************************************/
+
+          self.initCoinList();
+          console.log('Coins initialized : '.concat(JSON.stringify(self.c[self.contractAddresses])) );
+
+          self.downloadAllCoinInfos(self.c[self.contractAddresses]).then( () => {
+            self.save().then( () => {
+              console.log('downloadAllCoinInfos succeeded');
+              resolve();
+            }).catch( () => { reject(); });
+          }).catch( () => { reject(); });
+
         }
-        console.log('Coins obtained : '.concat(JSON.stringify(self.c[self.contractAddresses])) );
+        else{
+          console.log('Null dbCoins list');
+          resolve();
+        }
 
-        self.initCoinList();
-        console.log('Coins initialized : '.concat(JSON.stringify(self.c[self.contractAddresses])) );
+      });
 
-        self.downloadAllInfo();
-        console.log('Coins complete');
+    }
 
-        this.save();
+  });
 
-      }
-      else{
-        console.log('Null dbCoins list');
-      }
 
-    });
-
-  }
-
-  console.log('Close getCoinList');
 }
 
 cleanCoin(self : any, cc : string) {
@@ -633,8 +646,8 @@ cleanCoin(self : any, cc : string) {
 initCoinList() {
   console.log('Open initCoinList');
 
-  for(let ccc of this.c[this.contractAddresses]) {
-    this.initCoin(ccc);
+  for(let coinAddress of this.c[this.contractAddresses]) {
+    this.initCoin(coinAddress);
   }
   console.log('Close initCoinList');
 }
@@ -653,40 +666,95 @@ initCoin(cc: any) {
   if(!this.c[this.locations][cc]) {this.c[this.locations][cc] = {};}
 }
 
-downloadAllInfo() {
-  console.log('Open downloadAllInfo');
+downloadAllCoinInfos(coinContractAddresses: any): Promise<any> { //this.c[this.contractAddresses]
+  console.log('Open downloadAllCoinInfos');
 
-  for(let cc of this.c[this.contractAddresses]) {
-    this.downloadAllInfoForCoin(cc);
-  }
-  console.log('Close downloadAllInfo');
+  var self = this;
+  return new Promise(
+    function(resolve, reject) {
+
+      for(let coinContractAddress of coinContractAddresses) {
+        self.downloadAllInfoForCoin(coinContractAddress).then( (length) => {
+          console.log('All parameters downloaded : ', length);
+          resolve();
+        }).catch( (parameter) => {
+          console.log('Error downloading parameter :');
+          reject();
+        });
+      }
+
+  });
+
 }
 
-downloadAllInfoForCoin(cc: string) {
-  //Get coin details
-  this.downloadCoinDetail(cc);
+downloadAllInfoForCoin(coinID: string): Promise<any> { //coinContractAddress
 
-  // Download coin amounts
-  this.downloadCoinAmount(cc);
+  var self = this;
+  console.log('Open downloadAllInfoForCoin');
+  return new Promise(
+    function(resolve, reject) {
+      let res: boolean[] = []; // Array to download all elements in parallel and log the successes
+      let tot: number = 8; // Total number of downloads : 8
 
-  // Download coin icons
-  this.downloadCoinIcon(cc);
+      // #1 Get coin details
+      self.downloadCoinDetail(coinID).then(()=>{ res.push(true);
+        if(self.checkRes(res, tot)){ resolve(res.length); }
+      }).catch(()=>{res.push(false); reject('CoinDetail')});
 
-  // Download landscape images
-  this.downloadLandscapeImage(cc);
+      // #2 Download coin amounts
+      self.downloadCoinAmount(coinID).then(()=>{ res.push(true);
+        if(self.checkRes(res, tot)){ resolve(res.length); }
+      }).catch(()=>{res.push(false); reject('CoinAmount')});
 
-  // Download brand icons
-  this.downloadBrandIcon(cc);
+      // #3 Download coin icons
+      self.downloadCoinIcon(coinID).then(()=>{ res.push(true);
+        if(self.checkRes(res, tot)){ resolve(res.length); }
+      }).catch(()=>{res.push(false); reject('CoinIcon')});
 
-  // Download offers list
-  this.downloadOffers(cc);
+      // #4 Download landscape images
+      self.downloadLandscapeImage(coinID).then(()=>{ res.push(true);
+        if(self.checkRes(res, tot)){ resolve(res.length); }
+      }).catch(()=>{res.push(false); reject('LandscapeImage')});
 
-  // Download rewards list
-  this.downloadRewards(cc);
+      // #5 Download brand icons
+      self.downloadBrandIcon(coinID).then(()=>{ res.push(true);
+        if(self.checkRes(res, tot)){ resolve(res.length); }
+      }).catch(()=>{res.push(false); reject('BrandIcon')});
 
-  // Download locations list
-  this.downloadLocations(cc);
+      // #6 Download offers list
+      self.downloadOffers(coinID).then(()=>{ res.push(true);
+        if(self.checkRes(res, tot)){ resolve(res.length); }
+      }).catch(()=>{res.push(false); reject('Offers')});
 
+      // #7 Download rewards list
+      self.downloadRewards(coinID).then(()=>{ res.push(true);
+        if(self.checkRes(res, tot)){ resolve(res.length); }
+      }).catch(()=>{res.push(false); reject('Rewards')});
+
+      // #8 Download locations list
+      self.downloadLocations(coinID).then(()=>{ res.push(true);
+        if(self.checkRes(res, tot)){ resolve(res.length); }
+      }).catch(()=>{res.push(false); reject('Locations')});
+
+
+    }
+  );
+
+}
+
+checkRes(res: boolean[], totalDownloads: number): boolean {
+  let count: number = 0;
+  for(let rr of res) {
+    if(rr){
+      count +=1;
+    }
+  }
+  if(count == totalDownloads) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 downloadCoinDetail(cc: string): Promise<any> {
@@ -723,7 +791,7 @@ downloadCoinAmount(cc: string): Promise<any> {
       //Unsubscribtion security
       if(self.coinAmountSubscribtions[cc]){self.coinAmountSubscribtions[cc].unsubscribe();console.log('UNSUBSCRIBE AMOUNT');}
       console.log('CreateCoinAmountObserver');
-      let path = self.myCoinCollectionPath.concat('/',cc);
+      let path = self.myCoinCollectionPath(self.uid).concat('/',cc);
       self.coinAmountObservers[cc] = self.firestoreProvider.getDocument(path);
       self.coinAmountSubscribtions[cc] = self.coinAmountObservers[cc]
         .subscribe((coin_a) => {
@@ -923,8 +991,9 @@ addCoin() {
   };
 
   console.log('Open addCoin');
-  if(this.myCoinCollectionPath){
-    this.firestoreProvider.setDocInCollection(newCoin,this.myCoinCollectionPath).subscribe(
+  let coinCollectionPath: string = this.myCoinCollectionPath(this.getUid());
+  if(coinCollectionPath){
+    this.firestoreProvider.setDocInCollection(newCoin, coinCollectionPath).subscribe(
       (res) => {
         console.log('Coin added successfully');
       },
@@ -940,7 +1009,7 @@ addCoin() {
 
   removeCoin(coinId : string) {
     console.log('Open removeCoin');
-    this.firestoreProvider.deleteDocFromCollection(coinId, this.myCoinCollectionPath);
+    this.firestoreProvider.deleteDocFromCollection(coinId, this.myCoinCollectionPath(this.getUid()));
     console.log('Close removeCoin');
   }
 
