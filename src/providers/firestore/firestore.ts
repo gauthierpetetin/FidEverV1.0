@@ -48,8 +48,6 @@ export class FirestoreProvider {
     // Create a storage reference from our storage service
     this.storageRef = this.storage.ref(this.imagesRootPath);
 
-    console.log('Close Firestore Provider constructor');
-
   }
 
   init(): Promise<any> {
@@ -108,22 +106,13 @@ export class FirestoreProvider {
     this.coinCollection = this.afCoinCollection.snapshotChanges()
       .map(actions => {
         return actions.map(a => {
-          console.log('SHOW A : ', a);
-          if(a.payload.doc.exists) {
-            const type = a.type;
-            const data = a.payload.doc.data() as any;
-            const id = a.payload.doc.id;
-            return { id, type, ...data };
-          }
-          else {
-            console.log('Doc doesnt exist :', a);
-            return;
-          }
-
+          const type = a.type;
+          const data = a.payload.doc.data() as any;
+          const id = a.payload.doc.id;
+          return { id, type, ...data };
         })
       });
 
-    console.log('Close firestoreProvider-getcollection');
     return this.coinCollection;
   }
 
@@ -146,8 +135,6 @@ export class FirestoreProvider {
           return { id, type, ...data };
     });
 
-
-    console.log('Close firestoreProvider-getDocument');
     return this.coinDocument;
   }
 
@@ -156,7 +143,6 @@ export class FirestoreProvider {
 
     this.afCoinCollection = this.angularFirestore.collection<any>(collectionName);
 
-    console.log('Close firestoreProvider-setdocument');
     return Observable.create(observer => {
       observer.next(this.afCoinCollection.add(coin));
       observer.complete();
@@ -227,7 +213,6 @@ export class FirestoreProvider {
     for (let i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i));
     }
-    console.log('Close dataURItoBlob : ', array);
     return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
   };
 

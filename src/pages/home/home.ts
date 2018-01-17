@@ -56,8 +56,6 @@ export class HomePage {
       this.info = this.ctx.info;
       this.myContractAddresses = this.ctx.myContractAddresses;
 
-      console.log('Close Homepage constructor');
-
       // this.translate();
   }
 

@@ -402,8 +402,13 @@ export class ContextProvider {
                     if(uid != null){
                       self.getMyCoinListFromFirestore(uid).then( (myCoinList) => {
                         console.log('MyCoinList recovered from Firestore : ', myCoinList);
-                        self.save();
-                        resolve(address);
+                        self.downloadMyCoinAmounts(myCoinList, uid).then( (nb) => {
+                          console.log('My coin amounts downloaded for all my ', nb, ' coins.');
+                          self.save().then( () => {
+                            resolve(address);
+                          }).catch( (err) => {reject(err);});
+                        }).catch( (err) => {reject(err);});
+
                       }).catch( (err) => {
                         console.log('GetMyCoinListFromFirestore error');
                         reject(err);
@@ -662,6 +667,71 @@ getMyCoinListFromFirestore(myUid: string): Promise<any> {
 
 }
 
+downloadMyCoinAmounts(coinContractAddresses: any, uid: string): Promise<any> {
+  console.log('Open downloadMyCoinAmounts');
+  var self = this;
+  return new Promise(
+    function(resolve, reject) {
+      let res: boolean[] = []; // Array to download all elements in parallel and log the successes
+      let tot: number = coinContractAddresses.length; // Total number of downloads
+
+      for(let coinContractAddress of coinContractAddresses) {
+        self.downloadCoinAmount(coinContractAddress, uid).then( (amount) => {
+          console.log('Amount of coin : ', coinContractAddress, ' is : ', amount);
+          res.push(true);
+          if(self.checkRes(res, tot)){
+
+            self.save().then( () => {
+              resolve(res.length);
+            }).then( () => { reject(res.length); });
+
+          }
+        }).catch( (err) => {
+          console.log('Error downloading amount of ', coinContractAddress, ' : ', err);
+          res.push(false);
+          reject(err);
+        });
+      }
+
+    }
+  );
+}
+
+downloadCoinAmount(coin: string, uid: string): Promise<any> {
+  console.log('Open downloadCoinAmount for coin : ', coin);
+
+  //Get amounts
+  var self = this;
+
+  return new Promise(
+    function(resolve, reject) {
+      //Unsubscribtion security
+      if(self.coinAmountSubscribtions[coin]){self.coinAmountSubscribtions[coin].unsubscribe();console.log('UNSUBSCRIBE AMOUNT');}
+      let path = self.myCoinCollectionPath(uid).concat('/',coin);
+      self.coinAmountObservers[coin] = self.firestoreProvider.getDocument(path);
+      self.coinAmountSubscribtions[coin] = self.coinAmountObservers[coin].subscribe((coin_a) => {
+        console.log('OBSERVABLE MYCOINAMOUNT : ', coin);
+        let amount = coin_a['balance'];
+        //Show alert
+        var delta : number = parseInt(amount) - parseInt(self.c[self.amounts][coin]);
+        if(delta > 0){
+          self.alertProvider.receiveAlert(delta, self.c[self.names][coin], self.getLanguage());
+        }
+        else if (delta < 0){
+          //self.alertProvider.sendAlert(-delta, self.c[self.names][coin]);
+        }
+        //Update amount
+        self.c[self.amounts][coin] = amount;
+        resolve(amount);
+      }, (err) => {
+        reject(err);
+      }
+    );
+
+  });
+
+}
+
 cleanCoin(self : any, coin : string) {
   console.log('Open cleanCoin');
   var delta : number = parseInt(self.c[self.amounts][coin]);
@@ -722,14 +792,14 @@ downloadAllCoinInfos(coinContractAddresses: any): Promise<any> { //this.c[this.m
     function(resolve, reject) {
 
       for(let coinContractAddress of coinContractAddresses) {
-        // self.downloadAllInfoForCoin(coinContractAddress).then( (length) => {
-        //   console.log('All parameters downloaded : ', length);
-        //   resolve();
-        // }).catch( (parameter) => {
-        //   console.log('Error downloading parameter :');
-        //   reject();
-        // });
-        resolve();
+        self.downloadAllInfoForCoin(coinContractAddress).then( (length) => {
+          console.log('All parameters downloaded : ', length);
+          resolve();
+        }).catch( (parameter) => {
+          console.log('Error downloading parameter :');
+          reject();
+        });
+        // resolve();
       }
 
   });
@@ -743,44 +813,39 @@ downloadAllInfoForCoin(coinID: string): Promise<any> { //coinContractAddress
   return new Promise(
     function(resolve, reject) {
       let res: boolean[] = []; // Array to download all elements in parallel and log the successes
-      let tot: number = 8; // Total number of downloads : 8
+      let tot: number = 7; // Total number of downloads : 8
 
       // #1 Get coin details
       self.downloadCoinDetail(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
       }).catch(()=>{res.push(false); reject('CoinDetail')});
 
-      // // #2 Download coin amounts
-      // self.downloadCoinAmount(coinID).then(()=>{ res.push(true);
-      //   if(self.checkRes(res, tot)){ resolve(res.length); }
-      // }).catch(()=>{res.push(false); reject('CoinAmount')});
-
-      // #3 Download coin icons
+      // #2 Download coin icons
       self.downloadCoinIcon(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
       }).catch(()=>{res.push(false); reject('CoinIcon')});
 
-      // #4 Download landscape images
+      // #3 Download landscape images
       self.downloadLandscapeImage(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
       }).catch(()=>{res.push(false); reject('LandscapeImage')});
 
-      // #5 Download brand icons
+      // #4 Download brand icons
       self.downloadBrandIcon(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
       }).catch(()=>{res.push(false); reject('BrandIcon')});
 
-      // #6 Download offers list
+      // #5 Download offers list
       self.downloadOffers(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
       }).catch(()=>{res.push(false); reject('Offers')});
 
-      // #7 Download rewards list
+      // #6 Download rewards list
       self.downloadRewards(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
       }).catch(()=>{res.push(false); reject('Rewards')});
 
-      // #8 Download locations list
+      // #7 Download locations list
       self.downloadLocations(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
       }).catch(()=>{res.push(false); reject('Locations')});
@@ -830,35 +895,6 @@ downloadCoinDetail(coin: string): Promise<any> {
 
 }
 
-downloadCoinAmount(coin: string): Promise<any> {
-  //Get amounts
-  var self = this;
-
-  return new Promise(
-    function(resolve, reject) {
-      //Unsubscribtion security
-      if(self.coinAmountSubscribtions[coin]){self.coinAmountSubscribtions[coin].unsubscribe();console.log('UNSUBSCRIBE AMOUNT');}
-      console.log('CreateCoinAmountObserver');
-      let path = self.myCoinCollectionPath(self.uid).concat('/',coin);
-      self.coinAmountObservers[coin] = self.firestoreProvider.getDocument(path);
-      self.coinAmountSubscribtions[coin] = self.coinAmountObservers[coin]
-        .subscribe((coin_a) => {
-          //Show alert
-          var delta : number = parseInt(coin_a['balance']) - parseInt(self.c[self.amounts][coin]);
-          if(delta > 0){
-            self.alertProvider.receiveAlert(delta, self.c[self.names][coin], self.getLanguage());
-          }
-          else if (delta < 0){
-            //self.alertProvider.sendAlert(-delta, self.c[self.names][coin]);
-          }
-          //Update amount
-          self.c[self.amounts][coin] = coin_a['balance'];
-          console.log('CoinAmount 2 : ',self.c[self.amounts][coin]);
-          resolve(coin_a['balance']);
-      });
-  });
-
-}
 
 downloadCoinIcon(coin: string): Promise<any> {
   // Download coin icons

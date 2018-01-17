@@ -55,7 +55,7 @@ export class MapPage {
     //this.coinLocations = this.ctx.getLocations();
     console.log('Open map')
 
-    this.contractAddresses = this.ctx.getCoinAddresses();
+    this.contractAddresses = this.ctx.getAllCoinAddresses();
 
   }
 
