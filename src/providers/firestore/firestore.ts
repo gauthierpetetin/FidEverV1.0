@@ -108,10 +108,18 @@ export class FirestoreProvider {
     this.coinCollection = this.afCoinCollection.snapshotChanges()
       .map(actions => {
         return actions.map(a => {
-          const type = a.type;
-          const data = a.payload.doc.data() as any;
-          const id = a.payload.doc.id;
-          return { id, type, ...data };
+          console.log('SHOW A : ', a);
+          if(a.payload.doc.exists) {
+            const type = a.type;
+            const data = a.payload.doc.data() as any;
+            const id = a.payload.doc.id;
+            return { id, type, ...data };
+          }
+          else {
+            console.log('Doc doesnt exist :', a);
+            return;
+          }
+
         })
       });
 

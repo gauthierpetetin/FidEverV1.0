@@ -33,7 +33,7 @@ export class HomePage {
 
   //Useful for HTML
   info : string;
-  contractAddresses : string;
+  myContractAddresses : string;
 
 
   constructor(
@@ -54,7 +54,7 @@ export class HomePage {
 
       // Variables for html
       this.info = this.ctx.info;
-      this.contractAddresses = this.ctx.contractAddresses;
+      this.myContractAddresses = this.ctx.myContractAddresses;
 
       console.log('Close Homepage constructor');
 
