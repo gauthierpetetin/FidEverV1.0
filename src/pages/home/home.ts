@@ -56,14 +56,7 @@ export class HomePage {
       this.info = this.ctx.info;
       this.myContractAddresses = this.ctx.myContractAddresses;
 
-      // this.translate();
   }
-
-  // translate() {
-  //   let test: string;
-  //   this.translateService.get('ALERT.RECEIVECONTENT').subscribe(rewardAlertTitle => { test = rewardAlertTitle.toString(); });
-  //   console.log('HOOOOOOME', test);
-  // }
 
 
   itemTapped(event, contractAddress) {
@@ -99,5 +92,6 @@ export class HomePage {
     });
     myModalCtrl.present();
   }
+
 
 }

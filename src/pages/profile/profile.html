@@ -106,7 +106,7 @@
   <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
     <ion-col col-3>
       <p >
-        {{ 'PROFILE.NAME.TITLE' | translate }}
+        {{ 'PROFILE.NAME.TITLE' | translate }} :
       </p>
     </ion-col>
     <ion-col col-9>
@@ -156,7 +156,7 @@
   <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
     <ion-col col-3>
       <p >
-        {{ 'PROFILE.EMAIL.TITLE' | translate }}
+        {{ 'PROFILE.EMAIL.TITLE' | translate }} :
       </p>
     </ion-col>
     <ion-col col-9>
@@ -226,7 +226,7 @@
   <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
     <ion-col col-5>
       <p >
-        {{ 'PROFILE.ID' | translate }}
+        {{ 'PROFILE.ID' | translate }} :
       </p>
     </ion-col>
     <ion-col col-5>
@@ -259,6 +259,31 @@
       </button>
     </ion-col>
   </ion-row>
+
+
+  <div>
+    <p style="margin: 0 0; padding: 3px 5px; background-color: #afabab; color: white">
+      Demo
+    </p>
+  </div>
+
+  <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
+    <ion-col col-5>
+      <p >
+        {{ 'PROFILE.DEMO.TITLE' | translate }} :
+      </p>
+    </ion-col>
+    <ion-col col-5>
+      <p style="color: black;">
+        {{ 'PROFILE.DEMO.ACTIVATE' | translate }}
+      </p>
+    </ion-col>
+    <ion-col col-2>
+      <ion-toggle [(ngModel)]="demoMode" (ionChange)="switchDemoMode()" style="margin: 2px 0"></ion-toggle>
+    </ion-col>
+  </ion-row>
+
+
 
 <div>
   <p style="margin: 0 0; padding: 3px 5px; background-color: #afabab; color: white">

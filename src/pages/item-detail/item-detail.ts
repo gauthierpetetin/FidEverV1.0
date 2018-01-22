@@ -85,7 +85,13 @@ export class ItemDetailPage {
     this.offerImages = this.ctx.getOfferImages(this.coinContractAddress);
     this.rewards = this.ctx.getRewards(this.coinContractAddress);
 
-    this.rewards.push(this.offers[0]);
+    if(this.offers.length > 0) {
+      console.log('this.rewards.push : ', this.rewards);
+      this.rewards.push(this.offers[0]);
+    }
+    else{
+      console.log('No this.rewards.push : ', this.rewards);
+    }
 
     console.log('Item-detail offers : ', this.offers);
     console.log('Item-detail offerImages : ', this.offerImages);

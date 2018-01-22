@@ -18,9 +18,11 @@ export class FidapiProvider {
 
   idToken: string;
 
-  authenticateURL : string = 'auth';
-  createWalletURL : string = 'wallet';
-  transferURL : string = 'transfer';
+  authenticateURL: string = 'auth';
+  createWalletURL: string = 'wallet';
+  transferURL: string = 'transfer';
+  demoCoinsURL: string = 'debug/supply';
+
   requestAnswer: Observable<any>;
 
   constructor(
@@ -194,5 +196,152 @@ export class FidapiProvider {
         });
     });
   }
+
+  getDemoCoins(uid: string) : Promise<any> {
+    console.log('Open FidApi - getDemoCoins : ', uid);
+    var self = this;
+    return new Promise((resolve, reject) => {
+      if(self.idToken) {
+        self.getDemoCoins_real(uid).then((res) => {resolve(res);}).catch((err)=>{reject(err);});
+      }
+      else {
+        self.authenticate(uid).then((res) => {
+          self.getDemoCoins_real(uid).then((res) => {resolve(res);}).catch((err)=>{reject(err);});
+        }).catch((err)=>{reject(err);});
+      }
+    });
+  }
+
+  getDemoCoins_real(uid : string) : Promise<any> {
+    console.log('Open FidApi - getDemoCoins_real: ', uid, 'with idToken: ', this.idToken);
+    var self = this;
+    return new Promise((resolve, reject) => {
+      var postContent = JSON.stringify({
+        'uid' : uid
+      });
+      var postHeaders = new Headers({
+        // 'Access-Control-Allow-Origin': 'http://localhost:8100/',
+        'Content-Type': 'application/json',
+        'x-token': self.idToken
+      });
+      console.log('Headers : ', postHeaders);
+      var postOptions = new RequestOptions({ headers: postHeaders });
+      self.requestAnswer = self.http.post(
+        self.proxyURL.concat(self.apiURL, self.demoCoinsURL),
+        postContent,
+        postOptions
+      );
+      self.requestAnswer
+        .map(res => res.json())
+        .subscribe(data => {
+          console.log('FidAPI got demo coins: ', JSON.stringify(data) );
+          resolve(data);
+        },
+        err => {
+          console.log('FidAPI failed getting demo coins',err);
+          reject(err);
+        });
+    });
+  }
+
+  rewardClaim(uid: string, coinContractAddress : string, offerID: string, transactionHash : string) : Promise<any> {
+    console.log('Open FidApi - rewardClaim : ', offerID, 'with transactionHash : ', transactionHash);
+    var self = this;
+    return new Promise((resolve, reject) => {
+      if(self.idToken) {
+        self.rewardClaim_real(coinContractAddress, offerID, transactionHash).then((res) => {resolve(res);}).catch((err)=>{reject(err);});
+      }
+      else {
+        self.authenticate(uid).then((res) => {
+          self.rewardClaim_real(coinContractAddress, offerID, transactionHash).then((res) => {resolve(res);}).catch((err)=>{reject(err);});
+        }).catch((err)=>{reject(err);});
+      }
+    });
+  }
+
+  rewardClaim_real(coinContractAddress : string, offerID: string, transactionHash : string) : Promise<any> {
+    console.log('Open FidApi - rewardClaim_real : ', offerID, ' and transactionHash: ', transactionHash);
+    var self = this;
+    return new Promise((resolve, reject) => {
+      var postContent = JSON.stringify({
+        'token' :	coinContractAddress,
+        'offer_id' :	offerID,
+        'txhash' :	transactionHash
+      });
+      var postHeaders = new Headers({
+        // 'Access-Control-Allow-Origin': 'http://localhost:8100/',
+        'Content-Type': 'application/json',
+        'x-token': self.idToken
+      });
+      console.log('Headers : ', postHeaders);
+      var postOptions = new RequestOptions({ headers: postHeaders });
+      self.requestAnswer = self.http.post(
+        self.proxyURL.concat(self.apiURL, self.createWalletURL),
+        postContent,
+        postOptions
+      );
+      self.requestAnswer
+        .map(res => res.json())
+        .subscribe(data => {
+          console.log('FidAPI claimed reward: ', JSON.stringify(data) );
+          resolve(data);
+        },
+        err => {
+          console.log('FidAPI failed claiming reward',err);
+          reject(err);
+        });
+    });
+  }
+
+
+  rewardRedeem(uid: string, coinContractAddress : string, offerID: string, transactionHash : string) : Promise<any> {
+    console.log('Open FidApi - rewardRedeem : ', uid);
+    var self = this;
+    return new Promise((resolve, reject) => {
+      if(self.idToken) {
+        self.rewardRedeem_real(coinContractAddress, offerID, transactionHash).then((res) => {resolve(res);}).catch((err)=>{reject(err);});
+      }
+      else {
+        self.authenticate(uid).then((res) => {
+          self.rewardRedeem_real(coinContractAddress, offerID, transactionHash).then((res) => {resolve(res);}).catch((err)=>{reject(err);});
+        }).catch((err)=>{reject(err);});
+      }
+    });
+  }
+
+  rewardRedeem_real(coinContractAddress : string, offerID: string, transactionHash : string) : Promise<any> {
+    console.log('Open FidApi - rewardRedeem_real : ', offerID, ' and transactionHash: ', transactionHash);
+    var self = this;
+    return new Promise((resolve, reject) => {
+      var postContent = JSON.stringify({
+        'token' :	coinContractAddress,
+        'offer_id' :	offerID,
+        'txhash' :	transactionHash
+      });
+      var postHeaders = new Headers({
+        // 'Access-Control-Allow-Origin': 'http://localhost:8100/',
+        'Content-Type': 'application/json',
+        'x-token': self.idToken
+      });
+      console.log('Headers : ', postHeaders);
+      var postOptions = new RequestOptions({ headers: postHeaders });
+      self.requestAnswer = self.http.post(
+        self.proxyURL.concat(self.apiURL, self.createWalletURL),
+        postContent,
+        postOptions
+      );
+      self.requestAnswer
+        .map(res => res.json())
+        .subscribe(data => {
+          console.log('FidAPI redeemed reward: ', JSON.stringify(data) );
+          resolve(data);
+        },
+        err => {
+          console.log('FidAPI failed redeeming reward',err);
+          reject(err);
+        });
+    });
+  }
+
 
 }

@@ -39,8 +39,6 @@ export class MapPage {
   longitude: number = 2.322369152780408;
 
   map: any;
-  //coinLocations: any;
-  //coinIcons: any;
 
   contractAddresses: any;
 

@@ -75,6 +75,10 @@
       "VALID": "Please enter a valid phone number."
       },
     "ID": "Your current ID",
+    "DEMO": {
+      "TITLE": "Demo mode",
+      "ACTIVATE": "Activate demo mode"
+    },
     "DISCONNECTION": "Disconnection",
     "DISCONNECT": "Disconnect",
     "DISCALERT": {
@@ -99,14 +103,14 @@
       "CONTENT2": "Account creation error."
     },
     "NEWACCOUNT": "Create account",
-    "EXPLANATION": "Creating an account will help you recover your FID wallet in case of smartphone loss."
+    "EXPLANATION": "Creating an account will help you recover your coin wallet in case of smartphone loss."
   },
   "HOME": {
-    "WALLET": "FID Wallet",
+    "WALLET": "Coin Wallet",
     "TYPE": "TYPE",
     "AMOUNT": "AMOUNT",
-    "FIND": "Find FIDs around you.",
-    "COLLECT": "Collect FIDs in a shop."
+    "FIND": "Find coins around you.",
+    "COLLECT": "Collect coins in a shop."
   },
   "ITEM_DETAIL": {
     "SUBTITLE_1": "Collected",
@@ -140,13 +144,13 @@
     "SUBTITLE_2": "to get your reward."
   },
   "RECEIVE": {
-    "RECEIVE": "Receive FIDs",
+    "RECEIVE": "Receive coins",
     "BACK": "Back",
-    "INDICATION": "Scan your ID to receive FIDs.",
+    "INDICATION": "Scan your ID to receive coins.",
     "ID": "Your ID"
   },
   "SEND": {
-    "TITLE": "Send FIDs",
+    "TITLE": "Send coins",
     "SUCCESS": "Success",
     "BACK": "Back",
     "SCAN": "Scan recipient's ID:",
@@ -162,7 +166,7 @@
     "CONGRATS_3": "to"
   },
   "MAP": {
-    "TITLE": "FID Map",
+    "TITLE": "Coin Map",
     "BACK": "Back"
   },
   "ALERT": {

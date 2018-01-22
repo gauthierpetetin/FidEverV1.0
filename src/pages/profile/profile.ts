@@ -43,6 +43,8 @@ export class ProfilePage {
   address: string;
   modifying: boolean = false;
 
+  demoMode: boolean = false;
+
   public infoForm: FormGroup;
   public signupForm: FormGroup;
 
@@ -101,6 +103,8 @@ export class ProfilePage {
 
     this.info = this.ctx.info;
 
+    this.demoMode = this.ctx.getDemoMode();
+
     this.infoForm = formBuilder.group({
       name: ['', ],
       email: ['', Validators.compose([Validators.required, EmailValidator.isValid])],
@@ -118,6 +122,8 @@ export class ProfilePage {
     });
 
     this.translate();
+
+    // this.logOut();
 
   }
 
@@ -527,6 +533,21 @@ export class ProfilePage {
         reject();
       });
     });
+  }
+
+
+  switchDemoMode() {
+    if ( !this.ctx.getDemoMode() ) {
+      console.log('Switch Demo on');
+      this.ctx.setDemoMode(true);
+      this.demoMode = true;
+    }
+    else {
+      console.log('Switch Demo off');
+      this.ctx.setDemoMode(false);
+      this.demoMode = false;
+    }
+    this.ctx.save();
   }
 
 

@@ -105,12 +105,19 @@ export class FirestoreProvider {
 
     this.coinCollection = this.afCoinCollection.snapshotChanges()
       .map(actions => {
+        if(!actions) {
+          return;
+        }
         return actions.map(a => {
+          if(!a) {
+            console.log('ERROR: FIRESTORE NULL COLLECTION : ', collectionName);
+            return;
+          }
           const type = a.type;
           const data = a.payload.doc.data() as any;
           const id = a.payload.doc.id;
           return { id, type, ...data };
-        })
+        });
       });
 
     return this.coinCollection;
@@ -129,10 +136,17 @@ export class FirestoreProvider {
 
     this.coinDocument = this.afCoinDocument.snapshotChanges()
       .map(a => {
+        if(a) {
           const type = a.type;
           const data = a.payload.data() as any;
           const id = a.payload.id;
           return { id, type, ...data };
+        }
+        else{
+          console.log('ERROR: FIRESTORE NULL DOCUMENT : ', documentName);
+          return;
+        }
+
     });
 
     return this.coinDocument;
@@ -162,7 +176,7 @@ export class FirestoreProvider {
 
 
   downloadImageAtPath(myImagePath : string): Promise<any> {
-    console.log('downloadedImageAtPath'.concat(myImagePath));
+    console.log('downloadedImageAtPath : '.concat(myImagePath));
     // Create a reference to the file we want to download
     var imageStorageRef = this.storageRef.child(myImagePath) //Example: 'images/space.jpg'
     // Get the download URL

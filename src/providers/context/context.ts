@@ -37,8 +37,8 @@ export class ContextProvider {
   c: any = {};
 
   cordovaPlatform: boolean = false;
-
   productionApp: boolean = false;
+  demoMode: boolean = false;
 
   storageKey: string = 'storageKey';
 
@@ -48,6 +48,7 @@ export class ContextProvider {
   colors: string = 'coinColors';
   amounts: string = 'coinAmounts';
   icons: string = 'coinIcons';
+  demoCoins: string = 'demoCoins';
   companyNames: string = 'companyName';
   landscapes: string = 'landscapePictures';
   brandIcons: string = 'brandIcons';
@@ -100,9 +101,13 @@ export class ContextProvider {
 
   allCoinsCollectionPath: string = 'tokens/';
   // globalCoinCollectionPath: string = 'tokens/';
+  defaultCoinName: string = 'Unknown Coin';
+  defaultCoinAmount: string = '0';
   defaultCoinImage: string = '';
+  defaultDemoCoin: boolean = false;
   defaultLandscapeImage: string = '';
   defaultBrandIcon: string = '';
+  defaultCompanyName: string = 'Unknown Shop';
   fidOrange: string = '#fe9400';
   fidGrey: string = '#afabab';
 
@@ -155,6 +160,13 @@ export class ContextProvider {
     this.c[this.info][this.infoProfilePicture] = profilePicture;
   }
 
+  setDemoMode(demoMode: boolean) {
+    this.demoMode = demoMode;
+    if(demoMode) {
+      this.fidapiProvider.getDemoCoins( this.getUid() ).then( () => {}).catch( (err) => {});
+    }
+  }
+
 /****************GETTERS*********************/
 
   getProductionApp(): boolean {
@@ -194,90 +206,85 @@ export class ContextProvider {
   }
 
   getMyCoinAddresses(): string {
-    return this.c[this.myContractAddresses];
-  }
-  getAllCoinAddresses(): string {
-    return this.c[this.allContractAddresses];
+    let coinProdList: any = [];
+    let coinDemoList: any = [];
+    for (let coin of this.c[this.myContractAddresses]) {
+      if(!this.isDemoCoin(coin)) {
+        coinProdList.push(coin);
+      }
+      else {
+        coinDemoList.push(coin);
+      }
+    }
+    if(!this.getDemoMode()) {return coinProdList;} else {return coinDemoList;}
   }
 
-  getCoinName(coinID : string): string {
+  getAllCoinAddresses(): string {
+    let coinProdList: any = [];
+    let coinDemoList: any = [];
+    for (let coin of this.c[this.allContractAddresses]) {
+      if(!this.isDemoCoin(coin)) {
+        coinProdList.push(coin);
+      }
+      else {
+        coinDemoList.push(coin);
+      }
+    }
+    if(!this.getDemoMode()) {return coinProdList;} else {return coinDemoList;}
+  }
+
+  getCoinName(coinID: string): string {
+    if(!this.c[this.names][coinID]){return this.defaultCoinName}
     return this.c[this.names][coinID];
   }
-  getCoinColor(coinID : string): string {
+  getCoinColor(coinID: string): string {
+    if(!this.c[this.colors][coinID]){return this.fidOrange}
     return this.c[this.colors][coinID];
   }
-  getCoinAmount(coinID : string): string {
+  getCoinAmount(coinID: string): string {
+    if(!this.c[this.amounts][coinID]){return this.defaultCoinAmount}
     return this.c[this.amounts][coinID];
   }
-  getCoinIcon(coinID : string): string {
+  getCoinIcon(coinID: string): string {
     return this.c[this.icons][coinID];
   }
-  getLandscape(coinID : string): string {
+  getLandscape(coinID: string): string {
     return this.c[this.landscapes][coinID];
   }
-  getBrandIcon(coinID : string): string {
+  getBrandIcon(coinID: string): string {
     return this.c[this.brandIcons][coinID];
   }
-  getCompanyName(coinID : string): string {
+  getCompanyName(coinID: string): string {
+    if(!this.c[this.companyNames][coinID]){return this.defaultCompanyName}
     return this.c[this.companyNames][coinID];
   }
-  getOffers(coinID : string): any[] {
-    if(this.c[this.offers][coinID].length!=undefined) {
-      return this.c[this.offers][coinID];
-    }else {return [];}
+  getOffers(coinID: string): any[] {
+    if(!this.c[this.offers][coinID]){return [];}
+    if(this.c[this.offers][coinID]==undefined){return [];}
+    return this.c[this.offers][coinID];
   }
-  getOfferImages(coinID : string): any {
+  getOfferImages(coinID: string): any {
     return this.c[this.offerImages][coinID];
   }
-  getRewards(coinID : string): any[] {
-    if(this.c[this.rewards][coinID].length!=undefined) {
-      return this.c[this.rewards][coinID];
-    }else {return [];}
+  getRewards(coinID: string): any[] {
+    if(!this.c[this.rewards][coinID]){return [];}
+    if(this.c[this.rewards][coinID]==undefined){return [];}
+    return this.c[this.rewards][coinID];
   }
   getLocations(): any {
     return this.c[this.locations];
   }
-  getCoinLocations(coinID : string): any[] {
-    if(this.c[this.locations][coinID].length!=undefined) {
-      return this.c[this.locations][coinID];
-    }else {return [];}
+  isDemoCoin(coinID: string): boolean {
+    if(!this.c[this.demoCoins][coinID]){return this.defaultDemoCoin}
+    return this.c[this.demoCoins][coinID];
   }
-  getAllCoinsFromFirestore(): Promise<any> {
-    console.log('Open getAllCoinsFromFirestore');
-    var self = this;
-    return new Promise(
-      function(resolve, reject) {
-        if( self.allCoinsCollectionPath ){
-          //Subscribtion security
-          if(self.allCoinListSubscribtion){self.allCoinListSubscribtion.unsubscribe();console.log('UNSUBSCRIBE GLOBAL');}
-
-          self.allCoinListSubscribtion = self.firestoreProvider
-            .getCollection( self.allCoinsCollectionPath )
-            .subscribe( allCoins => {
-
-              console.log('OBSERVABLE ALLCOINLIST : ', allCoins);
-
-              if(allCoins != null){
-                var allCoinsSimplified = [];
-
-                for(let coin of allCoins) {
-                  allCoinsSimplified.push(coin.id);
-                }
-
-                resolve(allCoinsSimplified);
-                /*******************************************/
-
-              }
-              else{
-                console.log('Null allCoins list');
-                resolve();
-              }
-
-          });
-
-        }
-
-    });
+  getCoinLocations(coinID: string): any[] {
+    if(!this.c[this.locations][coinID]){return [];}
+    if(this.c[this.locations][coinID]==undefined){return [];}
+    return this.c[this.locations][coinID];
+  }
+  getDemoMode(): boolean {
+    return this.demoMode;
   }
 
 
@@ -376,10 +383,6 @@ export class ContextProvider {
           self.iconSize = IconSize.NORMAL;
         }
 
-        /****************/
-        // self.getAllCoinsFromFirestore().then( () => { console.log('XXXXXXXX') });
-        /****************/
-
         self.initContext();
         self.recoverContext().then( (address) => {
           console.log('Context recovery success : ',address);
@@ -454,148 +457,52 @@ export class ContextProvider {
 
   }
 
-  initContext() {
-    console.log('Open initContext');
-    if(!this.c[this.myContractAddresses]){this.c[this.myContractAddresses] = []}
-    if(!this.c[this.allContractAddresses]){this.c[this.allContractAddresses] = []}
-    if(!this.c[this.names]){this.c[this.names] = {}}
-    if(!this.c[this.colors]){this.c[this.colors] = {}}
-    if(!this.c[this.amounts]){this.c[this.amounts] = {}}
-    if(!this.c[this.icons]){this.c[this.icons] = {}}
-    if(!this.c[this.landscapes]){this.c[this.landscapes] = {}}
-    if(!this.c[this.brandIcons]){this.c[this.brandIcons] = {}}
-    if(!this.c[this.companyNames]){this.c[this.companyNames] = {}}
-    if(!this.c[this.offers]){this.c[this.offers] = {}}
-    if(!this.c[this.offerImages]){this.c[this.offerImages] = {}}
-    if(!this.c[this.rewards]){this.c[this.rewards] = {}}
-    if(!this.c[this.locations]){this.c[this.locations] = {}}
-    if(!this.c[this.info]){this.c[this.info] = {}}
-    console.log('Close initContext');
-  }
 
-  recoverContext(): Promise<any> {
-    console.log('Open recoverContext');
-    var self = this;
-    return new Promise(
-      function(resolve, reject) {
-        self.recoverDataAtKey(self.storageKey, self.c, self.myContractAddresses);
-        self.recoverDataAtKey(self.storageKey, self.c, self.allContractAddresses);
-        self.recoverDataAtKey(self.storageKey, self.c, self.names);
-        self.recoverDataAtKey(self.storageKey, self.c, self.colors);
-        self.recoverDataAtKey(self.storageKey, self.c, self.amounts);
-        self.recoverDataAtKey(self.storageKey, self.c, self.icons);
-        self.recoverDataAtKey(self.storageKey, self.c, self.landscapes);
-        self.recoverDataAtKey(self.storageKey, self.c, self.brandIcons);
-        self.recoverDataAtKey(self.storageKey, self.c, self.companyNames);
-        self.recoverDataAtKey(self.storageKey, self.c, self.offers);
-        self.recoverDataAtKey(self.storageKey, self.c, self.offerImages);
-        self.recoverDataAtKey(self.storageKey, self.c, self.rewards);
-        self.recoverDataAtKey(self.storageKey, self.c, self.locations);
-        self.recoverDataAtKey(self.storageKey, self.c, self.info).then( (account) => {
-          console.log('Account recovered : ', account);
-          if(account[self.infoAddress] && account[self.infoPrivateKey]) {
-            resolve(account[self.infoAddress]);
-          }
-          else{
-            reject(self.noEthAccount);
-          }
 
-        }, (accountError) => {
-          console.log('Account recovery error : ', accountError);
-          reject(self.noEthAccount);
-        });
-      });
-  }
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
 
-  recoverDataAtKey(key : string, receiver : any, field : string): Promise<any> {
-    console.log('Open recoverDataAtKey : ',field);
-    var self = this;
-    return new Promise(
-      function(resolve, reject) {
-        self.storage.get(key).then(
-          function(result : string){
-            if(result != null){
-              console.log('Get receiver[field] : ',field);
-              if(receiver){
-                if(JSON.parse(result)[field]){
-                  receiver[field] = JSON.parse(result)[field];
-                  console.log('Your data at field : ', field,' from storage is: ',receiver);
-                  resolve(receiver[field]);
-                }else{console.log('Storage error : no field in result : ',result); resolve('null')}
+getAllCoinsFromFirestore(): Promise<any> {
+  console.log('Open getAllCoinsFromFirestore');
+  var self = this;
+  return new Promise(
+    function(resolve, reject) {
+      if( self.allCoinsCollectionPath ){
+        //Subscribtion security
+        if(self.allCoinListSubscribtion){self.allCoinListSubscribtion.unsubscribe();console.log('UNSUBSCRIBE GLOBAL');}
+
+        self.allCoinListSubscribtion = self.firestoreProvider
+          .getCollection( self.allCoinsCollectionPath )
+          .subscribe( allCoins => {
+
+            console.log('OBSERVABLE ALLCOINLIST : ', allCoins);
+
+            if(allCoins != null){
+              var allCoinsSimplified = [];
+
+              for(let coin of allCoins) {
+                allCoinsSimplified.push(coin.id);
               }
-              else{console.log('Storage error : no receiver'); reject();}
+
+              resolve(allCoinsSimplified);
+              /*******************************************/
+
             }
             else{
-              console.log('Null storage at field');resolve('null');
+              console.log('Null allCoins list');
+              resolve();
             }
-          },
-          function(error : any){
-            console.log('Storage error for key :'.concat(key, ' with message : ', error.message)); reject(error);
-          }
-        );
+
+        });
+
       }
-    );
 
-  }
-
-  save(): Promise<any> {
-    console.log('Open saveCoins');
-    var self = this;
-    return new Promise(
-      function(resolve, reject) {
-        self.storeDataAtKey(self.storageKey, self.c).then(
-          () => {
-            console.log('Close SaveCoins : ', self.c);
-            resolve();
-          },
-          (error) => {
-            console.log('ERROR SaveCoins');
-            reject();
-          }
-        );
-      }
-    );
-  }
-
-  clear(){
-    console.log('Open clear');
-
-    this.uid = undefined;
-
-    this.storage.remove(this.storageKey);
-    this.c = {};
-    this.coinDetailObservers = {};
-    this.coinAmountObservers = {};
-    this.initContext();
-
-
-    this.save();
-    console.log('Close clear');
-  }
-
-  storeDataAtKey(key : string, data : any): Promise<any> {
-    // console.log('Open storeDataAtKey');
-    var self = this;
-    return new Promise(
-      function(resolve, reject) {
-        self.storage.set(key, JSON.stringify(data)).then(
-          () => {
-            resolve();
-          },
-          (error) => {
-            reject(error);
-          });
-      }
-    );
-
-  }
-
-/******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
+  });
+}
 
 
 myCoinCollectionPath(myUid : string): string {
@@ -675,6 +582,11 @@ downloadMyCoinAmounts(coinContractAddresses: any, uid: string): Promise<any> {
       let res: boolean[] = []; // Array to download all elements in parallel and log the successes
       let tot: number = coinContractAddresses.length; // Total number of downloads
 
+      if(tot == 0){
+        console.log('No coinAmounts to download.');
+        resolve(0);
+      }
+
       for(let coinContractAddress of coinContractAddresses) {
         self.downloadCoinAmount(coinContractAddress, uid).then( (amount) => {
           console.log('Amount of coin : ', coinContractAddress, ' is : ', amount);
@@ -713,9 +625,10 @@ downloadCoinAmount(coin: string, uid: string): Promise<any> {
         console.log('OBSERVABLE MYCOINAMOUNT : ', coin);
         let amount = coin_a['balance'];
         //Show alert
-        var delta : number = parseInt(amount) - parseInt(self.c[self.amounts][coin]);
+        var delta : number = parseInt(amount) - parseInt(self.getCoinAmount(coin));
         if(delta > 0){
-          self.alertProvider.receiveAlert(delta, self.c[self.names][coin], self.getLanguage());
+          //self.alertProvider.receiveAlert(delta, self.c[self.names][coin], self.getLanguage());
+          self.alertProvider.receiveAlert(delta, self.getCoinName(coin), self.getLanguage());
         }
         else if (delta < 0){
           //self.alertProvider.sendAlert(-delta, self.c[self.names][coin]);
@@ -732,57 +645,7 @@ downloadCoinAmount(coin: string, uid: string): Promise<any> {
 
 }
 
-cleanCoin(self : any, coin : string) {
-  console.log('Open cleanCoin');
-  var delta : number = parseInt(self.c[self.amounts][coin]);
-  if(delta > 0){
-    self.alertProvider.sendAlert(delta, self.getCoinName(coin));
-  }
-  else if (delta < 0){
-    console.log('ERROR : Negative amount of coins')
-  }
-  self.c[self.names][coin] = undefined;
-  self.c[self.colors][coin] = undefined;
-  self.c[self.amounts][coin] = 0;
-  self.c[self.icons][coin] = undefined;
-  self.c[self.landscapes][coin] = undefined;
-  self.c[self.brandIcons][coin] = undefined;
-  self.c[self.companyNames][coin] = undefined;
-  self.c[self.offers][coin] = undefined;
-  self.c[self.offerImages][coin] = undefined;
-  self.c[self.rewards][coin] = undefined;
-  self.c[self.locations][coin] = undefined;
-  self.coinDetailSubscribtions[coin] = undefined;
-  self.coinDetailObservers[coin] = undefined;
-  self.coinAmountSubscribtions[coin] = undefined;
-  self.coinAmountObservers[coin] = undefined;
-  self.coinOfferSubscribtions[coin] = undefined;
-  self.coinOfferObservers[coin] = undefined;
-  console.log('Close cleanCoin');
-}
 
-initCoinList(coinAddressesList: any) { //this.c[this.myContractAddresses]
-  console.log('Open initCoinList');
-
-  for(let coinAddress of coinAddressesList) {
-    this.initCoin(coinAddress);
-  }
-  console.log('Close initCoinList');
-}
-
-initCoin(coin: any) {
-  if(!this.c[this.names][coin]) {this.c[this.names][coin] = '';}
-  if(!this.c[this.colors][coin]) {this.c[this.colors][coin] = this.fidOrange;}
-  if(!this.c[this.amounts][coin]) {this.c[this.amounts][coin] = 0;}
-  if(!this.c[this.icons][coin]) {this.c[this.icons][coin] = this.defaultCoinImage;}
-  if(!this.c[this.landscapes][coin]) {this.c[this.landscapes][coin] = this.defaultLandscapeImage;}
-  if(!this.c[this.brandIcons][coin]) {this.c[this.brandIcons][coin] = this.defaultBrandIcon;}
-  if(!this.c[this.companyNames][coin]) {this.c[this.companyNames][coin] = '';}
-  if(!this.c[this.offers][coin]) {this.c[this.offers][coin] = {};}
-  if(!this.c[this.offerImages][coin]) {this.c[this.offerImages][coin] = {};}
-  if(!this.c[this.rewards][coin]) {this.c[this.rewards][coin] = {};}
-  if(!this.c[this.locations][coin]) {this.c[this.locations][coin] = {};}
-}
 
 downloadAllCoinInfos(coinContractAddresses: any): Promise<any> { //this.c[this.myContractAddresses]
   console.log('Open downloadAllCoinInfos : ', coinContractAddresses);
@@ -813,43 +676,44 @@ downloadAllInfoForCoin(coinID: string): Promise<any> { //coinContractAddress
   return new Promise(
     function(resolve, reject) {
       let res: boolean[] = []; // Array to download all elements in parallel and log the successes
-      let tot: number = 7; // Total number of downloads : 8
+      let tot: number = 7; // Total number of downloads : 7
 
-      // #1 Get coin details
+      // #1 Get coin details // Blocking
       self.downloadCoinDetail(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
       }).catch(()=>{res.push(false); reject('CoinDetail')});
 
-      // #2 Download coin icons
+      // #2 Download coin icons // Not blocking
       self.downloadCoinIcon(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
-      }).catch(()=>{res.push(false); reject('CoinIcon')});
+      }).catch(()=>{res.push(true); console.log('No coinIcon for : ', coinID); resolve(null)});
 
-      // #3 Download landscape images
+      // #3 Download landscape images // Not blocking
       self.downloadLandscapeImage(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
-      }).catch(()=>{res.push(false); reject('LandscapeImage')});
+      }).catch(()=>{res.push(true); console.log('No landscapeImage for : ', coinID); resolve(null)});
 
-      // #4 Download brand icons
+      // #4 Download brand icons // Not blocking
       self.downloadBrandIcon(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
-      }).catch(()=>{res.push(false); reject('BrandIcon')});
+      }).catch(()=>{res.push(true); console.log('No brandIcon for : ', coinID); resolve(null)});
 
-      // #5 Download offers list
+      // #5 Download offers list // Not blocking
       self.downloadOffers(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
-      }).catch(()=>{res.push(false); reject('Offers')});
+      }).catch(()=>{res.push(true); console.log('No offers for : ', coinID); resolve(null)});
 
-      // #6 Download rewards list
+/***********************A retirer pour mettre dans downloadCoinAmounts********************************/
+      // #6 Download rewards list // Not blocking
       self.downloadRewards(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
-      }).catch(()=>{res.push(false); reject('Rewards')});
+      }).catch(()=>{res.push(true); console.log('No rewards for : ', coinID); resolve(null)});
+/*****************************************************************************************************/
 
-      // #7 Download locations list
+      // #7 Download locations list // Not blocking
       self.downloadLocations(coinID).then(()=>{ res.push(true);
         if(self.checkRes(res, tot)){ resolve(res.length); }
-      }).catch(()=>{res.push(false); reject('Locations')});
-
+      }).catch(()=>{res.push(true); console.log('No locations for : ', coinID); resolve(null)});
 
     }
   );
@@ -888,6 +752,7 @@ downloadCoinDetail(coin: string): Promise<any> {
           self.c[self.names][coin] = coinDetails['name'];
           self.c[self.colors][coin] = coinDetails['color'];
           self.c[self.companyNames][coin] = coinDetails['company'];
+          self.c[self.demoCoins][coin] = coinDetails['demo'];
           //self.coinDetailSubscribtions[coin].unsubscribe();
           resolve(coinDetails);
     });
@@ -1046,7 +911,7 @@ downloadLocations(coin: string): Promise<any> {
           }
         }
         self.c[self.locations][coin] = localLocationsList;
-        console.log('CoinLocations for ', self.c[self.names][coin], ' : ', coinLocations);
+        console.log('CoinLocations for ', self.getCoinName(coin), ' : ', coinLocations);
         resolve(coinLocations);
         //locationsSubscribtions.unsubscribe();
       });
@@ -1060,8 +925,201 @@ offersCollectionPathForCoin(coinID: string): string {
 }
 
 locationsCollectionPathForCoin(coinID: string): string {
-  return ''.concat('tokens/', coinID, '/positions');
+  return ''.concat('tokens/', coinID, '/locations');
 }
+
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+
+cleanCoin(self : any, coin : string) {
+  console.log('Open cleanCoin');
+
+  self.c[self.names][coin] = undefined;
+  self.c[self.colors][coin] = undefined;
+  self.c[self.amounts][coin] = 0;
+  self.c[self.icons][coin] = undefined;
+  self.c[self.demoCoins][coin] = 0;
+  self.c[self.landscapes][coin] = undefined;
+  self.c[self.brandIcons][coin] = undefined;
+  self.c[self.companyNames][coin] = undefined;
+  self.c[self.offers][coin] = undefined;
+  self.c[self.offerImages][coin] = undefined;
+  self.c[self.rewards][coin] = undefined;
+  self.c[self.locations][coin] = undefined;
+  self.coinDetailSubscribtions[coin] = undefined;
+  self.coinDetailObservers[coin] = undefined;
+  self.coinAmountSubscribtions[coin] = undefined;
+  self.coinAmountObservers[coin] = undefined;
+  self.coinOffersSubscribtions[coin] = undefined;
+  self.coinOffersObservers[coin] = undefined;
+  console.log('Close cleanCoin');
+}
+
+initCoinList(coinAddressesList: any) { //this.c[this.myContractAddresses]
+  console.log('Open initCoinList');
+  for(let coinAddress of coinAddressesList) {
+    this.initCoin(coinAddress);
+  }
+  console.log('Close initCoinList');
+}
+
+initCoin(coin: any) {
+  if(!this.c[this.names][coin]) {this.c[this.names][coin] = '';}
+  if(!this.c[this.colors][coin]) {this.c[this.colors][coin] = this.fidOrange;}
+  if(!this.c[this.amounts][coin]) {this.c[this.amounts][coin] = 0;}
+  if(!this.c[this.icons][coin]) {this.c[this.icons][coin] = this.defaultCoinImage;}
+  if(!this.c[this.demoCoins][coin]) {this.c[this.demoCoins][coin] = false;}
+  if(!this.c[this.landscapes][coin]) {this.c[this.landscapes][coin] = this.defaultLandscapeImage;}
+  if(!this.c[this.brandIcons][coin]) {this.c[this.brandIcons][coin] = this.defaultBrandIcon;}
+  if(!this.c[this.companyNames][coin]) {this.c[this.companyNames][coin] = '';}
+  if(!this.c[this.offers][coin]) {this.c[this.offers][coin] = [];}
+  if(!this.c[this.offerImages][coin]) {this.c[this.offerImages][coin] = {};}
+  if(!this.c[this.rewards][coin]) {this.c[this.rewards][coin] = [];}
+  if(!this.c[this.locations][coin]) {this.c[this.locations][coin] = [];}
+}
+
+
+initContext() {
+  console.log('Open initContext');
+  if(!this.c[this.myContractAddresses]){this.c[this.myContractAddresses] = []}
+  if(!this.c[this.allContractAddresses]){this.c[this.allContractAddresses] = []}
+  if(!this.c[this.names]){this.c[this.names] = {}}
+  if(!this.c[this.colors]){this.c[this.colors] = {}}
+  if(!this.c[this.amounts]){this.c[this.amounts] = {}}
+  if(!this.c[this.icons]){this.c[this.icons] = {}}
+  if(!this.c[this.demoCoins]){this.c[this.demoCoins] = {}}
+  if(!this.c[this.landscapes]){this.c[this.landscapes] = {}}
+  if(!this.c[this.brandIcons]){this.c[this.brandIcons] = {}}
+  if(!this.c[this.companyNames]){this.c[this.companyNames] = {}}
+  if(!this.c[this.offers]){this.c[this.offers] = {}}
+  if(!this.c[this.offerImages]){this.c[this.offerImages] = {}}
+  if(!this.c[this.rewards]){this.c[this.rewards] = {}}
+  if(!this.c[this.locations]){this.c[this.locations] = {}}
+  if(!this.c[this.info]){this.c[this.info] = {}}
+  console.log('Close initContext');
+}
+
+recoverContext(): Promise<any> {
+  console.log('Open recoverContext');
+  var self = this;
+  return new Promise(
+    function(resolve, reject) {
+      self.recoverDataAtKey(self.storageKey, self.c, self.myContractAddresses);
+      self.recoverDataAtKey(self.storageKey, self.c, self.allContractAddresses);
+      self.recoverDataAtKey(self.storageKey, self.c, self.names);
+      self.recoverDataAtKey(self.storageKey, self.c, self.colors);
+      self.recoverDataAtKey(self.storageKey, self.c, self.amounts);
+      self.recoverDataAtKey(self.storageKey, self.c, self.icons);
+      self.recoverDataAtKey(self.storageKey, self.c, self.demoCoins);
+      self.recoverDataAtKey(self.storageKey, self.c, self.landscapes);
+      self.recoverDataAtKey(self.storageKey, self.c, self.brandIcons);
+      self.recoverDataAtKey(self.storageKey, self.c, self.companyNames);
+      self.recoverDataAtKey(self.storageKey, self.c, self.offers);
+      self.recoverDataAtKey(self.storageKey, self.c, self.offerImages);
+      self.recoverDataAtKey(self.storageKey, self.c, self.rewards);
+      self.recoverDataAtKey(self.storageKey, self.c, self.locations);
+      self.recoverDataAtKey(self.storageKey, self.c, self.info).then( (account) => {
+        console.log('Account recovered : ', account);
+        if(account[self.infoAddress] && account[self.infoPrivateKey]) {
+          resolve(account[self.infoAddress]);
+        }
+        else{
+          reject(self.noEthAccount);
+        }
+
+      }, (accountError) => {
+        console.log('Account recovery error : ', accountError);
+        reject(self.noEthAccount);
+      });
+    });
+}
+
+recoverDataAtKey(key : string, receiver : any, field : string): Promise<any> {
+  console.log('Open recoverDataAtKey : ',field);
+  var self = this;
+  return new Promise(
+    function(resolve, reject) {
+      self.storage.get(key).then(
+        function(result : string){
+          if(result != null){
+            if(receiver){
+              if(JSON.parse(result)[field]){
+                receiver[field] = JSON.parse(result)[field];
+                console.log('Your data at field : ', field,' from storage is: ',receiver);
+                resolve(receiver[field]);
+              }else{ resolve('null') }
+            }
+            else{ reject(); }
+          }
+          else{ resolve('null'); }
+        },
+        function(error : any){
+          console.log('Storage error for key :'.concat(key, ' with message : ', error.message)); reject(error);
+        }
+      );
+    }
+  );
+
+}
+
+save(): Promise<any> {
+  console.log('   --> Open saveCoins');
+  var self = this;
+  return new Promise(
+    function(resolve, reject) {
+      self.storeDataAtKey(self.storageKey, self.c).then(
+        () => {
+          console.log('   <-- Open saveCoins : ', self.c);
+          resolve();
+        },
+        (error) => {
+          console.log('   <-- ERROR saveCoins');
+          reject();
+        }
+      );
+    }
+  );
+}
+
+clear(){
+  console.log('Open clear');
+
+  this.uid = undefined;
+
+  this.storage.remove(this.storageKey);
+  this.c = {};
+  this.coinDetailObservers = {};
+  this.coinAmountObservers = {};
+  this.initContext();
+
+
+  this.save();
+  console.log('Close clear');
+}
+
+storeDataAtKey(key : string, data : any): Promise<any> {
+  // console.log('Open storeDataAtKey');
+  var self = this;
+  return new Promise(
+    function(resolve, reject) {
+      self.storage.set(key, JSON.stringify(data)).then(
+        () => {
+          resolve();
+        },
+        (error) => {
+          reject(error);
+        });
+    }
+  );
+
+}
+
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
 
 addCoin() {
   var newCoin = {

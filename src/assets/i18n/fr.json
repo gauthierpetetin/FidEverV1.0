@@ -75,6 +75,10 @@
       "VALID": "Numéro de tel non valide."
       },
     "ID": "Ton ID actuel",
+    "DEMO": {
+      "TITLE": "Mode demo",
+      "ACTIVATE": "Activer mode demo"
+    },
     "DISCONNECTION": "Déconnexion",
     "DISCONNECT": "Se déconnecter",
     "DISCALERT": {
@@ -99,14 +103,14 @@
       "CONTENT2": "Ton compte n'a pas pu être créé."
     },
     "NEWACCOUNT": "Créer un compte",
-    "EXPLANATION": "La création d'un compte te permettra de retrouver tes FID en cas de perte de ton smartphone."
+    "EXPLANATION": "La création d'un compte te permettra de retrouver tes jetons (coins) en cas de perte de ton smartphone."
   },
   "HOME": {
-    "WALLET": "Collection de FIDs",
-    "TYPE": "TYPE",
+    "WALLET": "Jetons collectés",
+    "TYPE": "JETON (COIN)",
     "AMOUNT": "MONTANT",
-    "FIND": "Trouve des FIDs autour de toi !",
-    "COLLECT": "Collecte des FIDs chez un commercant."
+    "FIND": "Trouve des jetons autour de toi !",
+    "COLLECT": "Collecte des jetons chez un commercant."
   },
   "ITEM_DETAIL": {
     "SUBTITLE_1": "",
@@ -140,13 +144,13 @@
     "SUBTITLE_2": "pour recevoir ta récompense."
   },
   "RECEIVE": {
-    "RECEIVE": "Recevoir des FIDs",
+    "RECEIVE": "Recevoir des jetons",
     "BACK": "Retour",
-    "INDICATION": "Scanne ton ID pour recevoir des FIDs.",
+    "INDICATION": "Scanne ton ID pour recevoir des jetons.",
     "ID": "Ton ID"
   },
   "SEND": {
-    "TITLE": "Envoyer des FIDs",
+    "TITLE": "Envoyer des jetons",
     "SUCCESS": "Succès",
     "BACK": "Retour",
     "SCAN": "Scanne l'ID du destinataire :",
@@ -162,7 +166,7 @@
     "CONGRATS_3": "à"
   },
   "MAP": {
-    "TITLE": "Carte des FID",
+    "TITLE": "Carte des jetons",
     "BACK": "Retour"
   },
   "ALERT": {

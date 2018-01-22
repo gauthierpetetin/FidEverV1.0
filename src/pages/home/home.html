@@ -89,11 +89,11 @@
 
 <ion-content>
 
-  <ion-list *ngIf="ctx.c[myContractAddresses].length!=0">
+  <ion-list *ngIf="ctx.getMyCoinAddresses().length!=0">
 
-    <ion-item-sliding *ngFor="let cc of ctx.c[myContractAddresses]">
-    <!-- <ion-item-sliding *ngFor="let cc of _context[myContractAddresses]"> -->
-    <!-- <ion-item-sliding *ngFor="let coin of coins | async"> -->
+    <!-- <ion-item-sliding *ngFor="let cc of ctx.c[myContractAddresses]"> -->
+    <ion-item-sliding *ngFor="let cc of ctx.getMyCoinAddresses()">
+
       <button ion-item (click)="itemTapped($event, cc)" [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.85)'}">
         <ion-row>
 
@@ -180,7 +180,7 @@
     </ion-item-sliding>
   </ion-list>
 
-  <div *ngIf="ctx.c[myContractAddresses].length==0">
+  <div *ngIf="ctx.getMyCoinAddresses().length==0">
   <ion-row text-center style="height: 80px; margin-top: 30px; width: 100%; position: relative">
     <img-loader
       (click)="showMap()"
