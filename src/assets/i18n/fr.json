@@ -171,5 +171,9 @@
   },
   "ALERT": {
     "RECEIVECONTENT": "Félicitations, tu viens de recevoir"
+  },
+  "UPDATE": {
+    "TITLE": "Merci de télécharger la nouvelle application FidEver pour accéder aux fonctionnalités mises à jour.",
+    "BUTTON": "Mettre à jour !"
   }
 }

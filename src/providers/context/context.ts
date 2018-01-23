@@ -42,6 +42,16 @@ export class ContextProvider {
 
   storageKey: string = 'storageKey';
 
+
+  configData: any = {};
+    myAppVersion: string;
+    configAppDownloadUrl: string = 'app_download_url';
+    configFidapiUrl: string = 'fidapi_url';
+    configLastVersion: string = 'last_version';
+    configMinVersion: string = 'min_version';
+
+  updateString: string = 'UPDATE';
+
   allContractAddresses: string = 'allCoinsAddresses';
   myContractAddresses: string = 'myCoinsAddresses';
   names: string = 'coinNames';
@@ -131,6 +141,19 @@ export class ContextProvider {
     this.productionApp = true;
   }
 
+  setMyAppVersion(myAppVersion: number) {
+    this.configData[this.myAppVersion] = myAppVersion;
+  }
+  setConfigAppDownloadUrl(configAppDownloadUrl: string) {
+    this.configData[this.configAppDownloadUrl] = configAppDownloadUrl;
+  }
+  setConfigLastVersion(configLastVersion: number) {
+    this.configData[this.configLastVersion] = configLastVersion;
+  }
+  setConfigMinVersion(configMinVersion: number) {
+    this.configData[this.configMinVersion] = configMinVersion;
+  }
+
   setLanguage(language : string) {
     this.language = language;
   }
@@ -171,6 +194,16 @@ export class ContextProvider {
 
   getProductionApp(): boolean {
     return this.productionApp;
+  }
+
+  getMyAppVersion(): number {
+    return this.configData[this.myAppVersion];
+  }
+  getUpdateString(): string {
+    return this.updateString;
+  }
+  getConfigAppDownloadUrl(): string {
+    return this.configData[this.configAppDownloadUrl];
   }
 
   getLanguage(): string {
@@ -317,7 +350,6 @@ export class ContextProvider {
       /***********************/
     }
 
-
     console.log('Open context init');
     var self = this;
     return new Promise(
@@ -330,22 +362,37 @@ export class ContextProvider {
         self.profilePicture = profilePicture;
         //********************************************************
 
-        self.firestoreProvider.init().then( (apiUrl) => {
-          console.log('API URL : ',apiUrl);
-          self.fidapiProvider.setApiUrl( apiUrl.concat('/') );
+
+        self.firestoreProvider.init().then( (configData) => {
+          console.log('API config data : ',configData);
+          self.setConfigAppDownloadUrl(configData[self.configAppDownloadUrl]);
+          self.setConfigLastVersion(configData[self.configLastVersion]);
+          self.setConfigMinVersion(configData[self.configMinVersion]);
+
+          self.fidapiProvider.setApiUrl( configData[self.configFidapiUrl].concat('/') );
           self.fidapiProvider.authenticate(uid).then(()=>{}).catch( (err) => {console.log('Authentication error : ', err);});
 
-          if(loadData){
-            self.loadData(uid, loadAllCoins, loadXXL_images, coinParameter).then((res)=>{
-              self.importAuthenticationData();
-              resolve(res);
-            }).catch((err)=>{
-              reject(err);
-            });
+          console.log('App version : ', self.getMyAppVersion());
+          console.log('Min version : ', configData[self.configMinVersion]);
+          if(self.getMyAppVersion() < configData[self.configMinVersion]){
+            reject( self.getUpdateString() );
           }
           else {
-            resolve();
+            if(loadData){
+              self.loadData(uid, loadAllCoins, loadXXL_images, coinParameter).then((res)=>{
+                self.importAuthenticationData();
+                resolve(res);
+              }).catch((err)=>{
+                reject(err);
+              });
+            }
+            else{
+              resolve();
+            }
           }
+
+          // console.log('ABCDEFGH');
+          // reject('ABCDEFGH');
 
         }).catch((err) => {reject(err);});
     });
@@ -397,8 +444,9 @@ export class ContextProvider {
                 self.initCoinList(allCoinList);
 
                 self.downloadAllCoinInfos(allCoinList).then( () => {
+                  console.log('DownloadAllCoinInfos succeeded');
                   self.save().then( () => {
-                    console.log('DownloadAllCoinInfos succeeded');
+                    console.log('AllCoinInfos saved');
 
 
                     /******************************/
@@ -1047,7 +1095,7 @@ recoverDataAtKey(key : string, receiver : any, field : string): Promise<any> {
             if(receiver){
               if(JSON.parse(result)[field]){
                 receiver[field] = JSON.parse(result)[field];
-                console.log('Your data at field : ', field,' from storage is: ',receiver);
+                //console.log('Your data at field : ', field,' from storage is: ',receiver);
                 resolve(receiver[field]);
               }else{ resolve('null') }
             }
@@ -1071,7 +1119,7 @@ save(): Promise<any> {
     function(resolve, reject) {
       self.storeDataAtKey(self.storageKey, self.c).then(
         () => {
-          console.log('   <-- Open saveCoins : ', self.c);
+          console.log('   <-- Close saveCoins : ', self.c);
           resolve();
         },
         (error) => {

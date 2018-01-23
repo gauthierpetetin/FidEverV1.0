@@ -18,6 +18,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 /**************Pages****************************/
 import { HomePage } from '../pages/home/home';
 import { WelcomePage } from '../pages/welcome/welcome';
+import { UpdatePage } from '../pages/update/update';
 
 import { FirebaseAnalytics } from '@ionic-native/firebase-analytics';
 
@@ -32,6 +33,9 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id';
   templateUrl: 'app.html'
 })
 export class MyApp {
+
+  appVersion: number = 1.1;
+
   rootPage:any;
 
   constructor(
@@ -55,25 +59,36 @@ export class MyApp {
     //this.ctx.setAppToProduction();
     /**********Uncomment this line to set app to production********************/
 
+    ctx.setMyAppVersion(this.appVersion);
+
+
+
+
     const authObserver = afAuth.authState.subscribe( user => {
+
       if (user) {
         console.log('userID : ', user.uid);
         console.log('userEmail : ', user.email);
         console.log('userDisplayName : ', user.displayName);
         console.log('photoURL : ', user.photoURL);
 
-        ctx.init(user.uid, user.email, user.displayName, user.photoURL, true, true, false).then( (ethAccountFound) => {
-          console.log('Context init success : ', ethAccountFound);
+        ctx.init(user.uid, user.email, user.displayName, user.photoURL, true, true, false).then( (res) => {
+          console.log('Context init success : ', res);
           this.goToHomePage(authObserver);
         }, (err) => {
           console.log('Context init error : ', err);
-          ctx.clear();
-          this.goToWelcomePage(ctx, authObserver);
+          if(err == ctx.getUpdateString() ){
+            console.log('UPDATE');
+            this.goToUpdatePage(ctx, authObserver);
+          }
+          else{
+            // console.log('NO UPDATE');
+            this.goToWelcomePage(ctx, authObserver);
+          }
         });
 
       } else {
         console.log('AuthState subscription error');
-        ctx.clear();
         this.goToWelcomePage(ctx, authObserver);
       }
     });
@@ -172,6 +187,12 @@ export class MyApp {
   goToWelcomePage(ctx: any, obs: any) {
     ctx.clear();
     this.rootPage = WelcomePage;
+    obs.unsubscribe();
+  }
+
+  goToUpdatePage(ctx: any, obs: any) {
+    ctx.clear();
+    this.rootPage = UpdatePage;
     obs.unsubscribe();
   }
 

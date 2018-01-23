@@ -62,7 +62,7 @@ export class FirestoreProvider {
         self.configSubscribtion = self.configObserver.subscribe((configData) => {
           console.log('SUBSCRIBE CONFIG : ', configData);
           if ( configData ) {
-            resolve(configData['url']);
+            resolve(configData);
           }
           else {
             reject('Null url');

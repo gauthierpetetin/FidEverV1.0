@@ -57,6 +57,7 @@ import { SendCoinsPageModule } from '../pages/send-coins/send-coins.module';
 import { ProfilePageModule } from '../pages/profile/profile.module';
 import { MapPageModule } from '../pages/map/map.module';
 import { RewardPageModule } from '../pages/reward/reward.module';
+import { UpdatePageModule } from '../pages/update/update.module';
 
 
 /*********************FIDEVER************************/
@@ -98,7 +99,8 @@ export function createTranslateLoader(http: Http) {
     SendCoinsPageModule,
     ProfilePageModule,
     MapPageModule,
-    RewardPageModule
+    RewardPageModule,
+    UpdatePageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

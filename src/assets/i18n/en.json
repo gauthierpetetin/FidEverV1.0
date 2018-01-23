@@ -171,5 +171,9 @@
   },
   "ALERT": {
     "RECEIVECONTENT": "Congratulations, you just received"
+  },
+  "UPDATE": {
+    "TITLE": "Please download the new app to download the upgrade.",
+    "BUTTON": "Update for free!"
   }
 }

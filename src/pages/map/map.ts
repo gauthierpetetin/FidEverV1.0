@@ -40,7 +40,11 @@ export class MapPage {
 
   map: any;
 
+  positionMarker: any;
+
   contractAddresses: any;
+
+  // animateMarkerWrapped: any;
 
   constructor(
     public navCtrl: NavController,
@@ -80,12 +84,17 @@ export class MapPage {
       fullscreenControl: false
     }
 
+
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
 
 
     // Create a div to hold the control.
       var controlDiv = document.createElement('div');
+
+
+      this.addMyPosition();
+
 
     //### Add a button on Google Maps ...
       var controlMarkerUI = document.createElement('img');
@@ -106,9 +115,12 @@ export class MapPage {
       this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlDiv);
 
 
+
     this.initCoinMarkers();
 
   }
+
+
 
   initCoinMarkers() {
 
@@ -169,13 +181,64 @@ export class MapPage {
 
 
   center(self: any) {
+
+
+
     this.geolocation.getCurrentPosition().then((position) => {
       console.log('Center at latitude : ', position.coords.latitude, ' and longitude : ', position.coords.longitude);
       this.map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+
+      if(self.positionMarker){
+        console.log('Center - PositionMarker');
+        self.animateMarker(self);
+      }
+      else{
+        console.log('Center - No positionMarker');
+      }
+
     }, (err) => {
       console.log(err);
     });
 
+  }
+
+  addMyPosition() {
+    var self = this;
+
+    let animateMarkerWrapped = function(this) {
+      return function(this) {
+          self.animateMarker(self);
+      }
+    }
+
+
+    this.positionMarker = new google.maps.Marker({
+        map: this.map,
+        draggable: false,
+        animation: google.maps.Animation.DROP,
+        position: this.map.getCenter()
+      }
+    );
+    // --------Usefull----------
+    //this.positionMarker.addListener('click', animateMarkerWrapped());
+
+  }
+
+
+
+
+  animateMarker(self: any) {
+    if(self.positionMarker){
+      if (self.positionMarker.getAnimation() !== null) {
+        self.positionMarker.setAnimation(null);
+      } else {
+        // self.positionMarker.setAnimation(google.maps.Animation.BOUNCE);
+        self.positionMarker.setAnimation(google.maps.Animation.DROP);
+      }
+    }
+    else{
+      console.log('No positionMarker2');
+    }
   }
 
 
@@ -205,45 +268,6 @@ export class MapPage {
 }
 
 
-  // loadMap2() {
-  //
-  //   let mapOptions: GoogleMapOptions = {
-  //     camera: {
-  //       target: {
-  //         lat: 43.0741904,
-  //         lng: -89.3809802
-  //       },
-  //       zoom: 18,
-  //       tilt: 30
-  //     }
-  //   };
-  //
-  //   this.map = GoogleMaps.create('map_canvas', mapOptions);
-  //
-  //   // Wait the MAP_READY before using any methods.
-  //   this.map.one(GoogleMapsEvent.MAP_READY)
-  //     .then(() => {
-  //       console.log('Map is ready!');
-  //
-  //       // Now you can use all methods safely.
-  //       this.map.addMarker({
-  //           title: 'Ionic',
-  //           icon: 'blue',
-  //           animation: 'DROP',
-  //           position: {
-  //             lat: 43.0741904,
-  //             lng: -89.3809802
-  //           }
-  //         })
-  //         .then(marker => {
-  //           marker.on(GoogleMapsEvent.MARKER_CLICK)
-  //             .subscribe(() => {
-  //               alert('clicked');
-  //             });
-  //         });
-  //
-  //     });
-  // }
 
   goBack() {
     this.viewCtrl.dismiss();
