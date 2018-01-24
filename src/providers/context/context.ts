@@ -78,6 +78,11 @@ export class ContextProvider {
     infoSurname: string = 'surname';
     infoProfilePicture: string = 'profilePicture';
 
+  fbToken: any = {};
+    fbTokenName: string = 'name';
+    fbTokenColor: string = 'color';
+    fbTokenCompany: string = 'company';
+    fbTokenDemo: string = 'demo';
 
   iconSize: IconSize = IconSize.NORMAL;
 
@@ -346,7 +351,7 @@ export class ContextProvider {
 
     if( !this.getProductionApp() ) {
       /***********************/
-      this.fidapiProvider.setProxyUrl('https://cors-anywhere.herokuapp.com/');
+      //this.fidapiProvider.setProxyUrl('https://cors-anywhere.herokuapp.com/');
       /***********************/
     }
 
@@ -797,10 +802,10 @@ downloadCoinDetail(coin: string): Promise<any> {
       self.coinDetailSubscribtions[coin] = self.coinDetailObservers[coin]
         .subscribe((coinDetails) => {
           console.log('SUBSCRIBE COIN : ', coinDetails);
-          self.c[self.names][coin] = coinDetails['name'];
-          self.c[self.colors][coin] = coinDetails['color'];
-          self.c[self.companyNames][coin] = coinDetails['company'];
-          self.c[self.demoCoins][coin] = coinDetails['demo'];
+          self.c[self.names][coin] = coinDetails[self.fbTokenName];
+          self.c[self.colors][coin] = coinDetails[self.fbTokenColor];
+          self.c[self.companyNames][coin] = coinDetails[self.fbTokenCompany];
+          self.c[self.demoCoins][coin] = coinDetails[self.fbTokenDemo];
           //self.coinDetailSubscribtions[coin].unsubscribe();
           resolve(coinDetails);
     });

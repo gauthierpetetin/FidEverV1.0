@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, Loading, LoadingController } from 'ionic-angular';
 
 // import {
 //  GoogleMaps,
@@ -10,6 +10,8 @@ import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angul
 //  MarkerOptions,
 //  Marker
 // } from '@ionic-native/google-maps';
+
+import { ImageLoaderConfig, ImageLoader } from 'ionic-image-loader';
 
 import { ContextProvider} from '../../providers/context/context';
 
@@ -34,6 +36,8 @@ export class MapPage {
 
   @ViewChild('map') mapElement: ElementRef;
 
+  public loading: Loading;
+
   // Adresse de la Friche
   latitude: number = 48.877813901996824;
   longitude: number = 2.322369152780408;
@@ -44,14 +48,22 @@ export class MapPage {
 
   contractAddresses: any;
 
-  // animateMarkerWrapped: any;
+
+  infoIcon: string = 'icon';
+  infoName: string = 'name';
+  infoLandscape: string = 'landscape';
+  infoCompanyName: string = 'companyName';
+  infoBrandIcon: string = 'brandIcon';
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
     public geolocation: Geolocation,
-    public ctx: ContextProvider
+    public ctx: ContextProvider,
+    public loadingCtrl: LoadingController,
+    private imageLoaderConfig: ImageLoaderConfig,
+    public imageLoader: ImageLoader
     //private googleMaps: GoogleMaps
   ) {
     //this.coinLocations = this.ctx.getLocations();
@@ -64,6 +76,9 @@ export class MapPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad MapPage');
     this.loadMap();
+    if(this.positionMarker){
+      this.animateMyPositionMarker(this);
+    }
   }
 
   loadMap(){
@@ -84,17 +99,13 @@ export class MapPage {
       fullscreenControl: false
     }
 
-
-    this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-
+    if(this.mapElement) {
+      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+    }
 
 
     // Create a div to hold the control.
       var controlDiv = document.createElement('div');
-
-
-      this.addMyPosition();
-
 
     //### Add a button on Google Maps ...
       var controlMarkerUI = document.createElement('img');
@@ -107,16 +118,18 @@ export class MapPage {
       controlMarkerUI.setAttribute('src', 'assets/images/other/center_map_orange.png')
       var self = this;
       controlMarkerUI.addEventListener('click', function() {
-        self.center(self);
+        self.placeMyPositionMarker(self);
       }, false);
       controlMarkerUI.title = 'Click to set the map to Home';
       controlDiv.appendChild(controlMarkerUI);
 
-      this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlDiv);
+      if(this.map) {
+        this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlDiv);
+      }
 
+      this.initCoinMarkers();
 
-
-    this.initCoinMarkers();
+      this.addMyPosition();
 
   }
 
@@ -142,9 +155,13 @@ export class MapPage {
 
       // Create Info
       var info = {};
-      info['icon'] = icon;
-      info['name'] = this.ctx.getCoinName(coin);
+      info[this.infoIcon] = icon;
+      info[this.infoName] = this.ctx.getCoinName(coin);
+      info[this.infoLandscape] = this.ctx.getLandscape(coin);
+      info[this.infoCompanyName] = this.ctx.getCompanyName(coin);
+      info[this.infoBrandIcon] = this.ctx.getBrandIcon(coin);
       infos[coin] = info;
+      console.log('Info --> ', info);
 
       // Create Feature
       var coinLocations = this.ctx.getCoinLocations(coin);
@@ -152,6 +169,7 @@ export class MapPage {
         var feature = {};
         feature['position'] = new google.maps.LatLng(loc.lat, loc.lon);
         feature['type'] = coin;
+        feature['address'] = loc.address;
         features.push(feature);
       }
     }
@@ -162,83 +180,185 @@ export class MapPage {
     // Create markers
     var self = this;
     features.forEach(function(feature) {
-      var infowindow = new google.maps.InfoWindow({
-        content: infos[feature.type].name
-      });
-      var marker = new google.maps.Marker({
-        position: feature.position,
-        icon: infos[feature.type].icon,
-        map: self.map
-      });
-      marker.addListener('click', function() {
-        infowindow.open(self.map, marker);
-      });
+      let localInfos = infos[feature.type];
+      if(localInfos) {
+        var infowindow = new google.maps.InfoWindow({
+          content: self.createCoinMarkerContent(localInfos, feature.address, feature.position)
+        });
+        var marker = new google.maps.Marker({
+          position: feature.position,
+          icon: localInfos[self.infoIcon],
+          map: self.map
+        });
+        marker.addListener('click', function() {
+          infowindow.open(self.map, marker);
+        });
+      }
+      else {
+        console.log('No infos : ', feature.type);
+      }
+
     });
 
 
   }
 
 
-
-  center(self: any) {
-
-
-
-    this.geolocation.getCurrentPosition().then((position) => {
-      console.log('Center at latitude : ', position.coords.latitude, ' and longitude : ', position.coords.longitude);
-      this.map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
-
-      if(self.positionMarker){
-        console.log('Center - PositionMarker');
-        self.animateMarker(self);
-      }
-      else{
-        console.log('Center - No positionMarker');
-      }
-
-    }, (err) => {
-      console.log(err);
-    });
-
-  }
-
+  // Add my positionMarker on the map
   addMyPosition() {
     var self = this;
+    // this.addMyPosition();
 
-    let animateMarkerWrapped = function(this) {
-      return function(this) {
-          self.animateMarker(self);
-      }
-    }
-
+    // ------Keep-----------
+    // let animateMyPositionMarkerWrapped = function(this) {
+    //   return function(this) {
+    //       self.animateMyPositionMarker(self);
+    //   }
+    // }
 
     this.positionMarker = new google.maps.Marker({
         map: this.map,
         draggable: false,
-        animation: google.maps.Animation.DROP,
-        position: this.map.getCenter()
+        animation: google.maps.Animation.BOUNCE // BOUNCE vs DROP
+        // position: latLong
       }
     );
-    // --------Usefull----------
-    //this.positionMarker.addListener('click', animateMarkerWrapped());
+    // --------Keep----------
+    //this.positionMarker.addListener('click', animateMyPositionMarkerWrapped());
+    this.placeMyPositionMarker(this);
+
+  }
+
+
+  // Replace my position marker on the image (refresh)
+  placeMyPositionMarker(self: any) {
+    this.loading = this.loadingCtrl.create({
+      dismissOnPageChange: true,
+    });
+    self.loading.present();
+
+
+    self.geolocation.getCurrentPosition().then((position) => {
+      console.log('Center at latitude : ', position.coords.latitude, ' and longitude : ', position.coords.longitude);
+      let locPos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      if(self.map) {
+        self.map.setCenter(locPos);
+      }
+
+      self.positionMarker.setPosition(locPos);
+
+      if(self.positionMarker){
+        self.animateMyPositionMarker(self);
+      }
+
+      self.loading.dismiss();
+
+    }, (err) => {
+      console.log(err);
+      self.loading.dismiss();
+    });
 
   }
 
 
 
-
-  animateMarker(self: any) {
+  animateMyPositionMarker(self: any) {
     if(self.positionMarker){
       if (self.positionMarker.getAnimation() !== null) {
-        self.positionMarker.setAnimation(null);
+        // self.positionMarker.setAnimation(null);
+        self.positionMarker.setAnimation(google.maps.Animation.BOUNCE);
       } else {
-        // self.positionMarker.setAnimation(google.maps.Animation.BOUNCE);
-        self.positionMarker.setAnimation(google.maps.Animation.DROP);
+        self.positionMarker.setAnimation(google.maps.Animation.BOUNCE);
       }
     }
     else{
-      console.log('No positionMarker2');
+      console.log('No positionMarker');
     }
+  }
+
+
+  createCoinMarkerContent(coinInfo: any, address: string, position: any): string {
+    let landscape = coinInfo[this.infoLandscape];
+    let brandIcon = coinInfo[this.infoBrandIcon];
+    let companyName = coinInfo[this.infoCompanyName];
+    let clickableAddress = "https://www.google.com/maps/@"+position.lat()+","+position.lng();
+    console.log('Open createCoinMarkerContent : ', landscape, ', ', brandIcon, ', ', companyName, ', ', address, ', ', position, ', ', clickableAddress);
+
+    if (!landscape) {landscape = "assets/images/default_images/defaultLandscape.png";}
+    if (!brandIcon) {brandIcon = "assets/images/default_images/defaultBrandIcon.png";}
+
+    return `
+
+    <div style="
+        background-color: white;
+        position: relative;
+        overflow: auto;
+        overflow-y:hidden;
+        overflow-x:hidden;">
+
+
+        <img
+          src="`+ landscape +`"
+          style="position: relative; height: 100px; width: 200px max-height: 100px; overflow: auto !important;">
+        <div style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100px;
+          clear: both;
+          background-color: rgba(255, 255, 255, 0.75);
+          color: #ffffff;">
+
+          <ion-row>
+          <ion-col col-3>
+          </ion-col>
+          <ion-col col-6>
+            <ion-row style="height: 80px">
+              <img
+                style="
+                margin-top: 8px;
+                border-radius: 30px;
+                position: absolute;
+                height: 60px;
+                width: 60px;
+                left: 50%;
+                margin-left: -30px;
+                border: 1px solid #afabab;"
+                src="`+ brandIcon +`">
+            </ion-row>
+            <ion-row style="margin-top: 5px;">
+              <ion-col style="text-align: center; margin: 0 0; padding: 0 0;">
+                <p style="
+                  margin-top: 55px;
+                  color: grey;
+                  font-size: 110%;">
+                  `+companyName+`</p>
+              </ion-col>
+            </ion-row>
+
+
+          </ion-col>
+          <ion-col col-3>
+          </ion-col>
+
+        </ion-row>
+
+
+        </div>
+    </div>
+
+    <a style="
+      href=`+clickableAddress+`;
+      color: blue;
+      z-index: 10;
+      margin-top: 0px;
+      font-size: 80%;">
+      `+address+`</a>
+
+
+    `;
+
   }
 
 

@@ -49,6 +49,9 @@ export class FidapiProvider {
         'uid' : uid
       });
       var postHeaders = new Headers({
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Header': 'Content-Type,x-prototype-version,x-requested-with',
         'Content-Type': 'application/json'
       });
       var postOptions = new RequestOptions({ headers: postHeaders });
@@ -66,7 +69,7 @@ export class FidapiProvider {
           resolve(data);
         },
         err => {
-          console.log('FidAPI failed authenticating',err);
+          //console.log('FidAPI failed authenticating',err);
           reject(err);
         });
     });
@@ -95,7 +98,10 @@ export class FidapiProvider {
         'address' : myAddress
       });
       var postHeaders = new Headers({
-        'Access-Control-Allow-Origin': 'http://localhost:8100/',
+        //'Access-Control-Allow-Origin': 'http://localhost:8100/',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Header': 'Content-Type,x-prototype-version,x-requested-with',
         'Content-Type': 'application/json',
         'x-token': self.idToken
       });
@@ -109,11 +115,11 @@ export class FidapiProvider {
       self.requestAnswer
         .map(res => res.json())
         .subscribe(data => {
-          console.log('FidAPI created wallet: ', JSON.stringify(data) );
+          //console.log('FidAPI created wallet: ', JSON.stringify(data) );
           resolve(data);
         },
         err => {
-          console.log('FidAPI failed creating wallet',err);
+          //console.log('FidAPI failed creating wallet',err);
           reject(err);
         });
     });
@@ -185,13 +191,13 @@ export class FidapiProvider {
       self.requestAnswer
         .map(res => res.json())
         .subscribe(data => {
-          console.log('FidAPI transferred coins: ', JSON.stringify(data) );
-          console.log('Close transferCoins');
+          //console.log('FidAPI transferred coins: ', JSON.stringify(data) );
+          //console.log('Close transferCoins');
           resolve(data);
         },
         err => {
-          console.log('FidAPI failed transfering coins',err);
-          console.log('Close transferCoins');
+          //console.log('FidAPI failed transfering coins',err);
+          //console.log('Close transferCoins');
           reject(err);
         });
     });
