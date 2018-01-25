@@ -30,20 +30,20 @@ page-home {
 // }
 
 .greyBar {
-  background-color: color($colors, fidGrey);
+  background-color: color($colors, fidLightGrey);
   text-align: center;
 }
 
 .toolbar-background {
-  background-color: color($colors, fidOrange);
+  background-color: color($colors, fidLightGrey);
 }
 
 .toolbar-title {
-  color : white
+  color: color($colors, fidDarkGrey) !important;
 }
 
 .bar-button-default {
-  color : white
+  color: color($colors, fidDarkGrey) !important;
 }
 
 ion-list-header {

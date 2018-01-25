@@ -167,7 +167,8 @@
   },
   "MAP": {
     "TITLE": "Coin Map",
-    "BACK": "Back"
+    "BACK": "Back",
+    "DISCOVER": "Discover coin offers"
   },
   "ALERT": {
     "RECEIVECONTENT": "Congratulations, you just received"

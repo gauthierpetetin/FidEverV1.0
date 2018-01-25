@@ -6,7 +6,7 @@
     </ion-title>
   </ion-navbar>
 
-  <ion-row style="height: 60px; background-color: white;">
+  <ion-row *ngIf="ctx.getCoinAmount(coinContractAddress) >0" style="height: 60px; background-color: white;">
 
     <ion-col col-8 style="display: table;">
       <div style="
@@ -27,7 +27,7 @@
       vertical-align: middle;
       text-align: center;">
         <h4 *ngIf="coinName" [ngStyle]="{'color': coinColor}">
-          {{ctx.c[ctx.amounts][coinContractAddress]}}
+          {{ctx.getCoinAmount(coinContractAddress)}}
         </h4>
       </div>
     </ion-col>
@@ -230,10 +230,10 @@
               vertical-align: middle;
               text-align: right;
             ">
-              <h4 *ngIf="ctx.c[ctx.amounts][coinContractAddress]>=off[offerPrice]" [ngStyle]="{'color': coinColor}">
+              <h4 *ngIf="ctx.getCoinAmount(coinContractAddress)>=off[offerPrice]" [ngStyle]="{'color': coinColor}">
                 {{ 'ITEM_DETAIL.COST' | translate }} : {{off[offerPrice]}}
               </h4>
-              <h4 *ngIf="ctx.c[ctx.amounts][coinContractAddress]<off[offerPrice]" [ngStyle]="{'color': 'grey'}">
+              <h4 *ngIf="ctx.getCoinAmount(coinContractAddress)<off[offerPrice]" [ngStyle]="{'color': 'grey'}">
                 {{ 'ITEM_DETAIL.COST' | translate }} : {{off[offerPrice]}}
               </h4>
             </div>
@@ -328,12 +328,14 @@
 
 </ion-content>
 
+<!-- -------------------------------------------- FOOTER -------------------------------------------- -->
 
-<ion-footer style="text-align: center;">
+
+<ion-footer *ngIf="ctx.getCoinAmount(coinContractAddress) >0" style="text-align: center;">
 <!-- align to the bottom of the page -->
 <!-- <div style="position: absolute; bottom: 0px; width: 100%; z-index:10; background-color: white"> -->
   <div class="greyBar">
-    <p style="margin: 0 0; padding: 3px 0; color: white">{{ 'ITEM_DETAIL.ACTION.TITLE_1' | translate }} {{coinName}}s {{ 'ITEM_DETAIL.ACTION.TITLE_2' | translate }}</p>
+    <p style="margin: 0 0; padding: 3px 0; color: grey">{{ 'ITEM_DETAIL.ACTION.TITLE_1' | translate }} {{coinName}}s {{ 'ITEM_DETAIL.ACTION.TITLE_2' | translate }}</p>
   </div>
 
   <button style="width: 100%; margin: 0 0; padding: 0 0; background-color: white">

@@ -7,15 +7,15 @@ page-profile {
   // }
 
   .toolbar-background {
-    background-color: color($colors, fidOrange);
+    background-color: color($colors, fidLightGrey);
   }
 
   .toolbar-title {
-    color : white
+    color: color($colors, fidDarkGrey) !important;
   }
 
   .bar-button-default {
-    color : white
+    color: color($colors, fidDarkGrey) !important;
   }
 
   .alertDanger{

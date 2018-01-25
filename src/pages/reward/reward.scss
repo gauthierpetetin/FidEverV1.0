@@ -1,5 +1,5 @@
 page-reward {
-  
+
   @import "../../theme/variables.scss";
 
   // ion-content{
@@ -8,16 +8,16 @@ page-reward {
 
 
   .toolbar-background {
-  //background-color: color($colors, fidOrange);
+  //background-color: color($colors, fidLightGrey);
     background-color: transparent;
   }
 
   .toolbar-title {
-    color : white
+    color: color($colors, fidDarkGrey) !important;
   }
 
   .bar-button-default {
-    color : white
+    color: color($colors, fidDarkGrey) !important;
   }
 
   //Test pour aligner les éléments contenus dans les items de la liste

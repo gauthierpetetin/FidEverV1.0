@@ -117,7 +117,7 @@ export class ContextProvider {
   allCoinsCollectionPath: string = 'tokens/';
   // globalCoinCollectionPath: string = 'tokens/';
   defaultCoinName: string = 'Unknown Coin';
-  defaultCoinAmount: string = '0';
+  defaultCoinAmount: number = 0;
   defaultCoinImage: string = '';
   defaultDemoCoin: boolean = false;
   defaultLandscapeImage: string = '';
@@ -125,6 +125,8 @@ export class ContextProvider {
   defaultCompanyName: string = 'Unknown Shop';
   fidOrange: string = '#fe9400';
   fidGrey: string = '#afabab';
+  fidLightGrey: string = '#f2f2f2';
+  fidDarkGrey: string = '#404040';
 
   noEthAccount: string = 'noEthAccount';
 
@@ -279,8 +281,9 @@ export class ContextProvider {
     if(!this.c[this.colors][coinID]){return this.fidOrange}
     return this.c[this.colors][coinID];
   }
-  getCoinAmount(coinID: string): string {
+  getCoinAmount(coinID: string): number {
     if(!this.c[this.amounts][coinID]){return this.defaultCoinAmount}
+    if(this.c[this.amounts][coinID] <= 0){return this.defaultCoinAmount}
     return this.c[this.amounts][coinID];
   }
   getCoinIcon(coinID: string): string {
@@ -676,9 +679,9 @@ downloadCoinAmount(coin: string, uid: string): Promise<any> {
       self.coinAmountObservers[coin] = self.firestoreProvider.getDocument(path);
       self.coinAmountSubscribtions[coin] = self.coinAmountObservers[coin].subscribe((coin_a) => {
         console.log('OBSERVABLE MYCOINAMOUNT : ', coin);
-        let amount = coin_a['balance'];
+        let amount: number = coin_a['balance'];
         //Show alert
-        var delta : number = parseInt(amount) - parseInt(self.getCoinAmount(coin));
+        var delta : number = amount - self.getCoinAmount(coin);
         if(delta > 0){
           //self.alertProvider.receiveAlert(delta, self.c[self.names][coin], self.getLanguage());
           self.alertProvider.receiveAlert(delta, self.getCoinName(coin), self.getLanguage());
@@ -688,6 +691,9 @@ downloadCoinAmount(coin: string, uid: string): Promise<any> {
         }
         //Update amount
         self.c[self.amounts][coin] = amount;
+
+        //Mandatory save() here --> without it, the user is notified again when he reopens the app
+        self.save();
         resolve(amount);
       }, (err) => {
         reject(err);
@@ -1020,7 +1026,7 @@ initCoinList(coinAddressesList: any) { //this.c[this.myContractAddresses]
 
 initCoin(coin: any) {
   if(!this.c[this.names][coin]) {this.c[this.names][coin] = '';}
-  if(!this.c[this.colors][coin]) {this.c[this.colors][coin] = this.fidOrange;}
+  if(!this.c[this.colors][coin]) {this.c[this.colors][coin] = this.fidLightGrey;}
   if(!this.c[this.amounts][coin]) {this.c[this.amounts][coin] = 0;}
   if(!this.c[this.icons][coin]) {this.c[this.icons][coin] = this.defaultCoinImage;}
   if(!this.c[this.demoCoins][coin]) {this.c[this.demoCoins][coin] = false;}
@@ -1178,7 +1184,7 @@ addCoin() {
   var newCoin = {
       balance : 0,
       address : 'Coin',
-      coinColor : this.fidOrange,
+      coinColor : this.fidLightGrey,
       coinName : ''
   };
 

@@ -4,7 +4,7 @@ page-item-detail {
 
 
 .toolbar-background {
-  //background-color: color($colors, fidOrange);
+  //background-color: color($colors, fidLightGrey);
   background-color: transparent;
 }
 
@@ -12,13 +12,12 @@ page-item-detail {
   color: white;
 }
 
-.bar-button-default{
-  color: white !important;
-  //background-color: white !important;
+.bar-button-default {
+  color: white;
 }
 
 .greyBar {
-  background-color: color($colors, fidGrey);
+  background-color: color($colors, fidLightGrey);
   text-align: center;
 }
 

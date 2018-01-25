@@ -85,7 +85,7 @@ export class ItemDetailPage {
     this.offerImages = this.ctx.getOfferImages(this.coinContractAddress);
     this.rewards = this.ctx.getRewards(this.coinContractAddress);
 
-    if(this.offers.length > 0) {
+    if((this.offers.length > 0)&&(this.rewards.length==0)){
       console.log('this.rewards.push : ', this.rewards);
       this.rewards.push(this.offers[0]);
     }
@@ -122,6 +122,16 @@ export class ItemDetailPage {
   }
 
   sendCoins() {
+    let available_funds = this.ctx.getCoinAmount(this.coinContractAddress);
+    if(available_funds<=0){
+      let alert = this.alertCtrl.create({
+        title: this.fundsAlertTitle,
+        buttons: ['OK']
+      });
+      alert.present();
+      return;
+    }
+
     this.modalCtrl.create(SendCoinsPage, {
       coinContractAddress: this.coinContractAddress,
       coinName: this.ctx.getCoinName(this.coinContractAddress),
@@ -142,7 +152,7 @@ export class ItemDetailPage {
 
   offerTapped(event, selectedOffer) {
     console.log('Offer tapped : ', selectedOffer);
-    var coinAmount = this.ctx.c[this.ctx.amounts][this.coinContractAddress]
+    var coinAmount: number = this.ctx.getCoinAmount(this.coinContractAddress);
     if (coinAmount >= selectedOffer[this.offerPrice]) {
       this.confirmPurchase(selectedOffer);
     }

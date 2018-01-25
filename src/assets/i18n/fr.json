@@ -167,7 +167,8 @@
   },
   "MAP": {
     "TITLE": "Carte des jetons",
-    "BACK": "Retour"
+    "BACK": "Retour",
+    "DISCOVER": "Découvrir les offres"
   },
   "ALERT": {
     "RECEIVECONTENT": "Félicitations, tu viens de recevoir"

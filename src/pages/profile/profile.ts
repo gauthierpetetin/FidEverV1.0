@@ -483,7 +483,7 @@ export class ProfilePage {
 
   showID() {
     let myModalCtrl = this.modalCtrl.create(ReceiveCoinsPage, {
-      coinColor : this.ctx.fidOrange
+      coinColor : this.ctx.fidLightGrey
     });
     myModalCtrl.present();
   }
