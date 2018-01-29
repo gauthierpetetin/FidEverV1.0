@@ -258,7 +258,10 @@ export class MapPage {
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: true,
     });
-    self.loading.present();
+
+    if( self.mapIsOn ) {
+      self.loading.present();
+    }
 
 
     self.geolocation.getCurrentPosition().then((position) => {

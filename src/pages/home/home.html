@@ -6,19 +6,53 @@
       </button>
     </ion-buttons>
     <ion-title>
-      <!-- {{ 'HOME.home_title' | translate }} -->
       {{ 'HOME.WALLET' | translate }}
     </ion-title>
     <ion-buttons end>
-      <button ion-button icon-only padding (click)="showMap()">
+      <button *ngIf="!mapIsOn" ion-button icon-only padding (click)="showMap()">
         <ion-icon name="map"></ion-icon>
+      </button>
+      <button *ngIf="mapIsOn" ion-button icon-only padding (click)="showList()">
+        <ion-icon name="list"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
 
-  <ion-list-header [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.85)'}">
+  <!-- <ion-row style="background-color: green; height: 40px; padding: 0 0; margin: 0 0;" [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.5)'}">
+
+    <ion-col col-4 style="background-color: blue">
+    </ion-col>
+    <ion-col col-4 style="background-color: red; padding: 0 0; margin: 0 0; display: table;">
+      <div style="background-color: green;
+        position: relative;
+        padding: 0 0;
+        margin: 0 0;
+        display: table-cell;">
+        <ion-toggle [(ngModel)]="myCoinsIsOn" (ionChange)="switchCoinMode()"
+          style="margin: 2px 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            height: 20px;
+            width: 60px;
+            margin-top: -10px;
+            margin-left: -30px;
+            background-color: yellow;
+          ">
+        </ion-toggle>
+      </div>
+    </ion-col>
+    <ion-col col-4 style="background-color: blue">
+    </ion-col>
+  </ion-row> -->
+
+</ion-header>
+
+<!-- <div>
+  <div #header id="header">
+  <ion-list-header *ngIf="ctx.getCoins(myCoinsIsOn).length!=0" [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.85)'}">
     <div class="item-content">
-     <ion-row style="margin-left: 0; margin-right: 5%!important; padding-top: 0; padding-bottom: 0;">
+     <ion-row style="margin-left: 0; margin-right: 5%!important; padding-top: 0; padding-bottom: 0; height: 20px; background-color: blue">
 
       <ion-col col-3 style="
         margin: 0 0;
@@ -80,19 +114,22 @@
     </ion-row>
   </div>
   </ion-list-header>
+</div>
+</div> -->
 
-  <!-- <img-loader src="assets/images/background/background75.png" style="display:none" useImg></img-loader>
-  <img-loader src="assets/images/background/background30.png" style="display:none" useImg></img-loader>
-  <img-loader src="assets/images/background/background15.png" style="display:none" useImg></img-loader> -->
 
-</ion-header>
 
 <ion-content>
+  <div #map id="map" style="width: 100%; height: 100%;">
+  </div>
 
-  <ion-list *ngIf="ctx.getMyCoinAddresses().length!=0">
 
-    <!-- <ion-item-sliding *ngFor="let cc of ctx.c[myContractAddresses]"> -->
-    <ion-item-sliding *ngFor="let cc of ctx.getMyCoinAddresses()">
+  <div #list id="list">
+
+  <ion-list *ngIf="ctx.getCoins(myCoinsIsOn).length!=0">
+
+
+    <ion-item-sliding *ngFor="let cc of ctx.getCoins(myCoinsIsOn)">
 
       <button ion-item (click)="itemTapped($event, cc)" [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.85)'}">
         <ion-row>
@@ -172,15 +209,10 @@
         </ion-row>
       </button>
 
-      <!-- DELETE ITEM FROM DATABASE -->
-      <!-- <ion-item-options side="right">
-        <button ion-button color="danger" icon-only (click)="removeCoin(coin.id)"><ion-icon name="trash"></ion-icon></button>
-      </ion-item-options> -->
-
     </ion-item-sliding>
   </ion-list>
 
-  <div *ngIf="ctx.getMyCoinAddresses().length==0">
+  <div *ngIf="ctx.getCoins(myCoinsIsOn).length==0">
   <ion-row text-center style="height: 80px; margin-top: 30px; width: 100%; position: relative">
     <img-loader
       (click)="showMap()"
@@ -220,17 +252,29 @@
   </ion-row>
 </div>
 
+</div>
+
 </ion-content>
 
+
+<!-- DELETE ITEM FROM DATABASE -->
+<!-- <ion-item-options side="right">
+  <button ion-button color="danger" icon-only (click)="removeCoin(coin.id)"><ion-icon name="trash"></ion-icon></button>
+</ion-item-options> -->
 
 
 <!-- -------------------------------------------- FOOTER -------------------------------------------- -->
 
 <ion-footer style="text-align: center;">
-<!-- align to the bottom of the page -->
-<!-- <div style="position: absolute; bottom: 0px; width: 100%; z-index:10; background-color: white"> -->
-  <div class="greyBar">
-    <p style="margin: 0 0; padding: 3px 0; color: grey"><{{ 'HOME.COLLECT' | translate }}</p>
+  <!-- <div *ngIf="!mapIsOn" style="text-align: center;">
+    <p style="margin: 0 0; padding: 3px 0; color: grey" [ngStyle]="{'background-color': fidLightGrey}">
+      {{ 'HOME.COLLECT' | translate }}
+    </p>
+  </div> -->
+  <div style="text-align: center; color: white;">
+    <p style="margin: 0 0; padding: 3px 0; color: white" [ngStyle]="{'background-color': fidDarkGrey}">
+      {{ 'HOME.COLLECT' | translate }}
+    </p>
   </div>
 
   <button (click)="collectCoins()" style="width: 100%; background-color: white">
@@ -304,41 +348,6 @@
 
     </ion-row>
 
-
-
-    <!-- <ion-row style="margin: 0 0;padding: 0 0; background-color : transparent">
-
-      <ion-col style="position: relative;" [ngStyle]="{'background-color': 'transparent'}">
-      </ion-col>
-
-      <ion-col style="position:relative; text-align:center" [ngStyle]="{'background-color': 'transparent'}">
-          <img-loader src="assets/images/other/arrow_right.png" useImg></img-loader>
-          </ion-col>
-
-          <ion-col style="position:relative;" [ngStyle]="{'background-color': 'transparent'}">
-            <img-loader
-            [ngStyle]="{
-              'position':'absolute',
-              'top':'50%',
-              'left':'50%',
-              'height':'40px',
-              'width':'40px',
-              'margin-top':'-20px',
-              'margin-left':'-20px'
-            }"
-            src="assets/images/default_images/defaultCoin.png"
-            useImg
-            ></img-loader>
-          </ion-col>
-
-          <ion-col style="position:relative; text-align:center" [ngStyle]="{'background-color': 'transparent'}">
-            <img-loader src="assets/images/other/arrow_left.png" useImg></img-loader>
-          </ion-col>
-
-          <ion-col style="position:relative;" [ngStyle]="{'background-color': 'transparent'}">
-          </ion-col>
-
-        </ion-row> -->
-      </button>
+  </button>
 
 </ion-footer>

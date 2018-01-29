@@ -118,7 +118,7 @@ export class ContextProvider {
   // globalCoinCollectionPath: string = 'tokens/';
   defaultCoinName: string = 'Unknown Coin';
   defaultCoinAmount: number = 0;
-  defaultCoinImage: string = '';
+  defaultCoinImage: string = 'assets/images/default_images/defaultCoin.png';
   defaultDemoCoin: boolean = false;
   defaultLandscapeImage: string = '';
   defaultBrandIcon: string = '';
@@ -245,6 +245,15 @@ export class ContextProvider {
     return this.c[this.info][this.infoProfilePicture];
   }
 
+  getCoins(myCoinsOnly: boolean): string {
+    if(myCoinsOnly) {
+      return this.getMyCoinAddresses();
+    }
+    else{
+      return this.getAllCoinAddresses();
+    }
+  }
+
   getMyCoinAddresses(): string {
     let coinProdList: any = [];
     let coinDemoList: any = [];
@@ -287,6 +296,7 @@ export class ContextProvider {
     return this.c[this.amounts][coinID];
   }
   getCoinIcon(coinID: string): string {
+    if( (!this.c[this.icons][coinID]) || (this.c[this.icons][coinID]=="") ){return this.defaultCoinImage}
     return this.c[this.icons][coinID];
   }
   getLandscape(coinID: string): string {
@@ -635,6 +645,7 @@ downloadMyCoinAmounts(coinContractAddresses: any, uid: string): Promise<any> {
       if(tot == 0){
         console.log('No coinAmounts to download.');
         resolve(0);
+        return;
       }
 
       for(let coinContractAddress of coinContractAddresses) {

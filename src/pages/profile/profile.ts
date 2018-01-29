@@ -81,6 +81,8 @@ export class ProfilePage {
   signupAlertTitle2: string; // "Error"
   signupAlertContent2: string; // "Account creation error."
 
+  fidDarkGrey: string;
+
   constructor(
     // public platform: Platform,
     public appCtrl: App,
@@ -122,6 +124,8 @@ export class ProfilePage {
     });
 
     this.translate();
+
+    this.fidDarkGrey = this.ctx.fidDarkGrey;
 
     // this.logOut();
 
@@ -243,9 +247,10 @@ export class ProfilePage {
   }
 
   goBack() {
-    //let data = { 'disconnect': 'no'};
-    //this.viewCtrl.dismiss(data);
+    // let data: any = {};
+    // data['demo'] = this.demoMode;
     this.viewCtrl.dismiss();
+    // this.viewCtrl.dismiss();
   }
 
   modify() {
