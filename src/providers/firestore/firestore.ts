@@ -41,7 +41,7 @@ export class FirestoreProvider {
     public http: Http,
     private angularFirestore: AngularFirestore
   ) {
-    console.log('Open Firestore Provider constructor');
+    console.log('  Open Firestore Provider constructor');
 
     // Get a reference to the storage service, which is used to create references in your storage bucket
     this.storage = firebase.storage();
@@ -51,7 +51,7 @@ export class FirestoreProvider {
   }
 
   init(): Promise<any> {
-    console.log('Open firestore init()');
+    console.log('  Open firestore init()');
     var self = this;
     return new Promise(
       function(resolve, reject) {
@@ -74,7 +74,7 @@ export class FirestoreProvider {
 
   getCollection(collectionName : string, orderParameter?: string) {
     if(orderParameter) {
-      console.log('Open firestoreProvider-getcollection with orderParameter : ', orderParameter,'.');
+      console.log('  Open firestoreProvider-getcollection with orderParameter : ', orderParameter,'.');
       if(this.angularFirestore.collection<any[]>(collectionName)){
           this.afCoinCollection = this.angularFirestore.collection<any[]>(collectionName, ref => ref
             .orderBy(orderParameter)
@@ -86,7 +86,7 @@ export class FirestoreProvider {
       }
     }
     else {
-      console.log('Open firestoreProvider-getcollection without orderParameter.');
+      console.log('  Open firestoreProvider-getcollection without orderParameter.');
       if(this.angularFirestore.collection<any[]>(collectionName)){
           this.afCoinCollection = this.angularFirestore.collection<any[]>(collectionName);
       }
@@ -153,7 +153,7 @@ export class FirestoreProvider {
   }
 
   setDocInCollection(coin : any, collectionName : string){
-    console.log('Open firestoreProvider-setdocument');
+    console.log('  Open firestoreProvider-setdocument');
 
     this.afCoinCollection = this.angularFirestore.collection<any>(collectionName);
 
@@ -176,7 +176,7 @@ export class FirestoreProvider {
 
 
   downloadImageAtPath(myImagePath : string): Promise<any> {
-    console.log('downloadedImageAtPath : '.concat(myImagePath));
+    console.log('  Open downloadImageAtPath : '.concat(myImagePath));
     // Create a reference to the file we want to download
     var imageStorageRef = this.storageRef.child(myImagePath) //Example: 'images/space.jpg'
     // Get the download URL
@@ -185,7 +185,7 @@ export class FirestoreProvider {
 
 
   updateDocFromCollectionWithContent(docID : string, collectionName : string, newContent : any) {
-    console.log('update document '.concat(docID,' from collection ',collectionName));
+    console.log('  Open update document '.concat(docID,' from collection ',collectionName));
     this.afCoinCollection = this.angularFirestore.collection<any[]>(collectionName);
     this.afCoinCollection.doc(docID).update(newContent);
   }

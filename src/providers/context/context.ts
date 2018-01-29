@@ -535,23 +535,19 @@ getAllCoinsFromFirestore(): Promise<any> {
           .getCollection( self.allCoinsCollectionPath )
           .subscribe( allCoins => {
 
-            console.log('OBSERVABLE ALLCOINLIST : ', allCoins);
+            console.log('SUBSCRIBE ALLCOINLIST : ', allCoins);
+            var allCoinsSimplified = [];
 
             if(allCoins != null){
-              var allCoinsSimplified = [];
-
               for(let coin of allCoins) {
                 allCoinsSimplified.push(coin.id);
               }
-
-              resolve(allCoinsSimplified);
-              /*******************************************/
-
             }
             else{
               console.log('Null allCoins list');
-              resolve();
             }
+
+            resolve(allCoinsSimplified);
 
         });
 
@@ -587,7 +583,7 @@ getMyCoinListFromFirestore(myUid: string): Promise<any> {
         .getCollection(coinCollectionPath)
         .subscribe( myCoins => {
 
-          console.log('OBSERVABLE MYCOINLIST : ', myCoins);
+        console.log('SUBSCRIBE MYCOINLIST : ', myCoins);
 
         if(myCoins != null){
           var myCoinsSimplified = [];
@@ -611,15 +607,13 @@ getMyCoinListFromFirestore(myUid: string): Promise<any> {
             }
           }
 
-          /*******************************************/
-
-          resolve( self.c[self.myContractAddresses] );
-
         }
         else{
           console.log('Null dbCoins list');
-          resolve();
+          self.c[self.myContractAddresses] = [];
         }
+
+        resolve( self.c[self.myContractAddresses] );
 
       });
 
@@ -808,10 +802,15 @@ downloadCoinDetail(coin: string): Promise<any> {
       self.coinDetailSubscribtions[coin] = self.coinDetailObservers[coin]
         .subscribe((coinDetails) => {
           console.log('SUBSCRIBE COIN : ', coinDetails);
-          self.c[self.names][coin] = coinDetails[self.fbTokenName];
-          self.c[self.colors][coin] = coinDetails[self.fbTokenColor];
-          self.c[self.companyNames][coin] = coinDetails[self.fbTokenCompany];
-          self.c[self.demoCoins][coin] = coinDetails[self.fbTokenDemo];
+          if( coinDetails != null ) {
+            self.c[self.names][coin] = coinDetails[self.fbTokenName];
+            self.c[self.colors][coin] = coinDetails[self.fbTokenColor];
+            self.c[self.companyNames][coin] = coinDetails[self.fbTokenCompany];
+            self.c[self.demoCoins][coin] = coinDetails[self.fbTokenDemo];
+          }
+          else {
+            console.log('Null coinDetails for ', coin);
+          }
           //self.coinDetailSubscribtions[coin].unsubscribe();
           resolve(coinDetails);
     });
@@ -836,7 +835,7 @@ downloadCoinIcon(coin: string): Promise<any> {
       self.firestoreProvider.downloadImageAtPath('coinIcons/'.concat(icon_size,coin,'.png')).then(
         function(result : string){
           self.c[self.icons][coin] = result;
-          console.log(coin.concat(' image added to coinIcons: ',''/*JSON.stringify(self.c[self.icons])*/));
+          console.log(coin.concat(' image added to coinIcons: ',self.c[self.icons][coin]));
           resolve(result);
         },
         function(error : any){
@@ -906,16 +905,20 @@ downloadOffers(coin: string): Promise<any> {
         .subscribe((coinOffers) => {
           console.log('SUBSCRIBE OFFER : ', coinOffers);
           var localOffersList: any [] = [];
-          for(let off of coinOffers) {
-            if(off) {
-              //console.log('OFI : ', off);
-              localOffersList.push(off);
-              self.downloadOfferImage(off[self.offerID], coin);
+          if(coinOffers != null) {
+            for(let off of coinOffers) {
+              if(off) {
+                localOffersList.push(off);
+                self.downloadOfferImage(off[self.offerID], coin).then( () => {} ).catch( () => {} );
+              }
             }
+            self.c[self.offers][coin] = localOffersList;
           }
-          self.c[self.offers][coin] = localOffersList;
-          //console.log('CoinOffers for ', self.c[self.names][coin], ' : ', coinOffers);
+          else {
+            console.log('Null offers list for coin ', coin);
+          }
           resolve(localOffersList);
+
       });
 
   });
@@ -929,11 +932,11 @@ downloadOfferImage(offerID: any, coinID: string): Promise<any> {
       self.firestoreProvider.downloadImageAtPath('offers/'.concat(coinID,'/',offerID,'.png')).then(
         function(result : string){
           self.c[self.offerImages][coinID][offerID] = result;
-          console.log(coinID.concat('image added to offerImages : ',self.c[self.offerImages][coinID] ));
+          console.log(coinID.concat(' image added to offerImages : ', self.c[self.offerImages][coinID][offerID] ));
           resolve(result);
         },
         function(error : any){
-          console.log(coinID.concat('image not added to offers. Error: ',error.message));
+          console.log(coinID.concat(' image not added to offers. Error: ',error.message));
           reject(error);
         }
       );
@@ -964,13 +967,18 @@ downloadLocations(coin: string): Promise<any> {
       self.coinLocationsSubscribtions[coin] = self.coinLocationsObservers[coin].subscribe((coinLocations) => {
         console.log('SUBSCRIBE LOCATIONS : ', coinLocations);
         var localLocationsList: any [] = [];
-        for(let loc of coinLocations) {
-          if(loc) {
-            localLocationsList.push(loc);
+        if( coinLocations != null ) {
+          for(let loc of coinLocations) {
+            if(loc) {
+              localLocationsList.push(loc);
+            }
           }
         }
+        else {
+          console.log('Null coinLocations list for ', coin);
+        }
         self.c[self.locations][coin] = localLocationsList;
-        console.log('CoinLocations for ', self.getCoinName(coin), ' : ', coinLocations);
+        // console.log('CoinLocations for ', self.getCoinName(coin), ' : ', coinLocations);
         resolve(coinLocations);
         //locationsSubscribtions.unsubscribe();
       });

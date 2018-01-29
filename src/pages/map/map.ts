@@ -80,7 +80,7 @@ export class MapPage {
     public loadingCtrl: LoadingController,
     private imageLoaderConfig: ImageLoaderConfig,
     public imageLoader: ImageLoader,
-    private translateService: TranslateService,
+    private translateService: TranslateService
     //private googleMaps: GoogleMaps
   ) {
     //this.coinLocations = this.ctx.getLocations();
@@ -194,7 +194,7 @@ export class MapPage {
       var coinLocations = this.ctx.getCoinLocations(coin);
       for (let loc of coinLocations) {
         var feature = {};
-        feature[this.featurePosition] = new google.maps.LatLng(loc.lat, loc.lon);
+        feature[this.featurePosition] = new google.maps.LatLng(loc.lat, loc.lng);
         feature[this.featureType] = coin;
         feature[this.featureAddress] = loc.address;
         features.push(feature);
@@ -266,6 +266,15 @@ export class MapPage {
       let locPos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       if(self.map) {
         self.map.setCenter(locPos);
+
+        // self.map.animateCamera({
+        //     target: position,   // Sets the center of the map to Mountain View
+        //     zoom: 14,           // Sets the zoom
+        //     tilt: 60,           // Sets the tilt of the camera to 60 degrees
+        //     bearing: 140,       // Sets the orientation of the camera to east
+        //     duration: 2000
+        // }, () => {});
+
       }
 
       self.positionMarker.setPosition(locPos);
