@@ -37,13 +37,13 @@ export class WalletProvider {
   createGlobalEthWallet(uid: string, email: string, displayName: string, photoURL: string, hashPassword: string):Promise <any> {
     var self = this;
     return new Promise((resolve,reject) => {
-      // if(self.ctx.cordovaPlatform) {
-      //   self.createGlobalEthWallet_PROD(uid, email, displayName, photoURL, hashPassword).then((res)=>{resolve(res)}).catch((err)=>{reject(err)});
-      // }
-      // else {
-      //   self.createGlobalEthWallet_DELETE(uid, email, displayName, photoURL, hashPassword).then((res)=>{resolve(res)}).catch((err)=>{reject(err)});
-      // }
-      self.createGlobalEthWallet_PROD(uid, email, displayName, photoURL, hashPassword).then((res)=>{resolve(res)}).catch((err)=>{reject(err)});
+      if(self.ctx.cordovaPlatform) {
+        self.createGlobalEthWallet_PROD(uid, email, displayName, photoURL, hashPassword).then((res)=>{resolve(res)}).catch((err)=>{reject(err)});
+      }
+      else {
+        self.createGlobalEthWallet_DELETE(uid, email, displayName, photoURL, hashPassword).then((res)=>{resolve(res)}).catch((err)=>{reject(err)});
+      }
+      // self.createGlobalEthWallet_PROD(uid, email, displayName, photoURL, hashPassword).then((res)=>{resolve(res)}).catch((err)=>{reject(err)});
     });
   }
 
@@ -75,7 +75,7 @@ export class WalletProvider {
             reject(saveError);
           });
         }, (fidApiSignupError) => {
-          console.log('Signup error on Firestore database : ', fidApiSignupError);
+          console.log('Error : fidapiProvider.createWallet');
           reject(fidApiSignupError);
         });
 

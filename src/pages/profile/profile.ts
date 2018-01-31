@@ -44,6 +44,8 @@ export class ProfilePage {
   modifying: boolean = false;
 
   demoMode: boolean = false;
+  newDemoMode: boolean = false;
+  toggleSwitched: boolean = false;
 
   public infoForm: FormGroup;
   public signupForm: FormGroup;
@@ -106,6 +108,7 @@ export class ProfilePage {
     this.info = this.ctx.info;
 
     this.demoMode = this.ctx.getDemoMode();
+    this.newDemoMode = this.demoMode;
 
     this.infoForm = formBuilder.group({
       name: ['', ],
@@ -247,10 +250,12 @@ export class ProfilePage {
   }
 
   goBack() {
-    // let data: any = {};
-    // data['demo'] = this.demoMode;
-    this.viewCtrl.dismiss();
-    // this.viewCtrl.dismiss();
+    if(this.demoMode != this.newDemoMode) {
+      this.viewCtrl.dismiss(true);
+    }
+    else{
+      this.viewCtrl.dismiss(false);
+    }
   }
 
   modify() {
@@ -542,17 +547,9 @@ export class ProfilePage {
 
 
   switchDemoMode() {
-    if ( !this.ctx.getDemoMode() ) {
-      console.log('Switch Demo on');
-      this.ctx.setDemoMode(true);
-      this.demoMode = true;
-    }
-    else {
-      console.log('Switch Demo off');
-      this.ctx.setDemoMode(false);
-      this.demoMode = false;
-    }
+    this.ctx.setDemoMode(this.newDemoMode);
     this.ctx.save();
+
   }
 
 

@@ -37,20 +37,15 @@ export class HomePage {
 
   //Useful for HTML
   info : string;
-  myContractAddresses : string;
-
 
   mapIsOn: boolean = true;
-  myCoinsIsOn: boolean = false;
+  myCoinsOnly: boolean = false;
 
   divMap: any;
   divList: any;
   containerMap: any;
   containerList: any;
-  // header: any;
-  // navbar: any;
 
-  localDemoMode: boolean;
 
   fidDarkGrey: string;
   fidLightGrey: string;
@@ -71,15 +66,13 @@ export class HomePage {
 
   positionMarker: any;
 
-  contractAddresses: any;
-
-
+  mapsInfoIcons: any = {};
   infoIcon: string = 'icon';
-  infoName: string = 'name';
-  infoLandscape: string = 'landscape';
-  infoCompanyName: string = 'companyName';
-  infoBrandIcon: string = 'brandIcon';
-  infoCoinColor: string = 'coinColor';
+  // infoName: string = 'name';
+  // infoLandscape: string = 'landscape';
+  // infoCompanyName: string = 'companyName';
+  // infoBrandIcon: string = 'brandIcon';
+  // infoCoinColor: string = 'coinColor';
 
 
   featureType: string = 'type';
@@ -87,6 +80,10 @@ export class HomePage {
   featureAddress: string = 'address';
 
   mapDiscover: string;
+
+
+  contractAddresses: any = [];
+  mapMarkers: any = {};
 
   // End of map elements
 
@@ -113,16 +110,12 @@ export class HomePage {
 
       // Variables for html
       this.info = this.ctx.info;
-      this.myContractAddresses = this.ctx.myContractAddresses;
 
       this.fidLightGrey = this.ctx.fidLightGrey;
       this.fidDarkGrey = this.ctx.fidDarkGrey;
       console.log('COLOR : ',this.fidDarkGrey);
 
       this.translate();
-
-      this.localDemoMode = this.ctx.getDemoMode();
-
 
   }
 
@@ -150,7 +143,12 @@ export class HomePage {
     }
 
 
-    this.loadMap();
+    this.initMap().then( () => {
+      this.initPositionMarker().then( () => {
+        this.refreshPositionMarker(this);
+      });
+      this.refreshMap(this.myCoinsOnly);
+    });
 
   }
 
@@ -176,23 +174,15 @@ export class HomePage {
   }
 
   switchCoinMode() {
-    if(this.myCoinsIsOn) {
-      this.myCoinsIsOn = false;
-    }
-    else {
-      this.myCoinsIsOn = true;
-    }
-    this.loadMap();
+    console.log('Open switchCoinMode');
+    this.refreshMap(this.myCoinsOnly);
   }
 
   showProfile() {
     let myModalCtrl = this.modalCtrl.create(ProfilePage);
-    myModalCtrl.onDidDismiss( () => {
-      let globalDemoMode = this.ctx.getDemoMode();
-      console.log('Dismiss profile with demoMode : ', globalDemoMode);
-      if(this.localDemoMode != globalDemoMode) {
-        this.loadMap();
-        this.localDemoMode = globalDemoMode;
+    myModalCtrl.onDidDismiss( (demoToggleActivated) => {
+      if(demoToggleActivated){
+        this.refreshMap(this.myCoinsOnly);
       }
     });
 
@@ -203,79 +193,47 @@ export class HomePage {
     this.mapIsOn = true;
 
     this.containerList.removeChild(this.divList);
-    //this.navbar.removeChild(this.header);
     this.containerMap.appendChild(this.divMap);
-
-    // if(this.containerMap.parent) {
-    //   this.containerMap.BringToFront(this.containerMap);
-    // }
-
-    // this.reattachMap(this.map,div);
-    // let myModalCtrl = this.modalCtrl.create(MapPage);
-    // myModalCtrl.onDidDismiss(data => {
-    //   console.log('Dismiss map : ',data);
-    // });
-    // myModalCtrl.present();
-    // divMap.addEventListener('DOMNodeRemoved', function() {
-    //   this.map.setDiv(null);
-    //   divMap = null;
-    // });
 
   }
 
   showList() {
     this.mapIsOn = false;
 
-    //let bar = this.navbar.parentNode;
-    //bar.removeChild(this.navbar);
-
-
     this.containerMap.removeChild(this.divMap);
-
-
-    //bar.appendChild(this.navbar);
     this.containerList.appendChild(this.divList);
-    //this.navbar.appendChild(this.header);
-
-    // if(this.containerList.parent) {
-    //   this.containerList.BringToFront(this.containerList);
-    // }
-
 
   }
 
 
 
-  loadMap(){
-    console.log('Open loadMap');
+  initMap(): Promise<any>{
+    var self = this;
+    return new Promise((resolve, reject) => {
+      console.log('Open initMap');
+      let latLng = new google.maps.LatLng(self.latitude, self.longitude);
 
-    // xxxxxxxx
-    this.contractAddresses = this.ctx.getCoins(this.myCoinsIsOn);
+      let mapOptions = {
+        center: latLng,
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        // zoomControl: true, // Set to false for production
+        zoomControl: false,
+        mapTypeControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: false
+      }
 
-    let latLng = new google.maps.LatLng(this.latitude, this.longitude);
+      if(self.mapElement) {
+        self.map = new google.maps.Map(self.mapElement.nativeElement, mapOptions);
+      }
 
-    let mapOptions = {
-      center: latLng,
-      zoom: 15,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      // zoomControl: true, // Set to false for production
-      zoomControl: false,
-      mapTypeControl: false,
-      scaleControl: false,
-      streetViewControl: false,
-      rotateControl: false,
-      fullscreenControl: false
-    }
-
-    if(this.mapElement) {
-      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-    }
-
-
-    // Create a div to hold the control.
+      // Create a div to hold the control.
       var controlDiv = document.createElement('div');
 
-    //### Add a button on Google Maps ...
+      //### Add a button on Google Maps ...
       var controlMarkerUI = document.createElement('img');
       controlMarkerUI.style.cursor = 'pointer';
       controlMarkerUI.style.height = '50px';
@@ -283,142 +241,175 @@ export class HomePage {
       controlMarkerUI.style.marginRight = '20px';
       controlMarkerUI.style.marginBottom = '15px';
       controlMarkerUI.style.borderRadius = '50px';
-      controlMarkerUI.setAttribute('src', 'assets/images/other/center_map.png')
-      var self = this;
+      controlMarkerUI.setAttribute('src', 'assets/images/other/center_map.png');
       controlMarkerUI.addEventListener('click', function() {
-        self.placeMyPositionMarker(self);
+        self.refreshPositionMarker(self);
       }, false);
       controlMarkerUI.title = 'Click to set the map to Home';
       controlDiv.appendChild(controlMarkerUI);
 
-      if(this.map) {
-        this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlDiv);
+      if(self.map) {
+        self.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlDiv);
       }
 
-      this.initCoinMarkers();
+      resolve();
 
-      this.addMyPosition();
+    });
 
+  }
+
+  refreshMap(myCoinsOnly: any) {
+    this.removeAllMarkers();
+
+    this.contractAddresses = this.ctx.getCoins(myCoinsOnly);
+    for (let coin of this.contractAddresses) {
+      this.mapMarkers[coin] = [];
+    }
+
+    this.initAllFeatures(this.contractAddresses).then( (features) => {
+      this.createCoinMarkersForFeatures(features);
+      this.addMarkersOnMap(this.map);
+    });
 
   }
 
 
-
-  initCoinMarkers() {
-
-    console.log('Open initCoinMarkers');
-
-    var infos = {};
-    var features = [];
-
-    for (let coin of this.contractAddresses) {
-
-      //console.log('Coin : ', coin);
-
-      var icon = {
-        url: this.ctx.getCoinIcon(coin),
-        // This marker is 50 pixels wide by 50 pixels high.
-        size: new google.maps.Size(50, 50),
-        // The origin for this image is (0, 0).
-        origin: new google.maps.Point(0, 0),
-        // The anchor for this image is the base of the flagpole at (0, 32).
-        anchor: new google.maps.Point(25, 25),
-        scaledSize: new google.maps.Size(45, 45)
-      };
-
-      // Create Info
-      var info = {};
-      info[this.infoIcon] = icon;
-      info[this.infoName] = this.ctx.getCoinName(coin);
-      info[this.infoLandscape] = this.ctx.getLandscape(coin);
-      info[this.infoCompanyName] = this.ctx.getCompanyName(coin);
-      info[this.infoBrandIcon] = this.ctx.getBrandIcon(coin);
-      info[this.infoCoinColor] = this.ctx.getCoinColor(coin);
-      infos[coin] = info;
-      console.log('Info --> ', info);
-
-      // Create Feature
-      var coinLocations = this.ctx.getCoinLocations(coin);
-      for (let loc of coinLocations) {
-        var feature = {};
-        feature[this.featurePosition] = new google.maps.LatLng(loc.lat, loc.lng);
-        feature[this.featureType] = coin;
-        feature[this.featureAddress] = loc.address;
-        features.push(feature);
-      }
-    }
-    console.log('Infos : ', infos);
-    console.log('Features : ', features);
-
-
-    // Create markers
+  initAllFeatures(coins: any): Promise<any> {
     var self = this;
-    features.forEach(function(feature) {
-      //console.log('Feature : ', feature);
-      let localInfos = infos[feature[self.featureType]];
-      if(localInfos) {
+    return new Promise((resolve, reject) => {
+      console.log('Open initCoinMarkers');
 
-          // console.log('LLL : ', localInfos[self.infoIcon]);
+      var features = [];
 
-          var marker = new google.maps.Marker({
-            position: feature[self.featurePosition],
-            icon: localInfos[self.infoIcon],
-            // icon: localIcon,
-            map: self.map
-          });
-
-          self.addInfoWindowToMarker(
-            marker,
-            self.createCoinMarkerContent(localInfos, feature[self.featureAddress], feature[self.featurePosition]),
-            feature[self.featureType]
-          );
-
-
+      for (let coin of coins) {
+        let localFeatures = self.initFeatures(coin);
+        for (let feat of localFeatures) {
+            features.push(feat);
+        }
       }
-      else {
-        console.log('No infos : ', feature[self.featureType]);
-      }
+
+      resolve(features);
 
     });
+  }
 
+  initFeatures(coin: any): any { //returns infos{} structure + features[] array containing all locations
+    var self = this;
 
-    console.log('Close initCoinMarkers');
+    // Create Icon
+    var icon = {
+      url: self.ctx.getCoinIcon(coin),
+      // This marker is 50 pixels wide by 50 pixels high.
+      size: new google.maps.Size(50, 50),
+      // The origin for this image is (0, 0).
+      origin: new google.maps.Point(0, 0),
+      // The anchor for this image is the base of the flagpole at (0, 32).
+      anchor: new google.maps.Point(25, 25),
+      scaledSize: new google.maps.Size(45, 45)
+    };
 
+    self.mapsInfoIcons[coin] = icon;
+
+    var localFeatures = [];
+
+    // Create Features
+    var coinLocations = self.ctx.getCoinLocations(coin);
+    for (let loc of coinLocations) {
+      var feature = {};
+      feature[self.featurePosition] = new google.maps.LatLng(loc.lat, loc.lng); //GPS coordinates
+      feature[self.featureType] = coin;                                         //coinContractAddress
+      feature[self.featureAddress] = loc.address;                               //Ex: 21 rue de Vienne, 75008 Paris
+      localFeatures.push(feature);
+    }
+
+    return localFeatures;
+
+  }
+
+  createCoinMarkersForFeatures(features: any) {
+    var self = this;
+    // Create markers
+    features.forEach(function(feature) {
+      self.createCoinMarkerForFeature(feature);
+    });
+
+  }
+
+  createCoinMarkerForFeature(feature: any) {
+    var self = this;
+    let coin = feature[self.featureType];           //CoinContractAddress
+    let mapsInfoIcon = this.mapsInfoIcons[coin];    //Coin icon (google maps format)
+    if(mapsInfoIcon) {
+
+        var marker = new google.maps.Marker({
+          position: feature[self.featurePosition],
+          icon: mapsInfoIcon
+          // map: self.map
+        });
+
+        self.addInfoWindowToMarker(
+          marker,                                                     //marker to attach infoWindow
+          self.createCoinMarkerContent(coin, mapsInfoIcon, feature),  //html code to create infoWindow
+          feature[self.featureType]                                   //coin contract address
+        );
+
+        if( this.mapMarkers[coin] ){
+          this.mapMarkers[coin].push(marker);
+        }
+
+    }
+    else {
+      console.log('No icon for coin : ', coin);
+    }
+  }
+
+  addMarkersOnMap(map: any) {
+    for (let coin of this.contractAddresses) {
+      if( this.mapMarkers[coin] ) {
+        for (let marker of this.mapMarkers[coin]) {
+          marker.setMap(map);
+        }
+      }
+    }
+  }
+
+  removeAllMarkers() {
+    this.addMarkersOnMap(null);
   }
 
 
   // Add my positionMarker on the map
-  addMyPosition() {
+  initPositionMarker(): Promise<any> {
+    var self = this;
+    return new Promise((resolve, reject) => {
+      self.closeAllInfoWindows();
 
-    this.closeAllInfoWindows();
+      self.positionMarker = new google.maps.Marker({
+          map: self.map,
+          draggable: false,
+          animation: google.maps.Animation.BOUNCE // BOUNCE vs DROP
+          // position: latLong
+        }
+      );
 
-    this.positionMarker = new google.maps.Marker({
-        map: this.map,
-        draggable: false,
-        animation: google.maps.Animation.BOUNCE // BOUNCE vs DROP
-        // position: latLong
-      }
-    );
-
-    this.placeMyPositionMarker(this);
+      resolve();
+    });
 
   }
 
 
   // Replace my position marker on the image (refresh)
-  placeMyPositionMarker(self: any) {
+  refreshPositionMarker(self: any) {
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: true,
     });
     self.loading.present();
-
 
     self.geolocation.getCurrentPosition().then((position) => {
       console.log('Center at latitude : ', position.coords.latitude, ' and longitude : ', position.coords.longitude);
       let locPos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       if(self.map) {
         self.map.setCenter(locPos);
-
         // self.map.animateCamera({
         //     target: position,   // Sets the center of the map to Mountain View
         //     zoom: 14,           // Sets the zoom
@@ -426,13 +417,11 @@ export class HomePage {
         //     bearing: 140,       // Sets the orientation of the camera to east
         //     duration: 2000
         // }, () => {});
-
       }
 
-      self.positionMarker.setPosition(locPos);
-
       if(self.positionMarker){
-        self.animateMyPositionMarker(self);
+        self.positionMarker.setPosition(locPos);
+        self.animatePositionMarker(self);
       }
 
       self.loading.dismiss();
@@ -446,7 +435,7 @@ export class HomePage {
 
 
 
-  animateMyPositionMarker(self: any) {
+  animatePositionMarker(self: any) {
     if(self.positionMarker){
       if (self.positionMarker.getAnimation() !== null) {
         // self.positionMarker.setAnimation(null);
@@ -462,7 +451,7 @@ export class HomePage {
 
 
 
-  addInfoWindowToMarker(marker: any, infoWindowContent: string, coinContractAddress: string) {
+  addInfoWindowToMarker(marker: any, infoWindowContent: string, coin: string) {
     var infoWindow = new google.maps.InfoWindow({
       content: infoWindowContent
     });
@@ -470,9 +459,9 @@ export class HomePage {
     google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
       document.getElementById('myid').addEventListener('click', () => {
 
-        console.log('ItemTapped : ',coinContractAddress);
+        console.log('ItemTapped : ',coin);
         this.navCtrl.push(ItemDetailPage, {
-          coinContractAddress : coinContractAddress
+          coinContractAddress : coin
         });
 
       });
@@ -492,16 +481,16 @@ export class HomePage {
   }
 
 
-  createCoinMarkerContent(coinInfo: any, address: string, position: any): string {
-    let landscape = coinInfo[this.infoLandscape];
-    let brandIcon = coinInfo[this.infoBrandIcon];
-    let companyName = coinInfo[this.infoCompanyName];
+  createCoinMarkerContent(coin: any, mapsInfoIcon: any, feature: any): string {
+    let address = feature[this.featureAddress];
+    let position = feature[this.featurePosition];
+    let landscape = this.ctx.getLandscape(coin);
+    let brandIcon = this.ctx.getBrandIcon(coin);
+    let companyName = this.ctx.getCompanyName(coin);
+    let buttonColor = this.ctx.getCoinColor(coin);
     let clickableAddress = "https://www.google.com/maps/?q="+position.lat()+","+position.lng();
-    let buttonColor = coinInfo[this.infoCoinColor];
-    console.log('Open createCoinMarkerContent : ', landscape, ', ', brandIcon, ', ', companyName, ', ', address, ', ', position, ', ', clickableAddress, ', ', buttonColor);
 
-    if (!landscape) {landscape = "assets/images/default_images/defaultLandscape.png";}
-    if (!brandIcon) {brandIcon = "assets/images/default_images/defaultBrandIcon.png";}
+    console.log('Open createCoinMarkerContent : ', landscape, ', ', brandIcon, ', ', companyName, ', ', address, ', ', position, ', ', clickableAddress, ', ', buttonColor);
 
     return `
 

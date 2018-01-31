@@ -120,8 +120,8 @@ export class ContextProvider {
   defaultCoinAmount: number = 0;
   defaultCoinImage: string = 'assets/images/default_images/defaultCoin.png';
   defaultDemoCoin: boolean = false;
-  defaultLandscapeImage: string = '';
-  defaultBrandIcon: string = '';
+  defaultLandscapeImage: string = 'assets/images/default_images/defaultLandscape.png';
+  defaultBrandIcon: string = 'assets/images/default_images/defaultBrandIcon.png';
   defaultCompanyName: string = 'Unknown Shop';
   fidOrange: string = '#fe9400';
   fidGrey: string = '#afabab';
@@ -287,7 +287,7 @@ export class ContextProvider {
     return this.c[this.names][coinID];
   }
   getCoinColor(coinID: string): string {
-    if(!this.c[this.colors][coinID]){return this.fidOrange}
+    if(!this.c[this.colors][coinID]){return this.fidGrey}
     return this.c[this.colors][coinID];
   }
   getCoinAmount(coinID: string): number {
@@ -300,9 +300,11 @@ export class ContextProvider {
     return this.c[this.icons][coinID];
   }
   getLandscape(coinID: string): string {
+    if( (!this.c[this.landscapes][coinID]) || (this.c[this.landscapes][coinID]=="") ){return this.defaultLandscapeImage}
     return this.c[this.landscapes][coinID];
   }
   getBrandIcon(coinID: string): string {
+    if( (!this.c[this.brandIcons][coinID]) || (this.c[this.brandIcons][coinID]=="") ){return this.defaultBrandIcon}
     return this.c[this.brandIcons][coinID];
   }
   getCompanyName(coinID: string): string {
@@ -459,38 +461,38 @@ export class ContextProvider {
                 console.log('AllCoinList recovered from Firestore : ', allCoinList);
                 self.c[self.allContractAddresses] = allCoinList;
 
-                self.initCoinList(allCoinList);
+                console.log('DownloadAllCoinInfos succeeded');
+                self.save().then( () => {
 
-                self.downloadAllCoinInfos(allCoinList).then( () => {
-                  console.log('DownloadAllCoinInfos succeeded');
-                  self.save().then( () => {
-                    console.log('AllCoinInfos saved');
-
-
-                    /******************************/
-                    if(uid != null){
-                      self.getMyCoinListFromFirestore(uid).then( (myCoinList) => {
-                        console.log('MyCoinList recovered from Firestore : ', myCoinList);
-                        self.downloadMyCoinAmounts(myCoinList, uid).then( (nb) => {
-                          console.log('My coin amounts downloaded for all my ', nb, ' coins.');
-                          self.save().then( () => {
-                            resolve(address);
-                          }).catch( (err) => {reject(err);});
+                  /******************************/
+                  if(uid != null){
+                    self.getMyCoinListFromFirestore(uid).then( (myCoinList) => {
+                      console.log('MyCoinList recovered from Firestore : ', myCoinList);
+                      self.downloadMyCoinAmounts(myCoinList, uid).then( (nb) => {
+                        console.log('My coin amounts downloaded for all my ', nb, ' coins.');
+                        self.save().then( () => {
+                          resolve(address);
                         }).catch( (err) => {reject(err);});
+                      }).catch( (err) => {reject(err);});
 
-                      }).catch( (err) => {
-                        console.log('GetMyCoinListFromFirestore error');
-                        reject(err);
-                      });
-                    }
-                    else {
-                      reject('Null uid');
-                    }
-                    /******************************/
+                    }).catch( (err) => {
+                      console.log('GetMyCoinListFromFirestore error');
+                      reject(err);
+                    });
+                  }
+                  else {
+                    reject('Null uid');
+                  }
+                  /******************************/
 
 
-                  }).catch( (err) => { reject(err); });
-                }).catch( (err) => { reject(err); });
+                }).catch( (err) => { reject(err); }); // End save()
+
+                // self.initCoinList(allCoinList);
+                //
+                // self.downloadAllCoinInfos(allCoinList).then( () => {
+                // XXxxxxxxxxxxXX
+                // }).catch( (err) => { reject(err); });
 
               }).catch( (err) => {
                 console.log('GetAllCoinsFromFirestore error');
@@ -532,6 +534,15 @@ export class ContextProvider {
 /******************************************************************************/
 /******************************************************************************/
 
+// let res: boolean[] = []; // Array to download all elements in parallel and log the successes
+// let tot: number = 7; // Total number of downloads : 7
+//
+// // #1 Get coin details // Blocking
+// self.downloadCoinDetail(coinID).then(()=>{ res.push(true);
+//   if(self.checkRes(res, tot)){ resolve(res.length); }
+// }).catch(()=>{res.push(false); reject('CoinDetail')});
+
+
 getAllCoinsFromFirestore(): Promise<any> {
   console.log('Open getAllCoinsFromFirestore');
   var self = this;
@@ -548,16 +559,28 @@ getAllCoinsFromFirestore(): Promise<any> {
             console.log('SUBSCRIBE ALLCOINLIST : ', allCoins);
             var allCoinsSimplified = [];
 
+
             if(allCoins != null){
-              for(let coin of allCoins) {
-                allCoinsSimplified.push(coin.id);
+              let res: boolean[] = []; // Array to pursue tasks in parallel and log the successes
+              let tot: number = allCoins.length; // Total number of tasks
+
+              for(let coinStruc of allCoins) {
+                if( coinStruc.id ) {
+                  let coin = coinStruc.id;
+                  allCoinsSimplified.push(coin);
+                  self.initCoin(coin);
+                  self.downloadAllInfoForCoin(coin).then(()=>{ res.push(true);
+                    if(self.checkRes(res, tot)){ resolve(allCoinsSimplified); }
+                  }).catch(()=>{res.push(false);reject(coin)});
+
+                }
               }
             }
             else{
               console.log('Null allCoins list');
             }
 
-            resolve(allCoinsSimplified);
+            // resolve(allCoinsSimplified);
 
         });
 

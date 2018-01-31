@@ -25,6 +25,8 @@ export class FidapiProvider {
 
   requestAnswer: Observable<any>;
 
+  requestCounter: number = 0;
+
   constructor(
     public http: Http
   ) {
@@ -44,32 +46,37 @@ export class FidapiProvider {
   authenticate(uid: string) : Promise<any> {
     console.log('Open FidApi - authenticate : ', uid);
     var self = this;
+    var counter = self.requestCounter;
+    self.requestCounter +=1;
+
     return new Promise((resolve, reject) => {
       var postContent = JSON.stringify({
         'uid' : uid
       });
       var postHeaders = new Headers({
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Header': 'Content-Type,x-prototype-version,x-requested-with',
+        // 'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        // 'Access-Control-Allow-Header': 'Content-Type,x-prototype-version,x-requested-with',
         'Content-Type': 'application/json'
       });
       var postOptions = new RequestOptions({ headers: postHeaders });
+      var postUrl: string = self.proxyURL.concat(self.apiURL, self.authenticateURL);
       self.requestAnswer = self.http.post(
         // self.apiURL.concat(self.authenticateURL),
-        self.proxyURL.concat(self.apiURL, self.authenticateURL),
+        postUrl,
         postContent,
         postOptions
       );
+      console.log('POST', counter,' request (fidapi) at URL : ', postUrl, ' with content : ', postContent);
       self.requestAnswer
         .map(res => res.json())
         .subscribe(data => {
-          console.log('FidAPI authenticated: ', JSON.stringify(data) );
+          console.log('POST', counter,' request (fidapi) success : authenticate ', JSON.stringify(data) );
           self.idToken = data['token'];
           resolve(data);
         },
         err => {
-          //console.log('FidAPI failed authenticating',err);
+          console.log('POST', counter,' request (fidapi) error : authenticate ', JSON.stringify(err) );
           reject(err);
         });
     });
@@ -93,33 +100,37 @@ export class FidapiProvider {
   createWallet_real(myAddress : string) : Promise<any> {
     console.log('Open FidApi - createWallet_real : ', myAddress, 'with idToken: ', this.idToken);
     var self = this;
+
+    var counter = self.requestCounter;
+    self.requestCounter +=1;
+
     return new Promise((resolve, reject) => {
       var postContent = JSON.stringify({
         'address' : myAddress
       });
       var postHeaders = new Headers({
-        //'Access-Control-Allow-Origin': 'http://localhost:8100/',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Header': 'Content-Type,x-prototype-version,x-requested-with',
+        // 'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        // 'Access-Control-Allow-Header': 'Content-Type,x-prototype-version,x-requested-with',
         'Content-Type': 'application/json',
         'x-token': self.idToken
       });
-      console.log('Headers : ', postHeaders);
       var postOptions = new RequestOptions({ headers: postHeaders });
+      var postUrl: string = self.proxyURL.concat(self.apiURL, self.createWalletURL);
       self.requestAnswer = self.http.post(
         self.proxyURL.concat(self.apiURL, self.createWalletURL),
         postContent,
         postOptions
       );
+      console.log('POST', counter,' request (fidapi) at URL : ', postUrl, ' with content : ', postContent);
       self.requestAnswer
         .map(res => res.json())
         .subscribe(data => {
-          //console.log('FidAPI created wallet: ', JSON.stringify(data) );
+          console.log('POST', counter,' request (fidapi) success : wallet ', JSON.stringify(data) );
           resolve(data);
         },
         err => {
-          //console.log('FidAPI failed creating wallet',err);
+          console.log('POST', counter,' request (fidapi) error : wallet ', JSON.stringify(err) );
           reject(err);
         });
     });
@@ -182,12 +193,13 @@ export class FidapiProvider {
         'x-token': self.idToken
       });
       var postOptions = new RequestOptions({ headers: postHeaders });
-      console.log('TransferCoins on fidAPI with postContent : ', postContent, ' and postHeaders : ', postHeaders, ' and postOptions : ',postOptions);
+      var postUrl: string = self.proxyURL.concat(self.apiURL, self.transferURL);
       self.requestAnswer = self.http.post(
         self.proxyURL.concat(self.apiURL, self.transferURL),
         postContent,
         postOptions
       );
+      console.log('POST request (fidapi) at URL : ', postUrl, ' with content : ', postContent);
       self.requestAnswer
         .map(res => res.json())
         .subscribe(data => {
