@@ -110,7 +110,9 @@
     "TYPE": "JETON (COIN)",
     "AMOUNT": "MONTANT",
     "FIND": "Trouve des jetons autour de toi !",
-    "COLLECT": "Collecte des jetons chez un commercant."
+    "COLLECT": "Collecte des jetons chez un commercant.",
+    "ALLCOINS": "Tous les jetons",
+    "YOURCOINS": "Tes jetons"
   },
   "ITEM_DETAIL": {
     "SUBTITLE_1": "",

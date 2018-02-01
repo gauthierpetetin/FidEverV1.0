@@ -20,17 +20,6 @@
 
 </ion-header>
 
-<!-- <div> 255, 255, 255, 0.70
-  <div #header id="header">
-  <ion-list-header>
-    <div class="item-content">
-
-  </div>
-  </ion-list-header>
-</div>
-</div> -->
-
-
 
 <ion-content>
 
@@ -46,7 +35,7 @@
           vertical-align: middle;
           text-align: right;">
           <p style="color: grey; padding: 0 0; margin: 0 0;">
-            All coins
+            {{ 'HOME.ALLCOINS' | translate }}
           </p>
         </div>
       </ion-col>
@@ -71,7 +60,7 @@
           vertical-align: middle;
           text-align: left;">
           <p style="color: grey; padding: 0 0; margin: 0 0;">
-            My coins only
+            {{ 'HOME.YOURCOINS' | translate }}
           </p>
         </div>
       </ion-col>
@@ -144,16 +133,16 @@
   </div> -->
 
 
-  <div #map id="map" style="width: 100%; height: 100%;">
+  <div #map id="map" style="width: 100%; height: 100%; max-width: none;">
   </div>
 
 
   <div #list id="list" style="margin-top: 40px;">
 
-  <ion-list *ngIf="ctx.getCoins(myCoinsOnly).length!=0">
+  <ion-list *ngIf="contractAddresses.length!=0">
 
 
-    <ion-item-sliding *ngFor="let cc of ctx.getCoins(myCoinsOnly)">
+    <ion-item-sliding *ngFor="let cc of contractAddresses">
 
       <button ion-item (click)="itemTapped($event, cc)" [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.85)'}">
         <ion-row>

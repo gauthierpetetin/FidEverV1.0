@@ -50,6 +50,9 @@ export class HomePage {
   fidDarkGrey: string;
   fidLightGrey: string;
 
+  allCoinsObserver: any;
+  myCoinsObserver: any;
+
   // Map elements
 
   @ViewChild('map') mapElement: ElementRef;
@@ -113,7 +116,12 @@ export class HomePage {
 
       this.fidLightGrey = this.ctx.fidLightGrey;
       this.fidDarkGrey = this.ctx.fidDarkGrey;
-      console.log('COLOR : ',this.fidDarkGrey);
+
+      this.allCoinsObserver = this.ctx.getAllCoinsObserver();
+      this.allCoinsObserver.subscribe( () => {this.refreshMap();});
+      this.myCoinsObserver = this.ctx.getMyCoinsObserver();
+      this.myCoinsObserver.subscribe( () => {this.refreshMap();});
+
 
       this.translate();
 
@@ -122,6 +130,11 @@ export class HomePage {
   translate() {
     this.translateService.get('MAP.DISCOVER').subscribe(mapDiscover => { this.mapDiscover = mapDiscover.toString(); });
 
+  }
+
+  refreshData() {
+    console.log('Open refreshData');
+    this.contractAddresses = this.ctx.getCoins(this.myCoinsOnly);
   }
 
   ionViewDidLoad() {
@@ -147,7 +160,7 @@ export class HomePage {
       this.initPositionMarker().then( () => {
         this.refreshPositionMarker(this);
       });
-      this.refreshMap(this.myCoinsOnly);
+      this.refreshMap();
     });
 
   }
@@ -175,14 +188,14 @@ export class HomePage {
 
   switchCoinMode() {
     console.log('Open switchCoinMode');
-    this.refreshMap(this.myCoinsOnly);
+    this.refreshMap();
   }
 
   showProfile() {
     let myModalCtrl = this.modalCtrl.create(ProfilePage);
     myModalCtrl.onDidDismiss( (demoToggleActivated) => {
       if(demoToggleActivated){
-        this.refreshMap(this.myCoinsOnly);
+        this.refreshMap();
       }
     });
 
@@ -194,6 +207,8 @@ export class HomePage {
 
     this.containerList.removeChild(this.divList);
     this.containerMap.appendChild(this.divMap);
+
+    google.maps.event.trigger(this.map, 'resize');
 
   }
 
@@ -217,7 +232,6 @@ export class HomePage {
         center: latLng,
         zoom: 15,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        // zoomControl: true, // Set to false for production
         zoomControl: false,
         mapTypeControl: false,
         scaleControl: false,
@@ -258,10 +272,12 @@ export class HomePage {
 
   }
 
-  refreshMap(myCoinsOnly: any) {
+  refreshMap() {
+    console.log('Open refreshMap');
     this.removeAllMarkers();
 
-    this.contractAddresses = this.ctx.getCoins(myCoinsOnly);
+    this.refreshData();
+
     for (let coin of this.contractAddresses) {
       this.mapMarkers[coin] = [];
     }

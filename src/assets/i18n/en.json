@@ -110,7 +110,9 @@
     "TYPE": "TYPE",
     "AMOUNT": "AMOUNT",
     "FIND": "Find coins around you.",
-    "COLLECT": "Collect coins in a shop."
+    "COLLECT": "Collect coins in a shop.",
+    "ALLCOINS": "All coins",
+    "YOURCOINS": "Your coins"
   },
   "ITEM_DETAIL": {
     "SUBTITLE_1": "Collected",

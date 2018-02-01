@@ -109,14 +109,17 @@ export class FirestoreProvider {
           return;
         }
         return actions.map(a => {
-          if(!a) {
+          if(a && a.payload.doc.exists) {
+            const type = a.type;
+            const data = a.payload.doc.data() as any;
+            const id = a.payload.doc.id;
+            return { id, type, ...data };
+          }
+          else{
             console.log('ERROR: FIRESTORE NULL COLLECTION : ', collectionName);
             return;
           }
-          const type = a.type;
-          const data = a.payload.doc.data() as any;
-          const id = a.payload.doc.id;
-          return { id, type, ...data };
+
         });
       });
 
@@ -136,7 +139,7 @@ export class FirestoreProvider {
 
     this.coinDocument = this.afCoinDocument.snapshotChanges()
       .map(a => {
-        if(a) {
+        if(a && a.payload.exists) {
           const type = a.type;
           const data = a.payload.data() as any;
           const id = a.payload.id;
