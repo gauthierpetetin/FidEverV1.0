@@ -19,7 +19,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { Geolocation } from '@ionic-native/geolocation';
 
-//import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+import {Subject} from 'rxjs/Subject';
+
 
 // export interface Coin {
 //   amount: number;
@@ -50,8 +51,11 @@ export class HomePage {
   fidDarkGrey: string;
   fidLightGrey: string;
 
-  allCoinsObserver: any;
-  myCoinsObserver: any;
+  // allCoinsObserver: any;
+  // myCoinsObserver: any;
+
+  allCoinsSubject: any;
+  myCoinsSubject: any;
 
   // Map elements
 
@@ -117,13 +121,34 @@ export class HomePage {
       this.fidLightGrey = this.ctx.fidLightGrey;
       this.fidDarkGrey = this.ctx.fidDarkGrey;
 
-      this.allCoinsObserver = this.ctx.getAllCoinsObserver();
-      this.allCoinsObserver.subscribe( () => {this.refreshMap();});
-      this.myCoinsObserver = this.ctx.getMyCoinsObserver();
-      this.myCoinsObserver.subscribe( () => {this.refreshMap();});
+      // this.allCoinsObserver = this.ctx.getAllCoinsObserver();
+      // if(this.allCoinsObserver){
+      //   this.allCoinsObserver.subscribe( () => {console.log('REFRESH ALL (start)'); this.refreshMap();});
+      // }
+      this.allCoinsSubject = this.ctx.getAllCoinsSubject();
+      if(this.allCoinsSubject){
+        this.allCoinsSubject.subscribe( () => {
+          console.log('REFRESH ALL');
+          this.refreshMap();
+        });
+      }
+
+      // this.myCoinsObserver = this.ctx.getMyCoinsObserver();
+      // if(this.myCoinsObserver){
+      //   this.myCoinsObserver.subscribe( () => {console.log('REFRESH MY (start)'); this.refreshMap();});
+      // }
+      this.myCoinsSubject = this.ctx.getMyCoinsSubject();
+      if(this.myCoinsSubject){
+        this.myCoinsSubject.subscribe( () => {
+          console.log('REFRESH MY');
+          this.refreshMap();
+        });
+      }
+
 
 
       this.translate();
+
 
   }
 
@@ -135,6 +160,7 @@ export class HomePage {
   refreshData() {
     console.log('Open refreshData');
     this.contractAddresses = this.ctx.getCoins(this.myCoinsOnly);
+    return this.contractAddresses;
   }
 
   ionViewDidLoad() {
@@ -158,7 +184,7 @@ export class HomePage {
 
     this.initMap().then( () => {
       this.initPositionMarker().then( () => {
-        this.refreshPositionMarker(this);
+        //this.refreshPositionMarker(this);
       });
       this.refreshMap();
     });
@@ -200,6 +226,11 @@ export class HomePage {
     });
 
     myModalCtrl.present();
+  }
+
+  showMapWithAllCoins() {
+    this.myCoinsOnly = false;
+    this.showMap();
   }
 
   showMap() {
@@ -276,13 +307,13 @@ export class HomePage {
     console.log('Open refreshMap');
     this.removeAllMarkers();
 
-    this.refreshData();
+    let contractAddresses: any = this.refreshData();
 
-    for (let coin of this.contractAddresses) {
+    for (let coin of contractAddresses) {
       this.mapMarkers[coin] = [];
     }
 
-    this.initAllFeatures(this.contractAddresses).then( (features) => {
+    this.initAllFeatures(contractAddresses).then( (features) => {
       this.createCoinMarkersForFeatures(features);
       this.addMarkersOnMap(this.map);
     });
@@ -344,9 +375,15 @@ export class HomePage {
 
   createCoinMarkersForFeatures(features: any) {
     var self = this;
+    let coin: any;
+    let coinMarker: any;
     // Create markers
     features.forEach(function(feature) {
-      self.createCoinMarkerForFeature(feature);
+    coin = feature[self.featureType];
+      coinMarker = self.createCoinMarkerForFeature(feature);
+      if( coinMarker && self.mapMarkers[coin] ){
+        self.mapMarkers[coin].push(coinMarker);
+      }
     });
 
   }
@@ -369,13 +406,12 @@ export class HomePage {
           feature[self.featureType]                                   //coin contract address
         );
 
-        if( this.mapMarkers[coin] ){
-          this.mapMarkers[coin].push(marker);
-        }
+        return marker;
 
     }
     else {
       console.log('No icon for coin : ', coin);
+      return;
     }
   }
 

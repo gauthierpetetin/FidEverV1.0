@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import 'rxjs/add/operator/map';
+import {Subject} from 'rxjs/Subject';
 
 import { FidapiProvider } from '../../providers/fidapi/fidapi';
 import { EthapiProvider } from '../../providers/ethapi/ethapi';
 import { FirestoreProvider } from '../../providers/firestore/firestore';
 import { AlertProvider} from '../../providers/alert/alert';
+import { AuthProvider } from '../../providers/auth/auth';
 
 /*
   Generated class for the ContextProvider provider.
@@ -97,9 +99,11 @@ export class ContextProvider {
 
   myCoinListSubscribtion: any; // Subscribed
   myCoinListObserver: any;
+  myCoinListSubject: any;
 
   allCoinListSubscribtion: any; // Subscribed
   allCoinListObserver: any;
+  allCoinListSubject: any;
 
   coinDetailSubscribtions: any = {}; // Subscribed
   coinDetailObservers: any = {};
@@ -137,11 +141,28 @@ export class ContextProvider {
     private storage: Storage,
     public fidapiProvider: FidapiProvider,
     public ethapiProvider: EthapiProvider,
+    public authProvider: AuthProvider,
     public firestoreProvider: FirestoreProvider,
     public alertProvider: AlertProvider
   ) {
     console.log('Hello ContextProvider Provider');
 
+    this.allCoinListSubject = new Subject();
+    this.myCoinListSubject = new Subject();
+
+  }
+
+  logout(): Promise<any> {
+    var self = this;
+    return new Promise(
+      function(resolve, reject) {
+        self.fidapiProvider.logOut();
+        self.authProvider.logoutUser().then( (res) => {
+          resolve(res);
+        }).catch( (err) => {
+          reject(err);
+        });
+    });
   }
 
 /***************SETTERS*********************/
@@ -357,6 +378,12 @@ export class ContextProvider {
   getMyCoinsObserver(): any {
     return this.myCoinListObserver;
   }
+  getAllCoinsSubject(): any {
+    return this.allCoinListSubject;
+  }
+  getMyCoinsSubject(): any {
+    return this.myCoinListSubject;
+  }
 
 
   init(
@@ -567,31 +594,38 @@ getAllCoinsFromFirestore(): Promise<any> {
                 self.c[self.allContractAddresses] = [];
                 resolve( self.c[self.allContractAddresses] );
               }
+              else {
 
-              //Add new coins
-              for(let coinStruc of allCoins) {
+                //Add new coins
+                for(let coinStruc of allCoins) {
 
-                if( coinStruc.id ) {
-                  let coin = coinStruc.id;
-                  allCoinsSimplified.push(coin);
-                  if(self.c[self.allContractAddresses].indexOf(coin)<0){
-                    self.c[self.allContractAddresses].push(coin);
+                  if( coinStruc.id ) {
+                    let coin = coinStruc.id;
+                    allCoinsSimplified.push(coin);
+                    if(self.c[self.allContractAddresses].indexOf(coin)<0){
+                      self.c[self.allContractAddresses].push(coin);
+                    }
+
+                    self.initCoin(coin);
+                    self.downloadAllInfoForCoin(coin).then(()=>{ res.push(true);
+                      if(self.checkRes(res, tot)){
+                        console.log('RESOLVE ALL COINS : ', tot);
+                        resolve(self.c[self.allContractAddresses]);
+                        self.allCoinListSubject.next();
+                      }
+                    }).catch(()=>{res.push(false); console.log('REJECT ALL COINS : ', tot); reject(coin)});
+
                   }
-
-                  self.initCoin(coin);
-                  self.downloadAllInfoForCoin(coin).then(()=>{ res.push(true);
-                    if(self.checkRes(res, tot)){ resolve(self.c[self.allContractAddresses]); }
-                  }).catch(()=>{res.push(false);reject(coin)});
-
                 }
-              }
 
-              //Delete old coins
-              for(let coin of self.c[self.allContractAddresses]) {
-                if(allCoinsSimplified.indexOf(coin)<0){
-                  self.c[self.allContractAddresses].splice(self.c[self.allContractAddresses].indexOf(coin),1);
-                  self.cleanCoin(self, coin);
+                //Delete old coins
+                for(let coin of self.c[self.allContractAddresses]) {
+                  if(allCoinsSimplified.indexOf(coin)<0){
+                    self.c[self.allContractAddresses].splice(self.c[self.allContractAddresses].indexOf(coin),1);
+                    self.cleanCoin(self, coin);
+                  }
                 }
+
               }
 
 
@@ -653,31 +687,39 @@ getMyCoinListFromFirestore(myUid: string): Promise<any> {
             self.c[self.myContractAddresses] = [];
             resolve( self.c[self.myContractAddresses] );
           }
+          else{
 
-          //Add new coins
-          for(let coinStruc of myCoins) {
-            if(coinStruc.contract) {
-              let coin = coinStruc.contract;
-              myCoinsSimplified.push(coin);
+            //Add new coins
+            for(let coinStruc of myCoins) {
+              if(coinStruc.contract) {
+                let coin = coinStruc.contract;
+                myCoinsSimplified.push(coin);
 
-              if(self.c[self.myContractAddresses].indexOf(coin)<0){
-                self.c[self.myContractAddresses].push(coin);
+                if(self.c[self.myContractAddresses].indexOf(coin)<0){
+                  self.c[self.myContractAddresses].push(coin);
+                }
+
+                self.downloadCoinAmount(coin, myUid).then( (amount) => { res.push(true);
+                  if(self.checkRes(res, tot)){
+                    console.log('RESOLVE MY COINS : ', tot);
+                    resolve( self.c[self.myContractAddresses] );
+                    self.myCoinListSubject.next();
+                  }
+                }).catch( (err) => { res.push(false); console.log('REJECT MY COINS : ', tot); reject(err); });
+
               }
-
-              self.downloadCoinAmount(coin, myUid).then( (amount) => { res.push(true);
-                if(self.checkRes(res, tot)){ resolve( self.c[self.myContractAddresses] ); }
-              }).catch( (err) => { res.push(false); reject(err); });
-
             }
+
+            //Delete old coins
+            for(let coin of self.c[self.myContractAddresses]) {
+              if(myCoinsSimplified.indexOf(coin)<0){
+                self.c[self.myContractAddresses].splice(self.c[self.myContractAddresses].indexOf(coin),1);
+                self.cleanCoin(self, coin);
+              }
+            }
+
           }
 
-          //Delete old coins
-          for(let coin of self.c[self.myContractAddresses]) {
-            if(myCoinsSimplified.indexOf(coin)<0){
-              self.c[self.myContractAddresses].splice(self.c[self.myContractAddresses].indexOf(coin),1);
-              self.cleanCoin(self, coin);
-            }
-          }
 
         }
         else{
@@ -751,21 +793,27 @@ downloadCoinAmount(coin: string, uid: string): Promise<any> {
         let amount: number = 0;
         if(coin_a && coin_a['balance']) {
           amount = coin_a['balance'];
-        }
-        console.log('New amount : ', amount, ' , and old amount : ', self.getCoinAmount(coin));
-        //Show alert
-        var delta : number = amount - self.getCoinAmount(coin);
-        if(delta > 0){
-          self.alertProvider.receiveAlert(delta, self.getCoinName(coin), self.getLanguage());
-        }
-        else if (delta < 0){
-          //self.alertProvider.sendAlert(-delta, self.c[self.names][coin]);
-        }
-        //Update amount
-        self.setCoinAmount(coin, amount);
+          console.log('New amount : ', amount, ' , and old amount : ', self.getCoinAmount(coin));
+          //Show alert
+          var delta : number = amount - self.getCoinAmount(coin);
+          if(delta > 0){
+            self.alertProvider.receiveAlert(delta, self.getCoinName(coin), self.getLanguage());
+          }
+          else if (delta < 0){
+            //self.alertProvider.sendAlert(-delta, self.c[self.names][coin]);
+          }
+          //Update amount
+          self.setCoinAmount(coin, amount);
 
-        //Mandatory save() here --> without it, the user is notified again when he reopens the app
-        self.save().then(()=>{resolve(amount);}).catch((err)=>{reject(err)});
+          //Mandatory save() here --> without it, the user is notified again when he reopens the app
+          self.save().then(()=>{resolve(amount);}).catch((err)=>{reject(err)});
+
+        }
+        else{
+          console.log('No coin amount : ', coin_a);
+          resolve(0);
+        }
+
       }, (err) => {
         reject(err);
       }

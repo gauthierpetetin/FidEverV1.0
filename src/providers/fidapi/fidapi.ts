@@ -42,6 +42,10 @@ export class FidapiProvider {
     this.apiURL = apiUrl;
   }
 
+  logOut() {
+    this.idToken = null;
+  }
+
 
   authenticate(uid: string) : Promise<any> {
     console.log('Open FidApi - authenticate : ', uid);

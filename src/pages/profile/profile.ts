@@ -239,8 +239,11 @@ export class ProfilePage {
     console.log('Open logOut');
     //let data = { 'disconnect': 'yes'};
     this.viewCtrl.dismiss();
-    this.authProvider.logoutUser().then(() => {
+    this.ctx.logout().then(() => {
       console.log('Go to WelcomePage');
+      this.demoMode = false;
+      this.ctx.setDemoMode(false);
+      this.ctx.save();
       this.appCtrl.getRootNav().setRoot(WelcomePage);
       // this.appCtrl.getActiveNavs()[0].insert(0,WelcomePage);
       // this.appCtrl.getRootNav().insert(0,WelcomePage);

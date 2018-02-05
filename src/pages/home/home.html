@@ -33,7 +33,7 @@
           font-size: 18px;
           display: table-cell;
           vertical-align: middle;
-          text-align: right;">
+          text-align: center;">
           <p style="color: grey; padding: 0 0; margin: 0 0;">
             {{ 'HOME.ALLCOINS' | translate }}
           </p>
@@ -49,6 +49,7 @@
         style="
           text-align: center;
           position: absolute;
+          margin: 5px 0;
           left: 10%;">
         </ion-toggle>
       </ion-col>
@@ -58,7 +59,7 @@
           font-size: 18px;
           display: table-cell;
           vertical-align: middle;
-          text-align: left;">
+          text-align: center;">
           <p style="color: grey; padding: 0 0; margin: 0 0;">
             {{ 'HOME.YOURCOINS' | translate }}
           </p>
@@ -225,10 +226,10 @@
     </ion-item-sliding>
   </ion-list>
 
-  <div *ngIf="ctx.getCoins(myCoinsOnly).length==0">
-  <ion-row text-center style="height: 80px; margin-top: 30px; width: 100%; position: relative">
+  <div *ngIf="contractAddresses.length==0">
+  <ion-row text-center style="height: 80px; margin-top: 70px; width: 100%; position: relative">
     <img-loader
-      (click)="showMap()"
+      (click)="showMapWithAllCoins()"
       fallback="assets/images/other/map.png"
       src="assets/images/other/map.png"
       style="
