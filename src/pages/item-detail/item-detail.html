@@ -172,7 +172,7 @@
 
     <ion-item-sliding *ngFor="let off of offers" style="padding: 0 0; background-color: rgba(255, 255, 255, 0.85);">
 
-      <button ion-item style="padding: 0 0; margin: 0 0; background-color: transparent" (click)="offerTapped($event, off)">
+      <button ion-item style="padding: 0 0; margin: 0 0; background-color: transparent" (click)="offerTapped($event, off[offerID])">
         <ion-row style="margin: 0 0; padding: 0 0;">
 
           <ion-col col-2 style="
@@ -220,7 +220,7 @@
                 text-overflow: ellipsis;
                 white-space: normal;
                 ">
-                {{off[offerName]}}
+                {{ctx.getOfferName(coinContractAddress, off[offerID])}}
               </p>
             </div>
           </ion-col>
@@ -233,11 +233,11 @@
               vertical-align: middle;
               text-align: right;
             ">
-              <h4 *ngIf="ctx.getCoinAmount(coinContractAddress)>=off[offerPrice]" [ngStyle]="{'color': coinColor}">
-                {{ 'ITEM_DETAIL.COST' | translate }} : {{off[offerPrice]}}
+              <h4 *ngIf="ctx.getCoinAmount(coinContractAddress)>=ctx.getOfferPrice(coinContractAddress, off[offerID])" [ngStyle]="{'color': coinColor}">
+                {{ 'ITEM_DETAIL.COST' | translate }} : {{ctx.getOfferPrice(coinContractAddress, off[offerID])}}
               </h4>
-              <h4 *ngIf="ctx.getCoinAmount(coinContractAddress)<off[offerPrice]" [ngStyle]="{'color': 'grey'}">
-                {{ 'ITEM_DETAIL.COST' | translate }} : {{off[offerPrice]}}
+              <h4 *ngIf="ctx.getCoinAmount(coinContractAddress)<ctx.getOfferPrice(coinContractAddress, off[offerID])" [ngStyle]="{'color': 'grey'}">
+                {{ 'ITEM_DETAIL.COST' | translate }} : {{ctx.getOfferPrice(coinContractAddress, off[offerID])}}
               </h4>
             </div>
           </ion-col>
@@ -304,7 +304,7 @@
                 text-overflow: ellipsis;
                 white-space: normal;
                 ">
-                {{off[offerName]}}
+                {{ctx.getOfferName(coinContractAddress, off[offerID])}}
               </p>
             </div>
           </ion-col>

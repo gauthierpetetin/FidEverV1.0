@@ -130,6 +130,10 @@ export class ContextProvider {
   defaultLandscapeImage: string = 'assets/images/default_images/defaultLandscape.png';
   defaultBrandIcon: string = 'assets/images/default_images/defaultBrandIcon.png';
   defaultCompanyName: string = 'Unknown Shop';
+
+  defaultOfferName = 'offer';
+  defaultOfferPrice = 0;
+
   fidOrange: string = '#fe9400';
   fidGrey: string = '#afabab';
   fidLightGrey: string = '#f2f2f2';
@@ -357,6 +361,25 @@ export class ContextProvider {
   }
   getOfferImages(coinID: string): any {
     return this.c[this.offerImages][coinID];
+  }
+  getOffer(coinID: string, offerID: string): any {
+    let offers = this.getOffers(coinID);
+    if(offers.length <= 0){return null}
+    for(let offer of offers) {
+      if(offer[this.offerID] == offerID) {return offer;}
+    }
+    return null;
+  }
+  getOfferName(coinID: string, offerID: string): string {
+    let offer: any = this.getOffer(coinID, offerID);
+    let offerName: string = this.offerName.concat('_',this.language);
+    if(!offer[offerName]){return this.defaultOfferName}
+    return offer[offerName];
+  }
+  getOfferPrice(coinID: string, offerID: string): number {
+    let offer = this.getOffer(coinID, offerID);
+    if(!offer[this.offerPrice]){return this.defaultOfferPrice}
+    return offer[this.offerPrice];
   }
   getRewards(coinID: string): any[] {
     if(!this.c[this.rewards][coinID]){return [];}
@@ -1164,6 +1187,8 @@ offersCollectionPathForCoin(coinID: string): string {
 locationsCollectionPathForCoin(coinID: string): string {
   return ''.concat('tokens/', coinID, '/locations');
 }
+
+
 
 /******************************************************************************/
 /******************************************************************************/

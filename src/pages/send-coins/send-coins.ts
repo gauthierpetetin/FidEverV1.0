@@ -4,8 +4,6 @@ import { IonicPage, NavController, ViewController, NavParams, LoadingController,
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 import { ContextProvider} from '../../providers/context/context';
-//import { EthapiProvider } from '../../providers/ethapi/ethapi';
-//import { FidapiProvider} from '../../providers/fidapi/fidapi';
 import { TransactionProvider} from '../../providers/transaction/transaction';
 /**
  * Generated class for the SendCoinsPage page.
@@ -49,8 +47,6 @@ export class SendCoinsPage {
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public ctx: ContextProvider,
-    //public ethapiProvider: EthapiProvider,
-    //public fidapiProvider: FidapiProvider
     public transactionProvider: TransactionProvider
   ) {
     this.coinContractAddress = navParams.get('coinContractAddress');

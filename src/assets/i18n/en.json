@@ -126,12 +126,17 @@
       "SEND": "Send",
       "RECEIVE": "Receive"
     },
-    "REWARDALERT": {
+    "REWARDALERTCONFIRM": {
       "TITLE": "Get reward",
       "CONTENT_1": "Do you confirm you want to use",
       "CONTENT_2": "to get",
       "CONFIRM": "Confirm",
       "CANCEL": "Cancel"
+    },
+    "REWARDALERTSUCCESS": {
+      "TITLE": "Congratulations",
+      "CONTENT_1": "You now have a coupon for",
+      "CONTENT_2": "in your rewards!"
     },
     "FUNDSALERT": {
       "TITLE": "Not enough funds",

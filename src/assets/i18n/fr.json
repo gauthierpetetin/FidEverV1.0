@@ -126,12 +126,17 @@
       "SEND": "Envoyer",
       "RECEIVE": "Recevoir"
     },
-    "REWARDALERT": {
+    "REWARDALERTCONFIRM": {
       "TITLE": "Récompense",
       "CONTENT_1": "Souhaites tu utiliser",
       "CONTENT_2": "pour acquérir",
       "CONFIRM": "Confirmer",
       "CANCEL": "Annuler"
+    },
+    "REWARDALERTSUCCESS": {
+      "TITLE": "Félicitations",
+      "CONTENT_1": "Tu as désormais un coupon pour",
+      "CONTENT_2": "dans tes récompenses!"
     },
     "FUNDSALERT": {
       "TITLE": "Fonds insuffisants",

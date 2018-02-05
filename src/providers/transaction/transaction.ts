@@ -67,7 +67,7 @@ export class TransactionProvider {
             transactionH
           ).then( () => {
             console.log('Coin transfer submitted successfully to Firestore : ',transactionH);
-            resolve();
+            resolve(transactionH);
           }, (fidapi_error) => {
             let err = {};
             err[self.alertTitle] = 'FidApi error';

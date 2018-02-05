@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NavController, NavParams, ModalController, AlertController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, Loading, ModalController, AlertController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 
 import { ReceiveCoinsPage } from '../receive-coins/receive-coins';
@@ -11,16 +11,18 @@ import { ImageLoaderConfig, ImageLoader } from 'ionic-image-loader';
 
 import { ContextProvider} from '../../providers/context/context';
 
+import { FidapiProvider } from '../../providers/fidapi/fidapi';
+import { TransactionProvider} from '../../providers/transaction/transaction';
 import { TranslateService } from '@ngx-translate/core';
 
-
-//import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 
 @Component({
   selector: 'page-item-detail',
   templateUrl: 'item-detail.html'
 })
 export class ItemDetailPage {
+
+  public loading:Loading;
 
   coinContractAddress: any;
 
@@ -41,18 +43,25 @@ export class ItemDetailPage {
   offerImages: any;
   rewards: any [];
 
-  //REWARDALERT
+  //REWARDCONFIRM
   rewardAlertTitle: string;
   rewardAlertContent1: string;
   rewardAlertContent2: string;
   rewardAlertConfirm: string;
   rewardAlertCancel: string;
 
-  //FUNDSALERT
+  //REWARDSUCCESS
+  rewardSuccessTitle: string;
+  rewardSuccessContent1: string;
+  rewardSuccessContent2: string;
+
+  //FUNDS
   fundsAlertTitle: string;
   fundsAlertContent1: string;
   fundsAlertContent2: string;
 
+  alertTitle: string;
+  alertText: string;
 
   constructor(
     public navCtrl: NavController,
@@ -62,6 +71,9 @@ export class ItemDetailPage {
     public imageLoader: ImageLoader,
     public ctx: ContextProvider,
     public alertCtrl: AlertController,
+    public loadingCtrl: LoadingController,
+    public transactionProvider: TransactionProvider,
+    public fidapiProvider: FidapiProvider,
     private translateService: TranslateService
   ) {
 
@@ -80,10 +92,12 @@ export class ItemDetailPage {
     this.companyName = this.ctx.getCompanyName(this.coinContractAddress);
     this.offers = this.ctx.getOffers(this.coinContractAddress);
       this.offerID = this.ctx.offerID;
-      this.offerName = this.ctx.offerName.concat('_',this.ctx.language);
-      this.offerPrice = this.ctx.offerPrice;
     this.offerImages = this.ctx.getOfferImages(this.coinContractAddress);
     this.rewards = this.ctx.getRewards(this.coinContractAddress);
+
+    this.alertTitle = this.transactionProvider.alertTitle;
+    this.alertText = this.transactionProvider.alertText;
+
 
     if((this.offers.length > 0)&&(this.rewards.length==0)){
       console.log('this.rewards.push : ', this.rewards);
@@ -102,15 +116,19 @@ export class ItemDetailPage {
   }
 
   translate() {
-    this.translateService.get('ITEM_DETAIL.REWARDALERT.TITLE').subscribe(rewardAlertTitle => { this.rewardAlertTitle = rewardAlertTitle.toString(); });
-    this.translateService.get('ITEM_DETAIL.REWARDALERT.CONTENT_1').subscribe(rewardAlertContent1 => { this.rewardAlertContent1 = rewardAlertContent1.toString(); });
-    this.translateService.get('ITEM_DETAIL.REWARDALERT.CONTENT_2').subscribe(rewardAlertContent2 => { this.rewardAlertContent2 = rewardAlertContent2.toString(); });
-    this.translateService.get('ITEM_DETAIL.REWARDALERT.CONFIRM').subscribe(rewardAlertConfirm => { this.rewardAlertConfirm = rewardAlertConfirm.toString(); });
-    this.translateService.get('ITEM_DETAIL.REWARDALERT.CANCEL').subscribe(rewardAlertCancel => { this.rewardAlertCancel = rewardAlertCancel.toString(); });
+    this.translateService.get('ITEM_DETAIL.REWARDALERTCONFIRM.TITLE').subscribe(rewardAlertTitle => { this.rewardAlertTitle = rewardAlertTitle.toString(); });
+    this.translateService.get('ITEM_DETAIL.REWARDALERTCONFIRM.CONTENT_1').subscribe(rewardAlertContent1 => { this.rewardAlertContent1 = rewardAlertContent1.toString(); });
+    this.translateService.get('ITEM_DETAIL.REWARDALERTCONFIRM.CONTENT_2').subscribe(rewardAlertContent2 => { this.rewardAlertContent2 = rewardAlertContent2.toString(); });
+    this.translateService.get('ITEM_DETAIL.REWARDALERTCONFIRM.CONFIRM').subscribe(rewardAlertConfirm => { this.rewardAlertConfirm = rewardAlertConfirm.toString(); });
+    this.translateService.get('ITEM_DETAIL.REWARDALERTCONFIRM.CANCEL').subscribe(rewardAlertCancel => { this.rewardAlertCancel = rewardAlertCancel.toString(); });
 
     this.translateService.get('ITEM_DETAIL.FUNDSALERT.TITLE').subscribe(fundsAlertTitle => { this.fundsAlertTitle = fundsAlertTitle.toString(); });
     this.translateService.get('ITEM_DETAIL.FUNDSALERT.CONTENT_1').subscribe(fundsAlertContent1 => { this.fundsAlertContent1 = fundsAlertContent1.toString(); });
     this.translateService.get('ITEM_DETAIL.FUNDSALERT.CONTENT_2').subscribe(fundsAlertContent2 => { this.fundsAlertContent2 = fundsAlertContent2.toString(); });
+
+    this.translateService.get('ITEM_DETAIL.REWARDALERTSUCCESS.TITLE').subscribe(rewardSuccessTitle => { this.rewardSuccessTitle = rewardSuccessTitle.toString(); });
+    this.translateService.get('ITEM_DETAIL.REWARDALERTSUCCESS.CONTENT_1').subscribe(rewardSuccessContent1 => { this.rewardSuccessContent1 = rewardSuccessContent1.toString(); });
+    this.translateService.get('ITEM_DETAIL.REWARDALERTSUCCESS.CONTENT_2').subscribe(rewardSuccessContent2 => { this.rewardSuccessContent2 = rewardSuccessContent2.toString(); });
 
   }
 
@@ -150,32 +168,25 @@ export class ItemDetailPage {
     console.log('IonViewWillLeave Item-detail');
   }
 
-  offerTapped(event, selectedOffer) {
-    console.log('Offer tapped : ', selectedOffer);
-    var coinAmount: number = this.ctx.getCoinAmount(this.coinContractAddress);
-    if (coinAmount >= selectedOffer[this.offerPrice]) {
-      this.confirmPurchase(selectedOffer);
+  offerTapped(event, offerID: string) {
+    console.log('Offer tapped : ', offerID);
+    let coinAmount: number = this.ctx.getCoinAmount(this.coinContractAddress);
+    let offerPrice: number = this.ctx.getOfferPrice(this.coinContractAddress, offerID);
+    if (coinAmount >= offerPrice) {
+      this.offerProposal(offerID);
     }
     else {
-      this.forbidPurchase(selectedOffer[this.offerPrice] - coinAmount);
+      this.forbidPurchase(offerPrice - coinAmount);
     }
   }
 
-  rewardTapped(event, selectedReward) {
-    let rewardID = selectedReward[this.offerID];
-    console.log('reward tapped : ', rewardID, ', ', selectedReward[this.offerName]);
-    this.modalCtrl.create(RewardPage, {
-      reward: rewardID,
-      name: selectedReward[this.offerName],
-      coinColor: this.ctx.getCoinColor(this.coinContractAddress),
-      image: this.offerImages[rewardID]
-    }).present();
-  }
 
-  confirmPurchase(selectedOffer: any) {
+  offerProposal(offerID: string) {
+    let offerPrice: number = this.ctx.getOfferPrice(this.coinContractAddress, offerID);
+    let offerName: string = this.ctx.getOfferName(this.coinContractAddress, offerID);
     let alert = this.alertCtrl.create({
       title: this.rewardAlertTitle,
-      subTitle: this.rewardAlertContent1.concat(' ', selectedOffer[this.offerPrice], ' ', this.coinName, ' ', this.rewardAlertContent2, ' ', selectedOffer[this.offerName], '.'),
+      subTitle: this.rewardAlertContent1.concat(' ', String(offerPrice), ' ', this.coinName, ' ', this.rewardAlertContent2, ' ', offerName, '.'),
       cssClass: 'customAlerts',
       buttons: [
       {
@@ -189,11 +200,76 @@ export class ItemDetailPage {
         text: this.rewardAlertConfirm,
         handler: () => {
           console.log('Confirm clicked');
+          /*xxxxxxxxxxUNCOMMENT LINE****************/
+          //this.offerConfirmed(offerID);
+          /*xxxxxxxxxxUNCOMMENT LINE****************/
         }
       }
     ]
     });
     alert.present();
+  }
+
+
+  offerConfirmed(offerID: string) {
+    console.log('Open offerConfirmed : ', offerID);
+    let coinAmount: number = this.ctx.getCoinAmount(this.coinContractAddress);
+    let offerPrice: number = this.ctx.getOfferPrice(this.coinContractAddress, offerID);
+    let offerName: string = this.ctx.getOfferName(this.coinContractAddress, offerID);
+    if (coinAmount >= offerPrice) {
+
+      this.loading = this.loadingCtrl.create({
+        dismissOnPageChange: true,
+      });
+      this.loading.present();
+
+      this.transactionProvider.sendCoins(
+        this.coinContractAddress,
+        offerPrice,
+        this.ctx.getAddress(),
+        this.ctx.getPrivateKey(),
+        this.coinContractAddress
+      ).then( (transactionH) => {
+        this.loading.dismiss();
+        this.fidapiProvider.rewardClaim(
+          this.ctx.getUid(),
+          this.coinContractAddress,
+          offerID,
+          transactionH
+        ).then( () => {
+          this.loading.dismiss();
+          let alert = this.alertCtrl.create({
+            title: this.rewardSuccessTitle,
+            subTitle: this.rewardSuccessContent1.concat(" ", offerName, " ", this.rewardSuccessContent2),
+            buttons: ['OK']
+          });
+          alert.present();
+
+        }).catch( (error) => {
+          this.loading.dismiss();
+          let alert = this.alertCtrl.create({
+            title: 'FidAPI error',
+            subTitle: 'Error : '.concat(error),
+            buttons: ['OK']
+          });
+          alert.present();
+
+        });
+      }).catch( (error) => {
+        this.loading.dismiss();
+        let alert = this.alertCtrl.create({
+          title: error[this.alertTitle],
+          subTitle: error[this.alertText],
+          buttons: ['OK']
+        });
+        alert.present();
+      });
+    }
+    else {
+      this.forbidPurchase(offerPrice - coinAmount);
+    }
+
+
   }
 
   forbidPurchase(missingAmount: number) {
@@ -211,6 +287,17 @@ export class ItemDetailPage {
 
   selectRewards() {
     this.selectedTab = 1;
+  }
+
+  rewardTapped(event, rewardID) {
+    let rewardName: string = this.ctx.getOfferName(this.coinContractAddress, rewardID);
+    console.log('reward tapped : ', rewardID, ', ', rewardName);
+    this.modalCtrl.create(RewardPage, {
+      reward: rewardID,
+      name: rewardName,
+      coinColor: this.ctx.getCoinColor(this.coinContractAddress),
+      image: this.offerImages[rewardID]
+    }).present();
   }
 
 }
