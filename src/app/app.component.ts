@@ -62,6 +62,25 @@ export class MyApp {
     ctx.setMyAppVersion(this.appVersion);
 
 
+    // let testArray: any = [];
+    // let struct1: any = {
+    //   test1: 'test1',
+    //   bool: true
+    // }
+    // testArray.push(struct1);
+    // let struct2: any = {
+    //   test1: 'test2',
+    //   bool: true
+    // }
+    // testArray.push(struct2);
+    // let struct3: any = {
+    //   test1: 'test3',
+    //   bool: true
+    // }
+    // testArray.push(struct3);
+    // console.log('TestArray : ', testArray);
+    // console.log('Pop : ', testArray.pop());
+    // console.log('TestArray (pop) : ', testArray);
 
 
     const authObserver = afAuth.authState.subscribe( user => {

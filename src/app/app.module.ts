@@ -55,7 +55,6 @@ import { ItemDetailPageModule } from '../pages/item-detail/item-detail.module';
 import { ReceiveCoinsPageModule } from '../pages/receive-coins/receive-coins.module';
 import { SendCoinsPageModule } from '../pages/send-coins/send-coins.module';
 import { ProfilePageModule } from '../pages/profile/profile.module';
-import { MapPageModule } from '../pages/map/map.module';
 import { RewardPageModule } from '../pages/reward/reward.module';
 import { UpdatePageModule } from '../pages/update/update.module';
 
@@ -98,7 +97,6 @@ export function createTranslateLoader(http: Http) {
     ReceiveCoinsPageModule,
     SendCoinsPageModule,
     ProfilePageModule,
-    MapPageModule,
     RewardPageModule,
     UpdatePageModule
   ],

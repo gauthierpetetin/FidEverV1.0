@@ -79,6 +79,7 @@ export class ContextProvider {
     infoName: string = 'name';
     infoSurname: string = 'surname';
     infoProfilePicture: string = 'profilePicture';
+  futureNotifications: string = 'futureNotifications';
 
   fbToken: any = {};
     fbTokenName: string = 'name';
@@ -135,6 +136,8 @@ export class ContextProvider {
   fidDarkGrey: string = '#404040';
 
   noEthAccount: string = 'noEthAccount';
+
+
 
   constructor(
     public http: Http,
@@ -215,9 +218,9 @@ export class ContextProvider {
 
   setDemoMode(demoMode: boolean) {
     this.demoMode = demoMode;
-    if(demoMode) {
-      this.fidapiProvider.getDemoCoins( this.getUid() ).then( () => {}).catch( (err) => {});
-    }
+    // if(demoMode) { // Old request
+    //   this.fidapiProvider.getDemoCoins( this.getUid() ).then( () => {}).catch( (err) => {});
+    // }
   }
 
   setCoinAmount(coinID: string, amount: number) {
@@ -225,6 +228,10 @@ export class ContextProvider {
       this.c[this.amounts][coinID] = amount;
     }
     else{console.log('TENTATIVE TO SET NEGATIVE AMOUNT');}
+  }
+
+  setFutureNotifications(newNotifications: any) {
+    this.c[this.futureNotifications] = newNotifications;
   }
 
 /****************GETTERS*********************/
@@ -370,6 +377,9 @@ export class ContextProvider {
   }
   getDemoMode(): boolean {
     return this.demoMode;
+  }
+  getFutureNotifications(): any {
+    return this.c[this.futureNotifications];
   }
 
   getAllCoinsObserver(): any {
@@ -636,8 +646,6 @@ getAllCoinsFromFirestore(): Promise<any> {
               resolve( self.c[self.allContractAddresses] );
             }
 
-            console.log('BIG ERROR1');
-            // resolve( self.c[self.allContractAddresses] );
 
         });
 
@@ -728,8 +736,6 @@ getMyCoinListFromFirestore(myUid: string): Promise<any> {
           resolve( self.c[self.myContractAddresses] );
         }
 
-        console.log('BIG ERROR2');
-        // resolve( self.c[self.myContractAddresses] );
 
       });
 
@@ -797,11 +803,12 @@ downloadCoinAmount(coin: string, uid: string): Promise<any> {
           //Show alert
           var delta : number = amount - self.getCoinAmount(coin);
           if(delta > 0){
-            self.alertProvider.receiveAlert(delta, self.getCoinName(coin), self.getLanguage());
+            self.prepareNotification(coin, delta);
           }
           else if (delta < 0){
             //self.alertProvider.sendAlert(-delta, self.c[self.names][coin]);
           }
+
           //Update amount
           self.setCoinAmount(coin, amount);
 
@@ -823,6 +830,44 @@ downloadCoinAmount(coin: string, uid: string): Promise<any> {
 
 }
 
+prepareNotification(coin: string, delta: number) {
+  console.log('Open prepareNotification');
+  if(this.isDemoCoin(coin) && this.getDemoMode()) {
+    this.sendNotification(coin, delta);
+  }
+  else if( (!this.isDemoCoin(coin)) && (!this.getDemoMode()) ) {
+    this.sendNotification(coin, delta);
+  }
+  else {
+    let notification: any = {
+      coin: coin,
+      delta: delta
+    }
+    this.c[this.futureNotifications].push(notification);
+  }
+}
+
+sendNotification(coin: string, delta: number) {
+  console.log('Open sendNotification');
+  if(delta > 0){
+    this.alertProvider.receiveAlert(delta, this.getCoinName(coin), this.getLanguage());
+  }
+  else if (delta < 0){
+    //self.alertProvider.sendAlert(-delta, self.c[self.names][coin]);
+  }
+}
+
+sendOldNotifications() {
+  console.log('Open sendOldNotifications');
+  let notification: any;
+  let oldNotifications = this.getFutureNotifications();
+  this.setFutureNotifications([]);
+  while(oldNotifications.length > 0) {
+    notification = oldNotifications.pop();
+    this.prepareNotification(notification.coin, notification.delta);
+  }
+  this.save();
+}
 
 
 downloadAllCoinInfos(coinContractAddresses: any): Promise<any> { //this.c[this.myContractAddresses]
@@ -1190,6 +1235,7 @@ initContext() {
   if(!this.c[this.rewards]){this.c[this.rewards] = {}}
   if(!this.c[this.locations]){this.c[this.locations] = {}}
   if(!this.c[this.info]){this.c[this.info] = {}}
+  if(!this.c[this.futureNotifications]){this.c[this.futureNotifications] = []}
   console.log('Close initContext');
 }
 
@@ -1212,6 +1258,7 @@ recoverContext(): Promise<any> {
       self.recoverDataAtKey(self.storageKey, self.c, self.offerImages);
       self.recoverDataAtKey(self.storageKey, self.c, self.rewards);
       self.recoverDataAtKey(self.storageKey, self.c, self.locations);
+      self.recoverDataAtKey(self.storageKey, self.c, self.futureNotifications);
       self.recoverDataAtKey(self.storageKey, self.c, self.info).then( (account) => {
         console.log('Account recovered : ', account);
         if(account[self.infoAddress] && account[self.infoPrivateKey]) {

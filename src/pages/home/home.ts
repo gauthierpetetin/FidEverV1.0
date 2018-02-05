@@ -222,6 +222,7 @@ export class HomePage {
     myModalCtrl.onDidDismiss( (demoToggleActivated) => {
       if(demoToggleActivated){
         this.refreshMap();
+        this.ctx.sendOldNotifications();
       }
     });
 
