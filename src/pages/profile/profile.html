@@ -22,11 +22,14 @@
     </ion-buttons>
     <ion-title>{{ 'PROFILE.ACCOUNT' | translate }}</ion-title>
       <ion-buttons end>
-        <button ion-button *ngIf="!modifying" (click)="modify()">
+        <button ion-button *ngIf="!modifying && accountCreated" (click)="modify()">
           {{ 'PROFILE.MODIFY' | translate }}
         </button>
-        <button ion-button *ngIf="modifying" (click)="saveModification()">
+        <button ion-button *ngIf="modifying && accountCreated" (click)="saveModification()">
           {{ 'PROFILE.SAVE' | translate }}
+        </button>
+        <button ion-button *ngIf="!accountCreated" (click)="disconnect()">
+          <ion-icon name="log-out"></ion-icon>
         </button>
       </ion-buttons>
   </ion-navbar>
@@ -393,3 +396,27 @@
 
 </div>
 </ion-content>
+
+<ion-footer *ngIf="(!accountCreated) && (!newAccountMode)">
+  <div>
+    <p style="margin: 0 0; padding: 3px 5px; background-color: #afabab; color: white">
+      Demo
+    </p>
+  </div>
+
+  <ion-row style="margin: 0 0; padding: 0px 5px; background-color: white; color: grey">
+    <ion-col col-5>
+      <p >
+        {{ 'PROFILE.DEMO.TITLE' | translate }} :
+      </p>
+    </ion-col>
+    <ion-col col-5>
+      <p style="color: black;">
+        {{ 'PROFILE.DEMO.ACTIVATE' | translate }}
+      </p>
+    </ion-col>
+    <ion-col col-2>
+      <ion-toggle [(ngModel)]="newDemoMode" (ionChange)="switchDemoMode()" style="margin: 2px 0"></ion-toggle>
+    </ion-col>
+  </ion-row>
+</ion-footer>

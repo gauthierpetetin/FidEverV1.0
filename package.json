@@ -17,7 +17,7 @@
     "@angular/platform-browser": "4.0.2",
     "@angular/platform-browser-dynamic": "4.0.2",
     "@firebase/webchannel-wrapper": "0.2.5",
-    "@ionic-native/barcode-scanner": "^4.5.2",
+    "@ionic-native/barcode-scanner": "^4.5.3",
     "@ionic-native/camera": "^4.5.2",
     "@ionic-native/core": "^4.5.2",
     "@ionic-native/file": "^4.0.2",
@@ -40,8 +40,7 @@
     "angularfire2": "^5.0.0-rc.3",
     "bignumber.js": "^5.0.0",
     "bip39": "^2.5.0",
-    "cordova-android": "7.0.0",
-    "cordova-ios": "~4.5.4",
+    "cordova-ios": "4.4.0",
     "cordova-plugin-camera": "^4.0.1",
     "cordova-plugin-console": "^1.1.0",
     "cordova-plugin-device": "^2.0.1",
@@ -72,7 +71,7 @@
     "jsbarcode": "git+https://github.com/lindell/JsBarcode.git",
     "ngx-qrcode2": "0.0.5",
     "npm": "^5.6.0",
-    "phonegap-plugin-barcodescanner": "^7.0.0",
+    "phonegap-plugin-barcodescanner": "^7.0.2",
     "phonegap-plugin-push": "^2.1.1",
     "promise-polyfill": "7.0.0",
     "rxjs": "5.5.6",
@@ -111,9 +110,6 @@
         "API_KEY_FOR_ANDROID": "AIzaSyBc1cMbfX0ogh8jNAw7J69IYaLHizOafcY",
         "API_KEY_FOR_IOS": "AIzaSyAx8YYHB5Hcqa1SUrsLSHWbk6nyga2iSro"
       },
-      "phonegap-plugin-barcodescanner": {
-        "CAMERA_USAGE_DESCRIPTION": " "
-      },
       "cordova-plugin-uniquedeviceid": {},
       "cordova-plugin-screen-orientation": {},
       "cordova-plugin-firebase": {},
@@ -121,12 +117,12 @@
       "com.synconset.imagepicker": {
         "PHOTO_LIBRARY_USAGE_DESCRIPTION": "FidEver profile image"
       },
-      "cordova-plugin-camera": {}
+      "cordova-plugin-camera": {},
+      "phonegap-plugin-barcodescanner": {
+        "CAMERA_USAGE_DESCRIPTION": " "
+      }
     },
-    "platforms": [
-      "android",
-      "ios"
-    ]
+    "platforms": []
   },
   "version": "1.0.0",
   "main": "index.js",

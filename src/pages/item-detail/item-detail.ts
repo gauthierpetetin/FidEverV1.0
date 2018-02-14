@@ -200,12 +200,21 @@ export class ItemDetailPage {
           console.log('Confirm clicked');
           /*xxxxxxxxxxUNCOMMENT LINE****************/
           //this.offerConfirmed(offerID);
+          this.goToReward(this.rewards.length-1);
           /*xxxxxxxxxxUNCOMMENT LINE****************/
         }
       }
     ]
     });
     alert.present();
+  }
+
+  goToReward(rewardIndex: number) {
+    this.selectRewards();
+    let selectedReward: any = this.rewards[rewardIndex];
+    if(selectedReward) {
+      this.rewardTapped(null, selectedReward[this.offerID]);
+    }
   }
 
 

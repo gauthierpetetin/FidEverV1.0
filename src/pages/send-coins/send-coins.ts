@@ -80,10 +80,15 @@ export class SendCoinsPage {
   }
 
   scanCode() {
+    this.scannedCode = "";
     if(this.ctx.cordovaPlatform) {
+      console.log('Open scanCode');
       this.barcodeScanner.scan().then(barcodeData => {
         this.scannedCode = barcodeData.text;
       });
+    }
+    else{
+      console.log('Can not scan code: not a cordova platform');
     }
   }
 
