@@ -1,30 +1,27 @@
-fidLightGreypage-send-coins {
+page-send-coins {
 
   @import "../../theme/variables.scss";
 
-// ion-content{
-//   background-image: url('../assets/images/background/background15.png') !important;
-// }
 
 
-.toolbar-background {
+  .toolbar-background {
   //background-color: color($colors, fidLightGrey);
-  background-color: transparent;
-}
+    background-color: transparent;
+  }
 
-.toolbar-title {
-  color: white;
-}
+  .toolbar-title {
+    color: white;
+  }
 
-.bar-button-default {
-  color: white;
-}
+  .bar-button-default {
+    color: white;
+  }
 
-//Test pour aligner les éléments contenus dans les items de la liste
-h2.text{
-  display: inline-block;
-  vertical-align: middle;
-}
+  //Test pour aligner les éléments contenus dans les items de la liste
+  h2.text{
+    display: inline-block;
+    vertical-align: middle;
+  }
 
   form {
     margin-bottom: 32px;

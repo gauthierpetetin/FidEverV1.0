@@ -256,7 +256,7 @@
 
     <ion-item-sliding *ngFor="let off of rewards" style="padding: 0 0; background-color: rgba(255, 255, 255, 0.85);">
 
-      <button ion-item style="padding: 0 0; margin: 0 0; background-color: transparent" (click)="rewardTapped($event, off)">
+      <button ion-item style="padding: 0 0; margin: 0 0; background-color: transparent" (click)="rewardTapped($event, off[offerID])">
         <ion-row style="margin: 0 0; padding: 0 0;">
 
           <ion-col col-2 style="

@@ -22,7 +22,7 @@ export class ReceiveCoinsPage {
 
   coinColor: string;
 
-  
+  navbarID: string = "colorNavbar-receive";
 
   constructor(
     public navCtrl: NavController,
@@ -38,10 +38,15 @@ export class ReceiveCoinsPage {
     this.coinColor = navParams.get('coinColor');
 
     console.log(this.address);
+
+    console.log('Color : ', this.coinColor);
+
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ReceiveCoinsPage');
+    document.getElementById(this.navbarID).style.backgroundColor = this.coinColor;
+
     this.translateService.get('RECEIVE').subscribe(
       value => {
         // value is our translated string

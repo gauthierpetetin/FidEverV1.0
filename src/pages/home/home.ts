@@ -212,10 +212,20 @@ export class HomePage {
     myModalCtrl.present();
   }
 
-  switchCoinMode() {
-    console.log('Open switchCoinMode');
+  setAllCoins() {
+    this.myCoinsOnly = false;
     this.refreshMap();
   }
+
+  setMyCoins() {
+    this.myCoinsOnly = true;
+    this.refreshMap();
+  }
+
+  // switchCoinMode() {
+  //   console.log('Open switchCoinMode');
+  //   this.refreshMap();
+  // }
 
   showProfile() {
     let myModalCtrl = this.modalCtrl.create(ProfilePage);

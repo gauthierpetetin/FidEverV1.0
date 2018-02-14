@@ -150,11 +150,9 @@ export class ItemDetailPage {
       return;
     }
 
+
     this.modalCtrl.create(SendCoinsPage, {
-      coinContractAddress: this.coinContractAddress,
-      coinName: this.ctx.getCoinName(this.coinContractAddress),
-      coinColor: this.ctx.getCoinColor(this.coinContractAddress),
-      coinIcon: this.ctx.getCoinIcon(this.coinContractAddress)
+      coinContractAddress: this.coinContractAddress
     }).present();
   }
 

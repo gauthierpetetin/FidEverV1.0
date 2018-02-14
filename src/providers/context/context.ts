@@ -373,11 +373,13 @@ export class ContextProvider {
   getOfferName(coinID: string, offerID: string): string {
     let offer: any = this.getOffer(coinID, offerID);
     let offerName: string = this.offerName.concat('_',this.language);
+    if(!offer){return this.defaultOfferName}
     if(!offer[offerName]){return this.defaultOfferName}
     return offer[offerName];
   }
   getOfferPrice(coinID: string, offerID: string): number {
     let offer = this.getOffer(coinID, offerID);
+    if(!offer){return this.defaultOfferPrice}
     if(!offer[this.offerPrice]){return this.defaultOfferPrice}
     return offer[this.offerPrice];
   }

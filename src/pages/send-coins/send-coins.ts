@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, ViewController, NavParams, LoadingController, Loading, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, LoadingController, Loading, AlertController } from 'ionic-angular';
 
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
@@ -20,6 +20,7 @@ export class SendCoinsPage {
 
   public loading:Loading;
 
+  navbarID: string = "colorNavbar-send";
 
   coinContractAddress : any;
   toAddress : string = null;
@@ -69,10 +70,13 @@ export class SendCoinsPage {
     // this.coinAmount = 14;
     // this.transactionSubmitted = true;
 
+    console.log('Color : ', this.coinColor);
+
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SendCoinsPage');
+    document.getElementById(this.navbarID).style.backgroundColor = this.coinColor;
   }
 
   scanCode() {

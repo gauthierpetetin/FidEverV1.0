@@ -23,49 +23,42 @@
 
 <ion-content>
 
-  <div ion-fixed style="padding: 0 0; margin: 0 0; width: 100%">
-    <ion-row [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.85)'}"
-      style="height: 40px; padding: 0 0; margin: 0 0;">
-
-      <ion-col col-5 style="background-color: transparent; display: table; padding: 0 0; margin: 0 0;">
-        <div style="
-          height: 40px;
-          font-size: 18px;
-          display: table-cell;
-          vertical-align: middle;
-          text-align: center;">
-          <p style="color: grey; padding: 0 0; margin: 0 0;">
+  <div ion-fixed style="padding: 0 0; margin: 0 0; width: 100%;">
+    <ion-row style="height: 35px" [ngStyle]="{'background-color': 'rgba(255, 255, 255, 0.85)'}">
+      <ion-col col-6 style="text-align: center; padding: 0 0;">
+        <button (click)="setAllCoins()" style="
+          background-color: transparent;
+          height: 100%;
+          width: 100%;
+          color: grey;
+          font-size: 120%;">
+          <div *ngIf="myCoinsOnly" [ngStyle]="{'color': ctx.fidGrey}">
             {{ 'HOME.ALLCOINS' | translate }}
-          </p>
-        </div>
+          </div>
+          <div *ngIf="!myCoinsOnly" [ngStyle]="{'color': ctx.fidDarkGrey}">
+            {{ 'HOME.ALLCOINS' | translate }}
+          </div>
+        </button>
+        <div *ngIf="!myCoinsOnly" [ngStyle]="{'background-color': ctx.fidDarkGrey}" style="width: 100%; height: 2px; botttom: 0;"></div>
       </ion-col>
-      <ion-col col-2 tyle="background-color: transparent"style="
-        background-color: transparent;
-        padding: 0 0;
-        margin: 0 0;
-        position: relative;
-        ">
-        <ion-toggle [(ngModel)]="myCoinsOnly" (ionChange)="switchCoinMode()"
-        style="
-          text-align: center;
-          position: absolute;
-          margin: 5px 0;
-          left: 10%;">
-        </ion-toggle>
-      </ion-col>
-      <ion-col col-5 style="background-color: transparent; display: table; padding: 0 0; margin: 0 0;">
-        <div style="
-          height: 40px;
-          font-size: 18px;
-          display: table-cell;
-          vertical-align: middle;
-          text-align: center;">
-          <p style="color: grey; padding: 0 0; margin: 0 0;">
+      <ion-col col-6 style="text-align: center; padding: 0 0;">
+        <button (click)="setMyCoins()" style="
+          background-color: transparent;
+          height: 100%;
+          width: 100%;
+          color: grey;
+          font-size: 120%;">
+          <div *ngIf="myCoinsOnly" [ngStyle]="{'color': ctx.fidDarkGrey}">
             {{ 'HOME.YOURCOINS' | translate }}
-          </p>
-        </div>
+          </div>
+          <div *ngIf="!myCoinsOnly" [ngStyle]="{'color': ctx.fidGrey}">
+            {{ 'HOME.YOURCOINS' | translate }}
+          </div>
+        </button>
+        <div *ngIf="myCoinsOnly" [ngStyle]="{'background-color': ctx.fidDarkGrey}" style="width: 100%; height: 2px; bottom: 0;"></div>
       </ion-col>
     </ion-row>
+
   </div>
 
 

@@ -5,7 +5,6 @@ import { ReceiveCoinsPage } from './receive-coins';
 
 /**************Modules**************************/
 import { NgxQRCodeModule } from 'ngx-qrcode2';
-
 import { TranslateModule } from '@ngx-translate/core';
 
 
