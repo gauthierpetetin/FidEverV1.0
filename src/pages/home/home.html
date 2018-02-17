@@ -20,6 +20,15 @@
 
 </ion-header>
 
+<!-- display: table;
+text-align: center !important;">
+<div style="
+  padding: 0 0;
+  margin: 0 0;
+  height: 50px !important;
+  display: table-cell;
+  vertical-align: middle; -->
+
 
 <ion-content>
 
@@ -219,23 +228,22 @@
     </ion-item-sliding>
   </ion-list>
 
-  <div *ngIf="contractAddresses.length==0">
-  <ion-row text-center style="height: 80px; margin-top: 70px; width: 100%; position: relative">
-    <img-loader
-      (click)="showMapWithAllCoins()"
-      fallback="assets/images/other/map.png"
-      src="assets/images/other/map.png"
+  <div *ngIf="contractAddresses.length==0" style="margin-top: 100px; height: 80px;">
+  <!-- <div> -->
+  <ion-row text-center style="height: 80px; width: 100%; position: relative;">
+
+    <ion-icon (click)="showMapWithAllCoins()" name="map" [ngStyle]="{'color': ctx.fidDarkGrey}"
       style="
-        border-radius: 80px;
+        font-size: 70px;
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 80px;
-        height: 80px;
-        margin-top: -40px;
-        margin-left: -40px;
-        " useImg>
-    </img-loader>
+        width: 70px;
+        height: 70px;
+        margin-top: -35px;
+        margin-left: -35px;
+        ">
+    </ion-icon>
   </ion-row>
   <ion-row style="height: 20px; width: 100%; position: relative; margin-top: 10px;">
     <div style="
@@ -248,9 +256,8 @@
       vertical-align: middle;
       text-align: center;
       ">
-      <h2 style="
+      <h2 [ngStyle]="{'color': ctx.fidDarkGrey}" style="
         margin-top: 0px;
-        color: #fe9400;
         font-size: 14px;
         ">
         {{ 'HOME.FIND' | translate }}
@@ -274,12 +281,12 @@
 
 <ion-footer style="text-align: center;">
   <!-- <div *ngIf="!mapIsOn" style="text-align: center;">
-    <p style="margin: 0 0; padding: 3px 0; color: grey" [ngStyle]="{'background-color': fidLightGrey}">
+    <p style="margin: 0 0; padding: 3px 0; color: grey" [ngStyle]="{'background-color': ctx.fidLightGrey}">
       {{ 'HOME.COLLECT' | translate }}
     </p>
   </div> -->
   <div style="text-align: center; color: white;">
-    <p style="margin: 0 0; padding: 3px 0; color: white" [ngStyle]="{'background-color': fidDarkGrey}">
+    <p style="margin: 0 0; padding: 3px 0; color: white" [ngStyle]="{'background-color': ctx.fidDarkGrey}">
       {{ 'HOME.COLLECT' | translate }}
     </p>
   </div>

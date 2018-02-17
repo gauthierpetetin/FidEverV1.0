@@ -48,9 +48,6 @@ export class HomePage {
   containerList: any;
 
 
-  fidDarkGrey: string;
-  fidLightGrey: string;
-
   // allCoinsObserver: any;
   // myCoinsObserver: any;
 
@@ -117,9 +114,6 @@ export class HomePage {
 
       // Variables for html
       this.info = this.ctx.info;
-
-      this.fidLightGrey = this.ctx.fidLightGrey;
-      this.fidDarkGrey = this.ctx.fidDarkGrey;
 
       // this.allCoinsObserver = this.ctx.getAllCoinsObserver();
       // if(this.allCoinsObserver){
@@ -204,7 +198,7 @@ export class HomePage {
 
   collectCoins() {
     let myModalCtrl = this.modalCtrl.create(ReceiveCoinsPage, {
-      coinColor : this.fidDarkGrey
+      coinColor : this.ctx.fidDarkGrey
     });
     // myModalCtrl.onDidDismiss(data => {
     //   console.log('Dismiss receive-coins : ',data);

@@ -25,3 +25,17 @@ body, span, button, h1, h2, h3, h4, h5, h6, p, ion-item, ion-title, ion-card-con
   font-family: 'Verdana' !important;
   color: '#404040';
 }
+
+ion-navbar {
+  height: 60px !important;
+  position: relative !important;
+}
+
+ion-title {
+  position: absolute !important;
+  top: 50% !important;
+  height: 20px !important;
+  margin-top: -10px !important;
+  display: block !important;
+  vertical-align: middle !important;
+}

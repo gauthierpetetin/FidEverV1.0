@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 
 //import { SplashScreen } from '@ionic-native/splash-screen';
-//import { StatusBar } from '@ionic-native/status-bar';
+import { StatusBar } from '@ionic-native/status-bar';
 import { ScreenOrientation } from '@ionic-native/screen-orientation';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -13,7 +13,7 @@ import { AuthProvider } from '../providers/auth/auth';
 
 /**************Modules**************************/
 import { AngularFireAuth } from 'angularfire2/auth';
-//import { AuthProvider } from '../providers/auth/auth';
+
 
 /**************Pages****************************/
 import { HomePage } from '../pages/home/home';
@@ -44,7 +44,7 @@ export class MyApp {
     authData: AuthProvider,
     public ctx: ContextProvider,
     //private splashScreen: SplashScreen,
-    //private statusBar: StatusBar
+    private statusBar: StatusBar,
     translateService: TranslateService,
     private screenOrientation: ScreenOrientation,
     private firebaseAnalytics: FirebaseAnalytics,
@@ -136,10 +136,8 @@ export class MyApp {
 
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      //statusBar.styleDefault();
-      //statusBar.backgroundColorByHexString('#fe9400');
-      //statusBar.hide();
-      //splashScreen.hide();
+      this.statusBar.hide();
+
       if (platform.is('cordova')) {
         console.log('Cordova platform');
         ctx.cordovaPlatform = true;

@@ -4,10 +4,9 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
 //import { SplashScreen } from '@ionic-native/splash-screen';
-//import { StatusBar } from '@ionic-native/status-bar';
+import { StatusBar } from '@ionic-native/status-bar';
 import { ScreenOrientation } from '@ionic-native/screen-orientation';
 import { HttpModule, Http } from '@angular/http';
-//import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 
 /**************Confif parameters****************/
@@ -108,7 +107,7 @@ export function createTranslateLoader(http: Http) {
   providers: [
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     //SplashScreen,
-    //StatusBar,
+    StatusBar,
     ScreenOrientation,
     AlertProvider,
     AuthProvider,

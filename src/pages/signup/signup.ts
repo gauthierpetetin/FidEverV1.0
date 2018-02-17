@@ -10,12 +10,10 @@ import { AuthProvider } from '../../providers/auth/auth';
 import { HomePage } from '../home/home';
 import { EmailValidator } from '../../validators/email';
 
-//import { EthapiProvider } from '../../providers/ethapi/ethapi';
 import { Storage } from '@ionic/storage';
 
 import { ContextProvider} from '../../providers/context/context';
 import { WalletProvider} from '../../providers/wallet/wallet';
-//import { FidapiProvider } from '../../providers/fidapi/fidapi';
 
 import { TranslateService } from '@ngx-translate/core';
 

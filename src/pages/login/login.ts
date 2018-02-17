@@ -41,8 +41,6 @@ export class LoginPage {
   constructor(
     public navCtrl: NavController,
     public authData: AuthProvider,
-    //public ethapiProvider: EthapiProvider,
-    //public fidapiProvider: FidapiProvider,
     public formBuilder: FormBuilder,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
